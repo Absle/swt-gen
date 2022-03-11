@@ -26,26 +26,9 @@ pub fn roll_2d<T>(sides: T) -> T
     roll_1d(sides) + roll_1d(temp)
 }
 
-pub fn roll_1d3() -> isize {
-    match roll_1d6() {
-        1..=2 => 1,
-        3..=4 => 2,
-        5..=6 => 3,
-        _ => 0,
-    }
-}
-
-pub fn roll_1d6() -> isize {
-    let mut rng = rand::thread_rng();
-    rng.gen_range(1..=6)
-}
-
-pub fn roll_2d6() -> isize {
-    roll_1d6() + roll_1d6()
-}
-
+#[allow(dead_code)]
 pub fn roll_d66() -> isize {
-    10 * roll_1d6() + roll_1d6()
+    10 * roll_1d(6) + roll_1d(6)
 }
 
 #[cfg(test)]
@@ -73,33 +56,6 @@ mod tests {
             let sides = rng.gen_range(3..=20);
             let range = 2..=(2 * sides);
             let roll = roll_2d(sides);
-            assert!(range.contains(&roll));
-        }
-    }
-
-    #[test]
-    fn test_roll_1d3() {
-        let range = 1..=3;
-        for _ in 0..ROLL_ATTEMPTS {
-            let roll = roll_1d3();
-            assert!(range.contains(&roll));
-        }
-    }
-
-    #[test]
-    fn test_roll_1d6() {
-        let range = 1..=6;
-        for _ in 0..ROLL_ATTEMPTS {
-            let roll = roll_1d6();
-            assert!(range.contains(&roll));
-        }
-    }
-
-    #[test]
-    fn test_roll_2d6() {
-        let range = 2..=12;
-        for _ in 0..ROLL_ATTEMPTS {
-            let roll = roll_2d6();
             assert!(range.contains(&roll));
         }
     }
