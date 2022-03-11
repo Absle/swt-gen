@@ -56,6 +56,28 @@ mod tests {
     const ROLL_ATTEMPTS: usize = 10_000;
 
     #[test]
+    fn test_roll_1d() {
+        let mut rng = rand::thread_rng();
+        for _ in 0..ROLL_ATTEMPTS {
+            let sides = rng.gen_range(3..=20);
+            let range = 1..=sides;
+            let roll = roll_1d(sides);
+            assert!(range.contains(&roll));
+        }
+    }
+
+    #[test]
+    fn test_roll_2d() {
+        let mut rng = rand::thread_rng();
+        for _ in 0..ROLL_ATTEMPTS {
+            let sides = rng.gen_range(3..=20);
+            let range = 2..=(2 * sides);
+            let roll = roll_2d(sides);
+            assert!(range.contains(&roll));
+        }
+    }
+
+    #[test]
     fn test_roll_1d3() {
         let range = 1..=3;
         for _ in 0..ROLL_ATTEMPTS {
