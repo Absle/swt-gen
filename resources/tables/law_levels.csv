@@ -1,0 +1,11 @@
+code,banned_weapons,banned_armor
+0,None,None
+1,"Poison gas, explosives, undetectable weapons, WMD's","Battle dress"
+2,"Portable energy and laser weapons","Combat armor"
+3,"Military weapons","Flak"
+4,"Light assault weapons and submachine guns","Cloth"
+5,"Personal concealable weapons","Mesh"
+6,"All firearms except shotguns & stunners; carry weapons discouraged",""
+7,"Shotguns",""
+8,"All bladed weapons","All visible armor"
+9,"All weapons","All armor"

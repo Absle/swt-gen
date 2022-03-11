@@ -1,0 +1,14 @@
+code,class,quality,berthing_cost,fuel,facilities
+0,X,"No Starport",0,None,None
+1,X,"No Starport",0,None,None
+2,X,"No Starport",0,None,None
+3,E,Frontier,0,None,None
+4,E,Frontier,0,None,None
+5,D,Poor,10,Unrefined,"Limited Repair"
+6,D,Poor,10,Unrefined,"Limited Repair"
+7,C,Routine,100,Unrefined,"Shipyard (small craft), Repair"
+8,C,Routine,100,Unrefined,"Shipyard (small craft), Repair"
+9,B,Good,500,Refined,"Shipyard (spacecraft), Repair"
+10,B,Good,500,Refined,"Shipyard (spacecraft), Repair"
+11,A,Excellent,1000,Refined,"Shipyard (all), Repair"
+12,A,Excellent,1000,Refined,"Shipyard (all), Repair"
