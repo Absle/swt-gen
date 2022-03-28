@@ -1,10 +1,16 @@
-mod astrography;
+use traveller_subsector_generator::*;
 
 fn main() {
-    astrography::Subsector::new().show();
-    //println!("{:#?}", table::SubsectorTableCollection::new());
-    //println!("{:#?}", *astrography::table::TABLES);
-    //table::test_table("resources/tables/governments.csv");
+    //astrography::World::histograms(10_000);
 
-    //println!("Hello, world!");
+    let subsector = astrography::Subsector::new();
+    //subsector.show();
+    let yaml = serde_yaml::to_string(&subsector).unwrap();
+    //println!("{}", yaml);
+
+    let de_subsector: astrography::Subsector = serde_yaml::from_str(&yaml).unwrap();
+    assert_eq!(de_subsector, subsector);
+
+    subsector.show();
+    de_subsector.show();
 }

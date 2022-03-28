@@ -3,3 +3,4 @@ replit.nix
 Cargo.lock
 target/
 *.out
+output/

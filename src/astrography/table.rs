@@ -1,94 +1,90 @@
 use lazy_static::lazy_static;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[allow(dead_code)]
-pub fn test_table(file_path: &str) {
-    //let mut reader = csv::Reader::from_path(file_path).unwrap();
-    let mut reader = csv::ReaderBuilder::new()
-        .flexible(true)
-        .from_path(file_path)
-        .unwrap();
-    
-    for (index, result) in reader.records().enumerate() {
-        let record = result.unwrap();
-        println!("record[{}]: {:?}", index, record);
-    }
-}
-
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct AtmoRecord {
-    pub code: isize,
+    pub code: u16,
     pub composition: String,
 }
 pub type AtmoTable = Vec<AtmoRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TempRecord {
-    pub code: isize,
+    pub code: u16,
     pub kind: String,
     pub description: String,
 }
 pub type TempTable = Vec<TempRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct HydroRecord {
-    pub code: isize,
+    pub code: u16,
     pub description: String,
 }
 pub type HydroTable = Vec<HydroRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PopRecord {
-    pub code: isize,
+    pub code: u16,
     pub inhabitants: String,
 }
 pub type PopTable = Vec<PopRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct GovRecord {
-    pub code: isize,
+    pub code: u16,
     pub kind: String,
     pub description: String,
     pub contraband: String,
 }
 pub type GovTable = Vec<GovRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct FactionRecord {
-    pub code: isize,
+    pub code: u16,
     pub strength: String,
 }
 pub type FactionTable = Vec<FactionRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct CulturalDiffRecord {
-    pub code: isize,
+    pub code: u16,
     pub cultural_difference: String,
     pub description: String,
 }
 pub type CulturalDiffTable = Vec<CulturalDiffRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct WorldTagRecord {
-    pub code: isize,
+    pub code: u16,
     pub tag: String,
     pub description: String,
 }
 pub type WorldTagTable = Vec<WorldTagRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct LawRecord {
-    pub code: isize,
+    pub code: u16,
     pub banned_weapons: String,
     pub banned_armor: String,
 }
 pub type LawTable = Vec<LawRecord>;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
+pub enum StarportClass {
+    A,
+    B,
+    C,
+    D,
+    E,
+    X,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct StarportRecord {
-    pub code: isize,
-    pub class: String,
-    pub berthing_cost: String,
+    pub code: u16,
+    pub class: StarportClass,
+    pub berthing_cost: u32,
     pub fuel: String,
     pub facilities: String,
 }
@@ -102,6 +98,19 @@ fn load_table<T: for<'de> Deserialize<'de>>(file_path: &str) -> Vec<T> {
         table.push(record);
     }
     table
+}
+
+#[allow(dead_code)]
+pub fn test_table(file_path: &str) {
+    let mut reader = csv::ReaderBuilder::new()
+        .flexible(true)
+        .from_path(file_path)
+        .unwrap();
+
+    for (index, result) in reader.records().enumerate() {
+        let record = result.unwrap();
+        println!("record[{}]: {:?}", index, record);
+    }
 }
 
 #[derive(Debug)]

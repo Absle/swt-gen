@@ -4,24 +4,28 @@ use rand::Rng;
 use std::cmp::PartialOrd;
 use std::ops::Add;
 
-pub fn roll<T, U>(range: U) -> T where
+pub fn roll<T, U>(range: U) -> T
+where
     T: SampleUniform,
-    U: SampleRange<T> {
+    U: SampleRange<T>,
+{
     let mut rng = rand::thread_rng();
     rng.gen_range(range)
 }
 
 pub fn roll_1d<T>(sides: T) -> T
-    where
-        T: From<u8> + PartialOrd + SampleUniform {
+where
+    T: From<u8> + PartialOrd + SampleUniform,
+{
     let mut rng = rand::thread_rng();
     let one = T::from(1);
     rng.gen_range(one..=sides)
 }
 
-pub fn roll_2d<T>(sides: T) -> T 
-    where
-        T: Add<Output = T> + Copy + From<u8> + PartialOrd + SampleUniform, {
+pub fn roll_2d<T>(sides: T) -> T
+where
+    T: Add<Output = T> + Copy + From<u8> + PartialOrd + SampleUniform,
+{
     let temp = sides;
     roll_1d(sides) + roll_1d(temp)
 }
