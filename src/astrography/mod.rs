@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 
 use super::dice;
 use super::histogram::Histogram;
-use super::markdown;
 
 mod table;
 
@@ -86,9 +85,55 @@ pub struct World {
 
 impl World {
     #[allow(dead_code)]
-    fn to_markdown(&self) {
-        let mut doc = markdown::Document::new();
-        doc.h2(&self.name);
+    fn summary_csv(&self, location: &str) -> String {
+        let profile = format!(
+            "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
+            starport = self.starport.class,
+            size = self.size,
+            atmo = self.atmosphere.code,
+            hydro = self.hydrographics.code,
+            pop = self.population.code,
+            gov = self.government.code,
+            law = self.law_level.code,
+            tech = self.tech_level
+        );
+
+        let mut bases = Vec::new();
+        if self.has_naval_base {
+            bases.push(String::from("N"));
+        }
+        if self.has_research_base {
+            bases.push(String::from("R"));
+        }
+        if self.has_scout_base {
+            bases.push(String::from("S"));
+        }
+        if self.has_tas {
+            bases.push(String::from("T"));
+        }
+        let bases = bases.join(" ");
+
+        let trade_codes = self.trade_codes
+            .iter()
+            .map(|code| format!("{:?}", code))
+            .collect::<Vec<String>>()
+            .join(" ");
+
+        // Row format: name,location,profile,bases,trade codes,travel code,gas giant
+        //     Profile format: starport,size,atmo,hydro,pop,gov,law,tech
+        format!(
+            "{name},{location},{profile},{bases},{trade_codes},{travel_code:?},{gas_giant}",
+            name = self.name,
+            location = location,
+            profile = profile,
+            bases = bases,
+            trade_codes = trade_codes,
+            travel_code = self.travel_code,
+            gas_giant = match self.has_gas_giant {
+                true => "G",
+                false => "",
+            }
+        )
     }
 
     #[allow(dead_code)]
@@ -722,9 +767,14 @@ impl Subsector {
     }
 
     #[allow(dead_code)]
-    pub fn to_markdown(&self) {
-        let mut doc = markdown::Document::new();
-        doc.h1(&self.name);
+    pub fn to_csv(&self) -> String {
+        let mut table = String::from("Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant\n");
+        for (point, world) in &self.map {
+            let location = format!("{:0>2}{:0>2}", point.x, point.y);
+            table.push_str(&world.summary_csv(&location));
+            table.push_str("\n");
+        }
+        table
     }
 }
 
