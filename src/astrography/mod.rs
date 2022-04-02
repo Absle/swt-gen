@@ -113,7 +113,8 @@ impl World {
         }
         let bases = bases.join(" ");
 
-        let trade_codes = self.trade_codes
+        let trade_codes = self
+            .trade_codes
             .iter()
             .map(|code| format!("{:?}", code))
             .collect::<Vec<String>>()
@@ -133,6 +134,18 @@ impl World {
                 true => "G",
                 false => "",
             }
+        )
+    }
+
+    #[allow(dead_code)]
+    fn societal_csv(&self, location: &str) -> String {
+        format!(
+            "{name},{location},{culture},{world_tag_1},{world_tag_2}",
+            name = self.name,
+            location = location,
+            culture = self.culture.cultural_difference,
+            world_tag_1 = self.world_tags[0].tag,
+            world_tag_2 = self.world_tags[1].tag
         )
     }
 
@@ -768,13 +781,23 @@ impl Subsector {
 
     #[allow(dead_code)]
     pub fn to_csv(&self) -> String {
-        let mut table = String::from("Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant\n");
+        let mut summary_table = vec![String::from(
+            "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant",
+        )];
+        let mut societal_table = vec![String::from(
+            "Name,Location,Culture,World Tag 1,World Tag 2",
+        )];
         for (point, world) in &self.map {
             let location = format!("{:0>2}{:0>2}", point.x, point.y);
-            table.push_str(&world.summary_csv(&location));
-            table.push_str("\n");
+            summary_table.push(world.summary_csv(&location));
+            societal_table.push(world.societal_csv(&location));
         }
-        table
+
+        let table_separator = "-- >8 --";
+        let mut table = summary_table;
+        table.push(String::from(table_separator));
+        table.append(&mut societal_table);
+        table.join("\n")
     }
 }
 

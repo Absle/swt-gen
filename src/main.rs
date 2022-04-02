@@ -1,4 +1,3 @@
-use std::fs;
 use traveller_subsector_generator::*;
 
 fn main() {
