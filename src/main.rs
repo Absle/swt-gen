@@ -1,4 +1,4 @@
-use traveller_subsector_generator::*;
+use traveller_generator::*;
 
 fn main() {
     //astrography::World::histograms(10_000);
