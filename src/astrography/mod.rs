@@ -1,6 +1,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
+use std::ops::{Add, Sub};
 
+use roxmltree as xml;
 use serde::{Deserialize, Serialize};
 
 use super::dice;
@@ -84,9 +86,8 @@ pub struct World {
 }
 
 impl World {
-    #[allow(dead_code)]
-    fn summary_csv(&self, location: &str) -> String {
-        let profile = format!(
+    fn profile_string(&self) -> String {
+        format!(
             "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
             starport = self.starport.class,
             size = self.size,
@@ -96,7 +97,11 @@ impl World {
             gov = self.government.code,
             law = self.law_level.code,
             tech = self.tech_level
-        );
+        )
+    }
+
+    fn summary_csv(&self, location: &str) -> String {
+        let profile = self.profile_string();
 
         let mut bases = Vec::new();
         if self.has_naval_base {
@@ -137,7 +142,6 @@ impl World {
         )
     }
 
-    #[allow(dead_code)]
     fn societal_csv(&self, location: &str) -> String {
         format!(
             "{name},{location},{culture},{world_tag_1},{world_tag_2}",
@@ -147,71 +151,6 @@ impl World {
             world_tag_1 = self.world_tags[0].tag,
             world_tag_2 = self.world_tags[1].tag
         )
-    }
-
-    #[allow(dead_code)]
-    pub fn histograms(n: usize) {
-        let mut gas_giant_hist = Histogram::with_domain("Gas Giant", [false, true]);
-        let mut size_hist = Histogram::with_domain("Size", 0..=10);
-        let mut atmo_hist =
-            Histogram::with_domain("Atmosphere", 0..=(TABLES.atmo_table.len() as u16 - 1));
-        let mut temp_hist =
-            Histogram::with_domain("Temperature", 0..=(TABLES.temp_table.len() as u16 - 1));
-        let mut hydro_hist =
-            Histogram::with_domain("Hydrographics", 0..=(TABLES.hydro_table.len() as u16 - 1));
-        let mut pop_hist =
-            Histogram::with_domain("Population", 0..=(TABLES.pop_table.len() as u16 - 1));
-        let mut gov_hist =
-            Histogram::with_domain("Government", 0..=(TABLES.gov_table.len() as u16 - 1));
-        let mut law_hist =
-            Histogram::with_domain("Law Level", 0..=(TABLES.law_table.len() as u16 - 1));
-        let mut fac_strength_hist = Histogram::with_domain(
-            "Faction Strength",
-            0..=(TABLES.faction_table.len() as u16 - 1),
-        );
-        let mut fac_count_hist = Histogram::new("Faction Count");
-        let mut starport_hist = Histogram::new("Starport");
-        let mut tech_hist = Histogram::new("Tech Level");
-        let mut trade_code_hist = Histogram::new("Trade Codes");
-
-        for _ in 0..n {
-            let world = Self::new(String::from("0101"));
-
-            gas_giant_hist.inc(world.has_gas_giant);
-            size_hist.inc(world.size);
-            atmo_hist.inc(world.atmosphere.code);
-            temp_hist.inc(world.temperature.code);
-            hydro_hist.inc(world.hydrographics.code);
-            pop_hist.inc(world.population.code);
-            gov_hist.inc(world.government.code);
-            law_hist.inc(world.law_level.code);
-
-            for faction in &world.factions {
-                fac_strength_hist.inc(faction.code);
-            }
-            fac_count_hist.inc(world.factions.len());
-
-            starport_hist.inc(world.starport.class);
-            tech_hist.inc(world.tech_level);
-
-            for trade_code in world.trade_codes {
-                trade_code_hist.inc(trade_code);
-            }
-        }
-
-        gas_giant_hist.show_percent(n / 50);
-        size_hist.show_percent(n / 200);
-        atmo_hist.show_percent(n / 200);
-        temp_hist.show_percent(n / 200);
-        hydro_hist.show_percent(n / 200);
-        pop_hist.show_percent(n / 200);
-        gov_hist.show_percent(n / 200);
-        law_hist.show_percent(n / 200);
-        fac_strength_hist.show_percent(n / 200);
-        fac_count_hist.show_percent(n / 200);
-        starport_hist.show_percent(n / 200);
-        tech_hist.show_percent(n / 200);
-        trade_code_hist.show(n / 100); // Percent doesn't work well for this one
     }
 
     pub fn new(name: String) -> Self {
@@ -708,6 +647,97 @@ impl World {
             self.trade_codes.insert(TradeCode::Wa);
         }
     }
+
+    #[allow(dead_code)]
+    pub fn histograms(n: usize) {
+        let mut gas_giant_hist = Histogram::with_domain("Gas Giant", [false, true]);
+        let mut size_hist = Histogram::with_domain("Size", 0..=10);
+        let mut atmo_hist =
+            Histogram::with_domain("Atmosphere", 0..=(TABLES.atmo_table.len() as u16 - 1));
+        let mut temp_hist =
+            Histogram::with_domain("Temperature", 0..=(TABLES.temp_table.len() as u16 - 1));
+        let mut hydro_hist =
+            Histogram::with_domain("Hydrographics", 0..=(TABLES.hydro_table.len() as u16 - 1));
+        let mut pop_hist =
+            Histogram::with_domain("Population", 0..=(TABLES.pop_table.len() as u16 - 1));
+        let mut gov_hist =
+            Histogram::with_domain("Government", 0..=(TABLES.gov_table.len() as u16 - 1));
+        let mut law_hist =
+            Histogram::with_domain("Law Level", 0..=(TABLES.law_table.len() as u16 - 1));
+        let mut fac_strength_hist = Histogram::with_domain(
+            "Faction Strength",
+            0..=(TABLES.faction_table.len() as u16 - 1),
+        );
+        let mut fac_count_hist = Histogram::new("Faction Count");
+        let mut starport_hist = Histogram::new("Starport");
+        let mut tech_hist = Histogram::new("Tech Level");
+        let mut trade_code_hist = Histogram::new("Trade Codes");
+
+        for _ in 0..n {
+            let world = Self::new(String::from("0101"));
+
+            gas_giant_hist.inc(world.has_gas_giant);
+            size_hist.inc(world.size);
+            atmo_hist.inc(world.atmosphere.code);
+            temp_hist.inc(world.temperature.code);
+            hydro_hist.inc(world.hydrographics.code);
+            pop_hist.inc(world.population.code);
+            gov_hist.inc(world.government.code);
+            law_hist.inc(world.law_level.code);
+
+            for faction in &world.factions {
+                fac_strength_hist.inc(faction.code);
+            }
+            fac_count_hist.inc(world.factions.len());
+
+            starport_hist.inc(world.starport.class);
+            tech_hist.inc(world.tech_level);
+
+            for trade_code in world.trade_codes {
+                trade_code_hist.inc(trade_code);
+            }
+        }
+
+        gas_giant_hist.show_percent(n / 50);
+        size_hist.show_percent(n / 200);
+        atmo_hist.show_percent(n / 200);
+        temp_hist.show_percent(n / 200);
+        hydro_hist.show_percent(n / 200);
+        pop_hist.show_percent(n / 200);
+        gov_hist.show_percent(n / 200);
+        law_hist.show_percent(n / 200);
+        fac_strength_hist.show_percent(n / 200);
+        fac_count_hist.show_percent(n / 200);
+        starport_hist.show_percent(n / 200);
+        tech_hist.show_percent(n / 200);
+        trade_code_hist.show(n / 100); // Percent doesn't work well for this one
+    }
+}
+
+#[derive(Debug)]
+struct Translation {
+    x: f64,
+    y: f64,
+}
+
+impl Add for &Translation {
+    type Output = Translation;
+    fn add(self, other: Self) -> Translation {
+        Translation {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+impl Sub for &Translation {
+    type Output = Translation;
+    fn sub(self, other: Self) -> Translation {
+        Translation {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
@@ -798,6 +828,232 @@ impl Subsector {
         table.push(String::from(table_separator));
         table.append(&mut societal_table);
         table.join("\n")
+    }
+
+    #[allow(dead_code)]
+    pub fn generate_svg(&self) -> String {
+        let template_svg = fs::read_to_string("resources/traveller_sector_grid.svg").unwrap();
+        let doc = xml::Document::parse(&template_svg).unwrap();
+
+        // Parse through svg document to find coordinates of center markers
+        let mut marker_coordinates: BTreeMap<Point, Translation> = BTreeMap::new();
+        for (x, column) in doc
+            .descendants()
+            .find(|node| node.attribute("id") == Some("CenterMarkers"))
+            .unwrap()
+            .descendants()
+            .filter(|node| {
+                node.is_element()
+                    && node.tag_name().name() == "g"
+                    && node.attribute("id") != Some("CenterMarkers")
+            })
+            .enumerate()
+        {
+            let column_x: f64;
+            let column_y: f64;
+            if let Some(tranform) = column.attribute("transform") {
+                let translate_args: Vec<&str> = tranform
+                    .strip_prefix("translate(")
+                    .unwrap()
+                    .strip_suffix(")")
+                    .unwrap()
+                    .split(',')
+                    .collect();
+
+                column_x = match translate_args.get(0) {
+                    Some(arg) => arg.parse().unwrap(),
+                    None => 0.0,
+                };
+
+                column_y = match translate_args.get(1) {
+                    Some(arg) => arg.parse().unwrap(),
+                    None => 0.0,
+                };
+            } else {
+                column_x = 0.0;
+                column_y = 0.0;
+            }
+
+            let column_translation = Translation {
+                x: column_x,
+                y: column_y,
+            };
+
+            for (y, circle) in column
+                .descendants()
+                .filter(|node| node.tag_name().name() == "circle")
+                .enumerate()
+            {
+                let circle_translation = Translation {
+                    x: circle.attribute("cx").unwrap().parse().unwrap(),
+                    y: circle.attribute("cy").unwrap().parse().unwrap(),
+                };
+
+                let point = Point {
+                    x: x as u16 + 1,
+                    y: y as u16 + 1,
+                };
+
+                marker_coordinates.insert(point, &column_translation + &circle_translation);
+            }
+        }
+
+        // Find translations of all symbols in the map legend
+        let gas_giant = doc
+            .descendants()
+            .find(|node| node.attribute("id") == Some("GasGiantSymbol"))
+            .unwrap()
+            .descendants()
+            .find(|node| node.tag_name().name() == "circle")
+            .unwrap();
+        let gas_giant_trans = Translation {
+            x: gas_giant.attribute("cx").unwrap().parse().unwrap(),
+            y: gas_giant.attribute("cy").unwrap().parse().unwrap(),
+        };
+
+        let dry_world = doc
+            .descendants()
+            .find(|node| node.attribute("id") == Some("DryWorldSymbol"))
+            .unwrap();
+        let dry_world_trans = Translation {
+            x: dry_world.attribute("cx").unwrap().parse().unwrap(),
+            y: dry_world.attribute("cy").unwrap().parse().unwrap(),
+        };
+
+        let wet_world = doc
+            .descendants()
+            .find(|node| node.attribute("id") == Some("WetWorldSymbol"))
+            .unwrap();
+        let wet_world_trans = Translation {
+            x: wet_world.attribute("cx").unwrap().parse().unwrap(),
+            y: wet_world.attribute("cy").unwrap().parse().unwrap(),
+        };
+
+        let mut output_buffer: Vec<String> =
+            template_svg.lines().map(|s| String::from(s)).collect();
+        let close_svg = output_buffer.pop().unwrap();
+
+        // Adding a "layer" called "Generated" to contain all the generated symbols
+        output_buffer.push(String::from(
+            "<g inkscape:groupmode=\"layer\" id=\"layer6\" inkscape:label=\"Generated\">",
+        ));
+
+        for (point, world) in &self.map {
+            // Add gas giant symbol
+            if world.has_gas_giant {
+                let offset = Translation { x: 0.0, y: -6.0 };
+                let translation = &(&marker_coordinates[point] - &gas_giant_trans) + &offset;
+                output_buffer.push(format!(
+                    "<use \
+                    x=\"0\" \
+                    y=\"0\" \
+                    href=\"#{symbol}\" \
+                    id=\"{id}\" \
+                    width=\"100%\" \
+                    height=\"100%\" \
+                    transform=\"translate({translate_x},{translate_y})\"/>",
+                    symbol = "GasGiantSymbol",
+                    id = format!("{:02}{:02}GasGiantSymbol", point.x, point.y),
+                    translate_x = translation.x,
+                    translate_y = translation.y
+                ));
+            }
+
+            // Add world name in center of hex
+            output_buffer.push(format!(
+                "<text \
+                xml:space=\"preserve\" \
+                style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                x=\"{translate_x}\" \
+                y=\"{translate_y}\" \
+                id=\"{point_str}NameText\">\
+                <tspan \
+                sodipodi:role=\"line\" \
+                id=\"{point_str}NameTspan\" \
+                style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                x=\"{translate_x}\" \
+                y=\"{translate_y}\">{name}</tspan></text>",
+                translate_x = marker_coordinates[point].x,
+                translate_y = marker_coordinates[point].y,
+                point_str = format!("{:02}{:02}", point.x, point.y),
+                name = world.name
+            ));
+
+            // Decide whether to use dry or wet world symbol
+            let (world_symbol, world_trans) = match world.hydrographics.code {
+                h if h <= 3 => ("DryWorldSymbol", &dry_world_trans),
+                _ => ("WetWorldSymbol", &wet_world_trans),
+            };
+
+            // Add dry/wet world symbol below and to the left of center
+            let offset = Translation { x: -5.0, y: 4.0 };
+            let translation = &(&marker_coordinates[point] - world_trans) + &offset;
+            output_buffer.push(format!(
+                "<use \
+                x=\"0\" \
+                y=\"0\" \
+                href=\"#{symbol}\" \
+                id=\"{id}\" \
+                width=\"100%\" \
+                height=\"100%\" \
+                transform=\"translate({translate_x},{translate_y})\"/>",
+                symbol = world_symbol,
+                id = format!("{:02}{:02}{}", point.x, point.y, world_symbol),
+                translate_x = translation.x,
+                translate_y = translation.y
+            ));
+
+            // Add `StarportClass-TL` text to hex
+            let offset = Translation { x: 5.0, y: 5.0 };
+            let translation = &marker_coordinates[point] + &offset;
+            output_buffer.push(format!(
+                "<text \
+                xml:space=\"preserve\" \
+                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                x=\"{translate_x}\" \
+                y=\"{translate_y}\" \
+                id=\"{point_str}StarportTlText\">\
+                <tspan \
+                sodipodi:role=\"line\" \
+                id=\"{point_str}StarportTlTspan\" \
+                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                x=\"{translate_x}\" \
+                y=\"{translate_y}\">{starport:?}-{tech_level}</tspan></text>",
+                translate_x = translation.x,
+                translate_y = translation.y,
+                point_str = format!("{:02}{:02}", point.x, point.y),
+                starport = world.starport.class,
+                tech_level = world.tech_level
+            ));
+
+            // Add world profile code at bottom of hex
+            let offset = Translation { x: 0.0, y: 10.0 };
+            let translation = &marker_coordinates[point] + &offset;
+            output_buffer.push(format!(
+                "<text \
+                xml:space=\"preserve\" \
+                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.8px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                x=\"{translate_x}\" \
+                y=\"{translate_y}\" \
+                id=\"{point_str}StarportTlText\">\
+                <tspan \
+                sodipodi:role=\"line\" \
+                id=\"{point_str}StarportTlTspan\" \
+                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                x=\"{translate_x}\" \
+                y=\"{translate_y}\">{profile}</tspan></text>",
+                translate_x = translation.x,
+                translate_y = translation.y,
+                point_str = format!("{:02}{:02}", point.x, point.y),
+                profile = world.profile_string()
+            ));
+        }
+
+        // Closing layer and svg document
+        output_buffer.push(String::from("</g>"));
+        output_buffer.push(close_svg);
+
+        output_buffer.join("\n")
     }
 }
 
