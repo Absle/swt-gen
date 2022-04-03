@@ -31,9 +31,9 @@
      inkscape:snap-bbox="true"
      showguides="false"
      inkscape:guide-bbox="true"
-     inkscape:zoom="1.0258405"
-     inkscape:cx="424.04253"
-     inkscape:cy="292.44312"
+     inkscape:zoom="1.4507575"
+     inkscape:cx="248.14622"
+     inkscape:cy="607.95824"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="-8"
@@ -114,7 +114,7 @@
        transform="translate(1.6151705e-6,0.45593996)">
       <circle
          style="fill:none;stroke:#000000;stroke-width:0.2794"
-         id="path82012"
+         id="DryWorldSymbol"
          cx="39.514999"
          cy="257.11258"
          r="1.27" />
@@ -135,7 +135,7 @@
        transform="translate(1.8353119e-6,1.3678199)">
       <circle
          style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-         id="circle82018"
+         id="WetWorldSymbol"
          cx="39.514999"
          cy="260.65897"
          r="1.27" />
@@ -154,7 +154,7 @@
     <g
        id="g118247">
       <g
-         id="g112516"
+         id="GasGiantSymbol"
          transform="matrix(1.2059881,0,0,1.2059881,-16.197046,-52.451805)">
         <circle
            style="fill:#000000;stroke:#000000;stroke-width:0.2794"
@@ -190,7 +190,7 @@
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583"
          x="78.630997"
          y="263.5928"
-         id="text139088"><tspan
+         id="StarportTlSymbol"><tspan
            sodipodi:role="line"
            id="tspan139086"
            style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583"
@@ -1553,10 +1553,12 @@
   <g
      inkscape:groupmode="layer"
      id="layer5"
-     inkscape:label="Labels">
+     inkscape:label="Markers"
+     sodipodi:insensitive="true">
     <g
        id="CenterMarkers"
-       style="opacity:0;fill:#000000;stroke:#000000">
+       style="opacity:0;fill:#000000;stroke:#000000"
+       sodipodi:insensitive="true">
       <g
          id="g1324"
          style="fill:#000000;stroke:#000000">
