@@ -45,8 +45,8 @@ enum TradeCode {
     Wa,
 }
 
-#[derive(Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
-struct Point {
+#[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct Point {
     x: u16,
     y: u16,
 }
@@ -62,6 +62,7 @@ struct Faction {
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct World {
     name: String,
+    location: Point,
     has_gas_giant: bool,
     size: u16,
     diameter: u32,
@@ -154,9 +155,10 @@ impl World {
         )
     }
 
-    pub fn new(name: String) -> Self {
+    pub fn new(name: String, location: Point) -> Self {
         let mut world = Self::empty();
         world.name = name;
+        world.location = location;
 
         // Generation *must* happen in this order, many fields depend on the value
         // of other fields when making their rolls
@@ -183,6 +185,7 @@ impl World {
     fn empty() -> Self {
         World {
             name: String::from(""),
+            location: Point { x: 0, y: 0 },
             has_gas_giant: false,
             size: 0,
             diameter: 0,
@@ -675,7 +678,7 @@ impl World {
         let mut trade_code_hist = Histogram::new("Trade Codes");
 
         for _ in 0..n {
-            let world = Self::new(String::from("0101"));
+            let world = Self::new(String::from("0101"), Point { x: 0, y: 0 });
 
             gas_giant_hist.inc(world.has_gas_giant);
             size_hist.inc(world.size);
@@ -775,7 +778,8 @@ impl Subsector {
                         };
                         // let name = format!("{:0>2}{:0>2}", x, y);
                         let name = names.next().unwrap();
-                        subsector.map.insert(point, World::new(name));
+                        let world = World::new(name, point.clone());
+                        subsector.map.insert(point, world);
                     }
                     _ => (),
                 }
