@@ -2,13 +2,13 @@ use std::collections::BTreeSet;
 
 use serde::{Deserialize, Serialize};
 
-use crate::dice;
-use crate::histogram::Histogram;
-use super::Point;
 use super::table::{
     AtmoRecord, CulturalDiffRecord, GovRecord, HydroRecord, LawRecord, PopRecord, StarportClass,
     StarportRecord, TempRecord, WorldTagRecord, TABLES,
 };
+use super::Point;
+use crate::dice;
+use crate::histogram::Histogram;
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct Faction {
@@ -655,8 +655,7 @@ pub fn histograms(n: usize) {
         Histogram::with_domain("Population", 0..=(TABLES.pop_table.len() as u16 - 1));
     let mut gov_hist =
         Histogram::with_domain("Government", 0..=(TABLES.gov_table.len() as u16 - 1));
-    let mut law_hist =
-        Histogram::with_domain("Law Level", 0..=(TABLES.law_table.len() as u16 - 1));
+    let mut law_hist = Histogram::with_domain("Law Level", 0..=(TABLES.law_table.len() as u16 - 1));
     let mut fac_strength_hist = Histogram::with_domain(
         "Faction Strength",
         0..=(TABLES.faction_table.len() as u16 - 1),
