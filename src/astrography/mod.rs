@@ -361,7 +361,7 @@ impl Subsector {
     }
 }
 
-pub fn random_names(count: usize) -> Vec<String> {
+fn random_names(count: usize) -> Vec<String> {
     let vowels = vec![
         vec![
             "b", "c", "d", "f", "g", "h", "i", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t",
@@ -438,7 +438,7 @@ mod tests {
     fn subsector_creation() {
         const ATTEMPTS: usize = 1000;
         for _ in 0..ATTEMPTS {
-            Subsector::new();
+            Subsector::new(0);
         }
     }
 
@@ -446,7 +446,7 @@ mod tests {
     fn subsector_serde() {
         const ATTEMPTS: usize = 100;
         for _ in 0..ATTEMPTS {
-            let subsector = Subsector::new();
+            let subsector = Subsector::new(0);
             let yaml = serde_yaml::to_string(&subsector).unwrap();
 
             let de_subsector: Subsector = serde_yaml::from_str(&yaml).unwrap();
