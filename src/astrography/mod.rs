@@ -2,6 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::ops::{Add, Sub};
 
+use rand::Rng;
 use roxmltree as xml;
 use serde::{Deserialize, Serialize};
 
@@ -757,13 +758,11 @@ impl Subsector {
         }
     }
 
-    pub fn new() -> Self {
+    pub fn new(world_abundance_dm: i16) -> Self {
         let mut subsector = Self::empty();
-        subsector.generate_worlds(0);
-        subsector
-    }
+        let mut names = random_names(Subsector::COLUMNS * Subsector::ROWS + 1).into_iter();
+        subsector.name = names.next().unwrap();
 
-    fn generate_worlds(&mut self, world_abundance_dm: u16) {
         for x in 1..=Subsector::COLUMNS {
             for y in 1..=Subsector::ROWS {
                 // Fifty-fifty chance with no modifiers
@@ -774,13 +773,15 @@ impl Subsector {
                             x: x as u16,
                             y: y as u16,
                         };
-                        let name = format!("{:0>2}{:0>2}", x, y);
-                        self.map.insert(point, World::new(name));
+                        // let name = format!("{:0>2}{:0>2}", x, y);
+                        let name = names.next().unwrap();
+                        subsector.map.insert(point, World::new(name));
                     }
                     _ => (),
                 }
             }
         }
+        subsector
     }
 
     #[allow(dead_code)]
@@ -1055,6 +1056,75 @@ impl Subsector {
 
         output_buffer.join("\n")
     }
+}
+
+pub fn random_names(count: usize) -> Vec<String> {
+    let vowels = vec![
+        vec![
+            "b", "c", "d", "f", "g", "h", "i", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t",
+            "v", "w", "x", "y", "z",
+        ],
+        vec!["a", "e", "o", "u"],
+        vec![
+            "br", "cr", "dr", "fr", "gr", "pr", "str", "tr", "bl", "cl", "fl", "gl", "pl", "sl",
+            "sc", "sk", "sm", "sn", "sp", "st", "sw", "ch", "sh", "th", "wh",
+        ],
+        vec![
+            "ae", "ai", "ao", "au", "a", "ay", "ea", "ei", "eo", "eu", "e", "ey", "ua", "ue", "ui",
+            "uo", "u", "uy", "ia", "ie", "iu", "io", "iy", "oa", "oe", "ou", "oi", "o", "oy",
+        ],
+        vec![
+            "turn", "ter", "nus", "rus", "tania", "hiri", "hines", "gawa", "nides", "carro",
+            "rilia", "stea", "lia", "lea", "ria", "nov", "phus", "mia", "nerth", "wei", "ruta",
+            "tov", "zuno", "vis", "lara", "nia", "liv", "tera", "gantu", "yama", "tune", "ter",
+            "nus", "cury", "bos", "pra", "thea", "nope", "tis", "clite",
+        ],
+        vec![
+            "una", "ion", "iea", "iri", "illes", "ides", "agua", "olla", "inda", "eshan", "oria",
+            "ilia", "erth", "arth", "orth", "oth", "illon", "ichi", "ov", "arvis", "ara", "ars",
+            "yke", "yria", "onoe", "ippe", "osie", "one", "ore", "ade", "adus", "urn", "ypso",
+            "ora", "iuq", "orix", "apus", "ion", "eon", "eron", "ao", "omia",
+        ],
+    ];
+
+    let matrix = vec![
+        vec![1, 1, 2, 2, 5, 5],
+        vec![2, 2, 3, 3, 6, 6],
+        vec![3, 3, 4, 4, 5, 5],
+        vec![4, 4, 3, 3, 6, 6],
+        vec![3, 3, 4, 4, 2, 2, 5, 5],
+        vec![2, 2, 1, 1, 3, 3, 6, 6],
+        vec![3, 3, 4, 4, 2, 2, 5, 5],
+        vec![4, 4, 3, 3, 1, 1, 6, 6],
+        vec![3, 3, 4, 4, 1, 1, 4, 4, 5, 5],
+        vec![4, 4, 1, 1, 4, 4, 3, 3, 6, 6],
+    ];
+
+    let mut ret: Vec<String> = Vec::new();
+
+    let mut rng = rand::thread_rng();
+    for c in 0..count {
+        let mut name = String::from("");
+        let component = &matrix[c % matrix.len()];
+        let length = component.len() / 2;
+
+        for i in 0..length {
+            let idx = component[2 * i + 1] - 1;
+            let idx = rng.gen_range(0..vowels[idx].len());
+            name.push_str(vowels[component[i * 2] - 1][idx]);
+        }
+
+        // Capitalize name
+        let mut c = name.chars();
+        let name = match c.next() {
+            Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+            None => String::new(),
+        };
+
+        ret.push(name);
+    }
+
+    ret
 }
 
 #[cfg(test)]
