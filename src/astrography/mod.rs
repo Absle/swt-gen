@@ -75,7 +75,7 @@ impl Subsector {
                             x: x as u16,
                             y: y as u16,
                         };
-                        // let name = format!("{:0>2}{:0>2}", x, y);
+
                         let name = names.next().unwrap();
                         let world = World::new(name, point.clone());
                         subsector.map.insert(point, world);
@@ -436,7 +436,7 @@ mod tests {
 
     #[test]
     fn subsector_creation() {
-        const ATTEMPTS: usize = 1000;
+        const ATTEMPTS: usize = 100;
         for _ in 0..ATTEMPTS {
             Subsector::new(0);
         }
@@ -444,14 +444,11 @@ mod tests {
 
     #[test]
     fn subsector_serde() {
-        const ATTEMPTS: usize = 100;
-        for _ in 0..ATTEMPTS {
-            let subsector = Subsector::new(0);
-            let yaml = serde_yaml::to_string(&subsector).unwrap();
+        let subsector = Subsector::new(0);
+        let yaml = serde_yaml::to_string(&subsector).unwrap();
 
-            let de_subsector: Subsector = serde_yaml::from_str(&yaml).unwrap();
-            assert_eq!(de_subsector, subsector);
-            assert_eq!(subsector, de_subsector);
-        }
+        let de_subsector: Subsector = serde_yaml::from_str(&yaml).unwrap();
+        assert_eq!(de_subsector, subsector);
+        assert_eq!(subsector, de_subsector);
     }
 }
