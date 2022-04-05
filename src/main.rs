@@ -7,7 +7,7 @@ fn main() {
     let de_subsector: astrography::Subsector = serde_yaml::from_str(&yaml).unwrap();
     assert_eq!(de_subsector, subsector);
 
-    let csv = subsector.to_csv();
+    let _csv = subsector.to_csv();
 
     println!("{}", subsector.generate_svg());
 }
