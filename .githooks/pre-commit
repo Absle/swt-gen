@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Fail if formatting issues are found
+if ! cargo fmt -- --check; then
+    echo "cargo fmt: found code style issues" >&2
+    exit 1
+fi
+
+# Fail if `cargo check` finds any warnings or errors
+check="$(cargo check -q --color=always 2>&1)"
+if [ -n "$check" ]; then
+    echo "$check" >&2
+    echo "cargo check: found warnings/errors" >&2
+    exit 1
+fi
+
+# Fail if test fail to build or run
+if ! cargo test 2>/dev/null; then
+    echo "cargo test: found test issues" >&2
+    exit 1
+fi
+
+exit 0
