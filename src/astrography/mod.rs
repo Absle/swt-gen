@@ -10,12 +10,18 @@ use roxmltree as xml;
 use serde::{Deserialize, Serialize};
 
 use super::dice;
-use world::World;
+use world::{World, WorldRecord};
 
 #[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Point {
     x: u16,
     y: u16,
+}
+
+impl Point {
+    pub fn to_string(&self) -> String {
+        format!("{:02}{:02}", self.x, self.y)
+    }
 }
 
 struct Translation {
@@ -114,24 +120,17 @@ impl Subsector {
     }
 
     #[allow(dead_code)]
-    pub fn to_csv(&self) -> String {
-        let mut summary_table = vec![String::from(
-            "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant",
-        )];
-        let mut societal_table = vec![String::from(
-            "Name,Location,Culture,World Tag 1,World Tag 2",
-        )];
-        for (point, world) in &self.map {
-            let location = format!("{:0>2}{:0>2}", point.x, point.y);
-            summary_table.push(world.summary_csv(&location));
-            societal_table.push(world.societal_csv(&location));
+    pub fn generate_csv(&self) -> String {
+        let mut writer = csv::WriterBuilder::new()
+            .has_headers(false)
+            .from_writer(Vec::new());
+
+        for (_, world) in &self.map {
+            let record = WorldRecord::from(world.clone());
+            writer.serialize(record).unwrap();
         }
 
-        let table_separator = "-- >8 --";
-        let mut table = summary_table;
-        table.push(String::from(table_separator));
-        table.append(&mut societal_table);
-        table.join("\n")
+        String::from_utf8(writer.into_inner().unwrap()).unwrap()
     }
 
     #[allow(dead_code)]
@@ -349,7 +348,7 @@ impl Subsector {
                 translate_x = translation.x,
                 translate_y = translation.y,
                 point_str = format!("{:02}{:02}", point.x, point.y),
-                profile = world.profile_string()
+                profile = world.profile()
             ));
         }
 
@@ -449,6 +448,5 @@ mod tests {
 
         let de_subsector: Subsector = serde_yaml::from_str(&yaml).unwrap();
         assert_eq!(de_subsector, subsector);
-        assert_eq!(subsector, de_subsector);
     }
 }

@@ -10,7 +10,7 @@ use super::Point;
 use crate::dice;
 use crate::histogram::Histogram;
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Faction {
     name: String,
     code: u16,
@@ -18,14 +18,31 @@ pub struct Faction {
     government: GovRecord,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+struct SimpleFaction {
+    name: String,
+    strength: String,
+    government: String,
+}
+
+impl SimpleFaction {
+    fn empty() -> Self {
+        SimpleFaction {
+            name: String::new(),
+            strength: String::new(),
+            government: String::new(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub enum TravelCode {
     Safe,
     Amber,
     Red,
 }
 
-#[derive(Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum TradeCode {
     Ag,
     As,
@@ -47,14 +64,13 @@ pub enum TradeCode {
     Wa,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct World {
     pub name: String,
     pub location: Point,
     pub has_gas_giant: bool,
     pub size: u16,
     pub diameter: u32,
-    pub gravity: f64,
     pub atmosphere: AtmoRecord,
     pub temperature: TempRecord,
     pub hydrographics: HydroRecord,
@@ -76,7 +92,7 @@ pub struct World {
 }
 
 impl World {
-    pub fn profile_string(&self) -> String {
+    pub fn profile(&self) -> String {
         format!(
             "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
             starport = self.starport.class,
@@ -87,59 +103,6 @@ impl World {
             gov = self.government.code,
             law = self.law_level.code,
             tech = self.tech_level
-        )
-    }
-
-    pub fn summary_csv(&self, location: &str) -> String {
-        let profile = self.profile_string();
-
-        let mut bases = Vec::new();
-        if self.has_naval_base {
-            bases.push(String::from("N"));
-        }
-        if self.has_research_base {
-            bases.push(String::from("R"));
-        }
-        if self.has_scout_base {
-            bases.push(String::from("S"));
-        }
-        if self.has_tas {
-            bases.push(String::from("T"));
-        }
-        let bases = bases.join(" ");
-
-        let trade_codes = self
-            .trade_codes
-            .iter()
-            .map(|code| format!("{:?}", code))
-            .collect::<Vec<String>>()
-            .join(" ");
-
-        // Row format: name,location,profile,bases,trade codes,travel code,gas giant
-        //     Profile format: starport,size,atmo,hydro,pop,gov,law,tech
-        format!(
-            "{name},{location},{profile},{bases},{trade_codes},{travel_code:?},{gas_giant}",
-            name = self.name,
-            location = location,
-            profile = profile,
-            bases = bases,
-            trade_codes = trade_codes,
-            travel_code = self.travel_code,
-            gas_giant = match self.has_gas_giant {
-                true => "G",
-                false => "",
-            }
-        )
-    }
-
-    pub fn societal_csv(&self, location: &str) -> String {
-        format!(
-            "{name},{location},{culture},{world_tag_1},{world_tag_2}",
-            name = self.name,
-            location = location,
-            culture = self.culture.cultural_difference,
-            world_tag_1 = self.world_tags[0].tag,
-            world_tag_2 = self.world_tags[1].tag
         )
     }
 
@@ -177,7 +140,6 @@ impl World {
             has_gas_giant: false,
             size: 0,
             diameter: 0,
-            gravity: 0.0,
             atmosphere: TABLES.atmo_table[0].clone(),
             temperature: TABLES.temp_table[0].clone(),
             hydrographics: TABLES.hydro_table[0].clone(),
@@ -219,20 +181,6 @@ impl World {
         let min = median - 200;
         let max = median + 200;
         self.diameter = dice::roll(min..=max);
-
-        self.gravity = match self.size {
-            0 => 0.0,
-            1 => 0.05,
-            2 => 0.15,
-            3 => 0.25,
-            4 => 0.35,
-            5 => 0.45,
-            6 => 0.7,
-            7 => 0.9,
-            8 => 1.0,
-            9 => 1.25,
-            _ => 1.4,
-        };
     }
 
     fn generate_atmosphere(&mut self) {
@@ -377,7 +325,7 @@ impl World {
             let faction_roll = dice::roll_2d(6);
 
             self.factions.push(Faction {
-                name: String::from(""),
+                name: String::from("Unnamed"),
                 code: TABLES.faction_table[faction_roll].code,
                 strength: TABLES.faction_table[faction_roll].strength.clone(),
                 government: TABLES.gov_table[gov_roll].clone(),
@@ -641,6 +589,174 @@ impl World {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct WorldRecord {
+    // Summary
+    name: String,
+    location: String,
+    profile: String,
+    bases: String,
+    trade_codes: String,
+    travel_code: String,
+    gas_giant: String,
+
+    // Societal
+    soc_name: String,
+    soc_location: String,
+    government: String,
+    contraband: String,
+    culture: String,
+    world_tag_1: String,
+    world_tag_2: String,
+    faction_1: SimpleFaction,
+    faction_2: SimpleFaction,
+    faction_3: SimpleFaction,
+    faction_4: SimpleFaction,
+
+    // Physical details
+    det_name: String,
+    det_location: String,
+    diameter: u32,
+    atmosphere: String,
+    temperature: String,
+    hydrographics: String,
+    population: String,
+}
+
+impl From<World> for WorldRecord {
+    fn from(world: World) -> Self {
+        // Summary
+        let name = world.name.clone();
+        let location = world.location.to_string();
+        let profile = world.profile();
+
+        let mut bases = Vec::new();
+        if world.has_naval_base {
+            bases.push(String::from("N"));
+        }
+        if world.has_research_base {
+            bases.push(String::from("R"));
+        }
+        if world.has_scout_base {
+            bases.push(String::from("S"));
+        }
+        if world.has_tas {
+            bases.push(String::from("T"));
+        }
+        let bases = bases.join(" ");
+
+        let trade_codes = world
+            .trade_codes
+            .iter()
+            .map(|code| format!("{:?}", code))
+            .collect::<Vec<String>>()
+            .join(" ");
+
+        let travel_code = format!("{:?}", world.travel_code);
+        let gas_giant = match world.has_gas_giant {
+            true => String::from("G"),
+            false => String::new(),
+        };
+
+        // Societal
+        let soc_name = name.clone();
+        let soc_location = world.location.to_string();
+        let government = world.government.kind;
+        let contraband = world.government.contraband;
+        let culture = world.culture.cultural_difference;
+        let world_tag_1 = world.world_tags[0].tag.clone();
+        let world_tag_2 = world.world_tags[1].tag.clone();
+
+        let faction_1: SimpleFaction;
+        let faction_2: SimpleFaction;
+        let faction_3: SimpleFaction;
+        let faction_4: SimpleFaction;
+
+        match world.factions.get(0) {
+            Some(faction) => {
+                faction_1 = SimpleFaction {
+                    name: faction.name.clone(),
+                    strength: faction.strength.clone(),
+                    government: faction.government.kind.clone(),
+                };
+            }
+            None => faction_1 = SimpleFaction::empty(),
+        }
+
+        match world.factions.get(1) {
+            Some(faction) => {
+                faction_2 = SimpleFaction {
+                    name: faction.name.clone(),
+                    strength: faction.strength.clone(),
+                    government: faction.government.kind.clone(),
+                };
+            }
+            None => faction_2 = SimpleFaction::empty(),
+        }
+
+        match world.factions.get(2) {
+            Some(faction) => {
+                faction_3 = SimpleFaction {
+                    name: faction.name.clone(),
+                    strength: faction.strength.clone(),
+                    government: faction.government.kind.clone(),
+                };
+            }
+            None => faction_3 = SimpleFaction::empty(),
+        }
+
+        match world.factions.get(3) {
+            Some(faction) => {
+                faction_4 = SimpleFaction {
+                    name: faction.name.clone(),
+                    strength: faction.strength.clone(),
+                    government: faction.government.kind.clone(),
+                };
+            }
+            None => faction_4 = SimpleFaction::empty(),
+        }
+
+        // Physical details
+        let det_name = name.clone();
+        let det_location = world.location.to_string();
+        let diameter = world.diameter;
+        let atmosphere = world.atmosphere.composition;
+        let temperature = world.temperature.kind;
+        let hydrographics = world.hydrographics.description;
+        let population = world.population.inhabitants;
+
+        WorldRecord {
+            name,
+            location,
+            profile,
+            bases,
+            trade_codes,
+            travel_code,
+            gas_giant,
+
+            soc_name,
+            soc_location,
+            government,
+            contraband,
+            culture,
+            world_tag_1,
+            world_tag_2,
+            faction_1,
+            faction_2,
+            faction_3,
+            faction_4,
+
+            det_name,
+            det_location,
+            diameter,
+            atmosphere,
+            temperature,
+            hydrographics,
+            population,
+        }
+    }
+}
+
 #[allow(dead_code)]
 pub fn histograms(n: usize) {
     let mut gas_giant_hist = Histogram::with_domain("Gas Giant", [false, true]);
@@ -703,4 +819,33 @@ pub fn histograms(n: usize) {
     starport_hist.show_percent(n / 200);
     tech_hist.show_percent(n / 200);
     trade_code_hist.show(n / 100); // Percent doesn't work well for this one
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn world_record_csv_serde() {
+        let original = WorldRecord::from(World::new(String::from("Test"), Point { x: 0, y: 0 }));
+
+        let mut writer = csv::WriterBuilder::new()
+            .has_headers(false)
+            .from_writer(Vec::new());
+        writer.serialize(original.clone()).unwrap();
+        let data = String::from_utf8(writer.into_inner().unwrap()).unwrap();
+
+        let mut reader = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .from_reader(data.as_bytes());
+        let deserialized: WorldRecord = reader.deserialize().next().unwrap().unwrap();
+
+        let mut writer = csv::WriterBuilder::new()
+            .has_headers(false)
+            .from_writer(Vec::new());
+        writer.serialize(deserialized.clone()).unwrap();
+        let data = String::from_utf8(writer.into_inner().unwrap()).unwrap();
+
+        assert_eq!(deserialized, original);
+    }
 }
