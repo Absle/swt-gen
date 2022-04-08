@@ -851,12 +851,6 @@ mod tests {
             .from_reader(data.as_bytes());
         let deserialized: WorldRecord = reader.deserialize().next().unwrap().unwrap();
 
-        let mut writer = csv::WriterBuilder::new()
-            .has_headers(false)
-            .from_writer(Vec::new());
-        writer.serialize(deserialized.clone()).unwrap();
-        let data = String::from_utf8(writer.into_inner().unwrap()).unwrap();
-
         assert_eq!(deserialized, original);
     }
 }

@@ -365,6 +365,16 @@ impl Subsector {
         output_buffer.push(String::from("</g>"));
         output_buffer.push(close_svg);
 
+        // Place name of subsector as title
+        for i in 0..output_buffer.len() {
+            if output_buffer[i].contains("Subsector Name") {
+                output_buffer[i] =
+                    output_buffer[i].replace("Subsector Name", &format!("{} Subsector", self.name));
+                // As a sanity check, make sure we only do this once
+                break;
+            }
+        }
+
         output_buffer.join("\n")
     }
 }
@@ -457,5 +467,23 @@ mod tests {
 
         let de_subsector: Subsector = serde_yaml::from_str(&yaml).unwrap();
         assert_eq!(de_subsector, subsector);
+    }
+
+    #[test]
+    fn subsector_csv() {
+        const ATTEMPTS: usize = 10;
+        for _ in 0..ATTEMPTS {
+            let subsector = Subsector::new(0);
+            let _csv = subsector.generate_csv();
+        }
+    }
+
+    #[test]
+    fn subsector_svg() {
+        const ATTEMPTS: usize = 10;
+        for _ in 0..ATTEMPTS {
+            let subsector = Subsector::new(0);
+            let _svg = subsector.generate_svg();
+        }
     }
 }
