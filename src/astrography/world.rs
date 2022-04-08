@@ -600,6 +600,8 @@ pub struct WorldRecord {
     travel_code: String,
     gas_giant: String,
 
+    empty_column_1: String,
+
     // Societal
     soc_name: String,
     soc_location: String,
@@ -612,6 +614,8 @@ pub struct WorldRecord {
     faction_2: SimpleFaction,
     faction_3: SimpleFaction,
     faction_4: SimpleFaction,
+
+    empty_column_2: String,
 
     // Physical details
     det_name: String,
@@ -627,7 +631,7 @@ impl From<World> for WorldRecord {
     fn from(world: World) -> Self {
         // Summary
         let name = world.name.clone();
-        let location = world.location.to_string();
+        let location = format!("'{}", world.location.to_string());
         let profile = world.profile();
 
         let mut bases = Vec::new();
@@ -660,7 +664,7 @@ impl From<World> for WorldRecord {
 
         // Societal
         let soc_name = name.clone();
-        let soc_location = world.location.to_string();
+        let soc_location = location.clone();
         let government = world.government.kind;
         let contraband = world.government.contraband;
         let culture = world.culture.cultural_difference;
@@ -718,12 +722,15 @@ impl From<World> for WorldRecord {
 
         // Physical details
         let det_name = name.clone();
-        let det_location = world.location.to_string();
+        let det_location = location.clone();
         let diameter = world.diameter;
         let atmosphere = world.atmosphere.composition;
         let temperature = world.temperature.kind;
         let hydrographics = world.hydrographics.description;
         let population = world.population.inhabitants;
+
+        let empty_column_1 = String::new();
+        let empty_column_2 = String::new();
 
         WorldRecord {
             name,
@@ -733,6 +740,8 @@ impl From<World> for WorldRecord {
             trade_codes,
             travel_code,
             gas_giant,
+
+            empty_column_1,
 
             soc_name,
             soc_location,
@@ -745,6 +754,8 @@ impl From<World> for WorldRecord {
             faction_2,
             faction_3,
             faction_4,
+
+            empty_column_2,
 
             det_name,
             det_location,

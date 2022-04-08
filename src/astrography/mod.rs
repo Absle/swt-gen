@@ -55,6 +55,8 @@ pub struct Subsector {
     map: BTreeMap<Point, World>,
 }
 
+const CSV_HEADERS: &str = "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,,Name,Location,Government,Contraband,Culture,World Tag 1,World Tag 2,Faction 1,Strength,Government,Faction 2,Strength,Government,Faction 3,Strength,Government,Faction 4,Strength,Government,,Name,Location,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
+
 impl Subsector {
     const COLUMNS: usize = 8;
     const ROWS: usize = 10;
@@ -121,6 +123,11 @@ impl Subsector {
 
     #[allow(dead_code)]
     pub fn generate_csv(&self) -> String {
+        let mut frontmatter = Vec::new();
+        frontmatter.push(format!("Sector Name,{}", self.name));
+        frontmatter.push(String::from(CSV_HEADERS));
+        let frontmatter = frontmatter.join("\n");
+
         let mut writer = csv::WriterBuilder::new()
             .has_headers(false)
             .from_writer(Vec::new());
@@ -130,7 +137,9 @@ impl Subsector {
             writer.serialize(record).unwrap();
         }
 
-        String::from_utf8(writer.into_inner().unwrap()).unwrap()
+        let table = String::from_utf8(writer.into_inner().unwrap()).unwrap();
+
+        [frontmatter, table].join("\n")
     }
 
     #[allow(dead_code)]
