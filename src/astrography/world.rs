@@ -1,4 +1,5 @@
 use std::collections::BTreeSet;
+use std::error::Error;
 
 use serde::{Deserialize, Serialize};
 
@@ -10,7 +11,7 @@ use super::Point;
 use crate::dice;
 use crate::histogram::Histogram;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub struct Faction {
     name: String,
     code: u16,
@@ -18,7 +19,54 @@ pub struct Faction {
     government: GovRecord,
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+impl PartialEq for Faction {
+    fn eq(&self, other: &Self) -> bool {
+        // We ignore the `code` field because it's lost during serialization
+        self.name == other.name
+            && self.strength == other.strength
+            && self.government == other.government
+    }
+}
+
+impl TryFrom<SimpleFaction> for Faction {
+    type Error = Box<dyn Error>;
+    fn try_from(simple: SimpleFaction) -> Result<Self, Self::Error> {
+        let name = simple.name;
+
+        // Because multiple rolls can yield the same factions,
+        // we can not save this value
+        let code = TABLES
+            .faction_table
+            .iter()
+            .find(|fac| fac.strength == simple.strength)
+            .ok_or(format!(
+                "Could not parse faction strength '{}'",
+                simple.strength
+            ))?
+            .code;
+
+        let strength = simple.strength;
+
+        let government = TABLES
+            .gov_table
+            .iter()
+            .find(|gov| gov.kind == simple.government)
+            .ok_or(format!(
+                "Could not parse faction government '{}'",
+                simple.government
+            ))?
+            .clone();
+
+        Ok(Self {
+            name,
+            code,
+            strength,
+            government,
+        })
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 struct SimpleFaction {
     name: String,
     strength: String,
@@ -27,7 +75,7 @@ struct SimpleFaction {
 
 impl SimpleFaction {
     fn empty() -> Self {
-        SimpleFaction {
+        Self {
             name: String::new(),
             strength: String::new(),
             government: String::new(),
@@ -35,11 +83,23 @@ impl SimpleFaction {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub enum TravelCode {
     Safe,
     Amber,
     Red,
+}
+
+impl TryFrom<&str> for TravelCode {
+    type Error = Box<dyn Error>;
+    fn try_from(string: &str) -> Result<Self, Self::Error> {
+        match &string[..] {
+            "Safe" => Ok(TravelCode::Safe),
+            "Amber" => Ok(TravelCode::Amber),
+            "Red" => Ok(TravelCode::Red),
+            _ => Err(format!("Could not parse travel code '{}'", string).into()),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
@@ -64,7 +124,34 @@ pub enum TradeCode {
     Wa,
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+impl TryFrom<&str> for TradeCode {
+    type Error = Box<dyn Error>;
+    fn try_from(string: &str) -> Result<Self, Self::Error> {
+        match string {
+            "Ag" => Ok(TradeCode::Ag),
+            "As" => Ok(TradeCode::As),
+            "Ba" => Ok(TradeCode::Ba),
+            "De" => Ok(TradeCode::De),
+            "Fl" => Ok(TradeCode::Fl),
+            "Ga" => Ok(TradeCode::Ga),
+            "Hi" => Ok(TradeCode::Hi),
+            "Ht" => Ok(TradeCode::Ht),
+            "Ie" => Ok(TradeCode::Ie),
+            "In" => Ok(TradeCode::In),
+            "Lo" => Ok(TradeCode::Lo),
+            "Lt" => Ok(TradeCode::Lt),
+            "Na" => Ok(TradeCode::Na),
+            "Ni" => Ok(TradeCode::Ni),
+            "Po" => Ok(TradeCode::Po),
+            "Ri" => Ok(TradeCode::Ri),
+            "Va" => Ok(TradeCode::Va),
+            "Wa" => Ok(TradeCode::Wa),
+            _ => Err(format!("Could not parse trade code '{}'", string).into()),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub struct World {
     pub name: String,
     pub location: Point,
@@ -411,7 +498,7 @@ impl World {
 
         let roll: i16 =
             dice::roll_1d(6) + size_mod + atmo_mod + hydro_mod + pop_mod + gov_mod + starport_mod;
-        self.tech_level = roll.clamp(0, 30) as u16;
+        self.tech_level = roll.clamp(0, 15) as u16;
     }
 
     fn generate_bases(&mut self) {
@@ -589,16 +676,188 @@ impl World {
     }
 }
 
+impl PartialEq for World {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
+            && self.location == other.location
+            && self.has_gas_giant == other.has_gas_giant
+            && self.size == other.size
+            && self.diameter == other.diameter
+            && self.atmosphere == other.atmosphere
+            && self.temperature == other.temperature
+            && self.hydrographics == other.hydrographics
+            && self.population == other.population
+            && self.government == other.government
+            && self.law_level == other.law_level
+            && self.factions == other.factions
+            && self.culture == other.culture
+            && self.world_tags == other.world_tags
+            && self.starport == other.starport
+            && self.tech_level == other.tech_level
+            && self.has_naval_base == other.has_naval_base
+            && self.has_scout_base == other.has_scout_base
+            && self.has_research_base == other.has_research_base
+            && self.has_tas == other.has_tas
+            && self.travel_code == other.travel_code
+            && self.trade_codes == other.trade_codes
+    }
+}
+
+impl TryFrom<WorldRecord> for World {
+    type Error = Box<dyn Error>;
+    fn try_from(record: WorldRecord) -> Result<Self, Self::Error> {
+        let profile = record.profile.split("-").collect::<Vec<_>>().join("");
+        //dbg!(format!("profile: {}", profile));
+        let mut chars = profile.chars();
+
+        // Parsing profile string
+        let starport_err = "Failed parse starport class";
+        let maybe_starport: Result<StarportClass, Self::Error> =
+            match chars.next().ok_or("Empty world profile")? {
+                'A' => Ok(StarportClass::A),
+                'B' => Ok(StarportClass::B),
+                'C' => Ok(StarportClass::C),
+                'D' => Ok(StarportClass::D),
+                'E' => Ok(StarportClass::E),
+                'X' => Ok(StarportClass::X),
+                _ => Err(starport_err.into()),
+            };
+        let starport_class = maybe_starport?;
+        let mut starport = TABLES
+            .starport_table
+            .iter()
+            .find(|item| item.class == starport_class)
+            .ok_or(starport_err)?
+            .clone();
+        starport.berthing_cost = record.berthing_cost;
+
+        let mut size = 0;
+        let mut atmo = 0;
+        let mut hydro = 0;
+        let mut pop = 0;
+        let mut gov = 0;
+        let mut law = 0;
+        let mut tech = 0;
+        for (c, field) in chars.zip([
+            &mut size, &mut atmo, &mut hydro, &mut pop, &mut gov, &mut law, &mut tech,
+        ]) {
+            *field = match c {
+                'A' => 10,
+                'B' => 11,
+                'C' => 12,
+                'D' => 13,
+                'E' => 14,
+                'F' => 15,
+                _ => c.to_string().parse()?,
+            };
+        }
+
+        //dbg!(format!("tech = {}", tech));
+
+        let temperature = TABLES
+            .temp_table
+            .iter()
+            .find(|item| item.kind == record.temperature)
+            .ok_or(format!(
+                "Failed to parse temperature '{}'",
+                record.temperature
+            ))?
+            .clone();
+
+        let mut factions = Vec::new();
+        for faction_record in [
+            record.faction_1,
+            record.faction_2,
+            record.faction_3,
+            record.faction_4,
+        ] {
+            if faction_record == SimpleFaction::empty() {
+                break;
+            }
+            factions.push(Faction::try_from(faction_record)?);
+        }
+
+        let culture = TABLES
+            .culture_table
+            .iter()
+            .find(|item| item.cultural_difference == record.culture)
+            .ok_or(format!("Failed to parse culture '{}'", record.culture))?
+            .clone();
+
+        let mut world_tags = [
+            WorldTagRecord {
+                code: 0,
+                tag: String::new(),
+                description: String::new(),
+            },
+            WorldTagRecord {
+                code: 0,
+                tag: String::new(),
+                description: String::new(),
+            },
+        ];
+        for (i, tag) in [record.world_tag_1, record.world_tag_2].iter().enumerate() {
+            world_tags[i] = TABLES
+                .world_tag_table
+                .iter()
+                .find(|item| item.tag == *tag)
+                .ok_or(format!("Failed to parse world tag '{}'", tag))?
+                .clone();
+        }
+
+        let has_naval_base = record.bases.contains("N");
+        let has_scout_base = record.bases.contains("S");
+        let has_research_base = record.bases.contains("R");
+        let has_tas = record.bases.contains("T");
+
+        let mut trade_codes = BTreeSet::new();
+        for code in record.trade_codes.split(" ") {
+            if code == "" {
+                continue;
+            }
+            trade_codes.insert(TradeCode::try_from(code)?);
+        }
+
+        Ok(Self {
+            name: record.name,
+            location: Point::try_from(&record.location[..])?,
+            has_gas_giant: &record.gas_giant == "G",
+            size: size as u16,
+            diameter: record.diameter,
+            atmosphere: TABLES.atmo_table[atmo].clone(),
+            temperature: temperature,
+            hydrographics: TABLES.hydro_table[hydro].clone(),
+            population: TABLES.pop_table[pop].clone(),
+            // The true value of this is lost, but it's not needed after generation
+            unmodified_pop: pop as u16,
+            government: TABLES.gov_table[gov].clone(),
+            law_level: TABLES.law_table[law].clone(),
+            factions: factions,
+            culture: culture,
+            world_tags: world_tags,
+            starport: starport,
+            tech_level: tech as u16,
+            has_naval_base: has_naval_base,
+            has_scout_base: has_scout_base,
+            has_research_base: has_research_base,
+            has_tas: has_tas,
+            travel_code: TravelCode::try_from(&record.travel_code[..])?,
+            trade_codes: trade_codes,
+        })
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct WorldRecord {
     // Summary
-    name: String,
+    pub name: String,
     location: String,
     profile: String,
     bases: String,
     trade_codes: String,
     travel_code: String,
     gas_giant: String,
+    berthing_cost: u32,
 
     empty_column_1: String,
 
@@ -661,6 +920,8 @@ impl From<World> for WorldRecord {
             true => String::from("G"),
             false => String::new(),
         };
+
+        let berthing_cost = world.starport.berthing_cost;
 
         // Societal
         let soc_name = name.clone();
@@ -740,6 +1001,7 @@ impl From<World> for WorldRecord {
             trade_codes,
             travel_code,
             gas_giant,
+            berthing_cost,
 
             empty_column_1,
 

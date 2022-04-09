@@ -1,36 +1,43 @@
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct AtmoRecord {
     pub code: u16,
     pub composition: String,
 }
 pub type AtmoTable = Vec<AtmoRecord>;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub struct TempRecord {
     pub code: u16,
     pub kind: String,
     pub description: String,
 }
+
+impl PartialEq for TempRecord {
+    fn eq(&self, other: &Self) -> bool {
+        self.kind == other.kind && self.description == other.description
+    }
+}
+
 pub type TempTable = Vec<TempRecord>;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct HydroRecord {
     pub code: u16,
     pub description: String,
 }
 pub type HydroTable = Vec<HydroRecord>;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct PopRecord {
     pub code: u16,
     pub inhabitants: String,
 }
 pub type PopTable = Vec<PopRecord>;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct GovRecord {
     pub code: u16,
     pub kind: String,
@@ -39,14 +46,14 @@ pub struct GovRecord {
 }
 pub type GovTable = Vec<GovRecord>;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct FactionRecord {
     pub code: u16,
     pub strength: String,
 }
 pub type FactionTable = Vec<FactionRecord>;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct CulturalDiffRecord {
     pub code: u16,
     pub cultural_difference: String,
@@ -54,7 +61,7 @@ pub struct CulturalDiffRecord {
 }
 pub type CulturalDiffTable = Vec<CulturalDiffRecord>;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct WorldTagRecord {
     pub code: u16,
     pub tag: String,
@@ -62,7 +69,7 @@ pub struct WorldTagRecord {
 }
 pub type WorldTagTable = Vec<WorldTagRecord>;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct LawRecord {
     pub code: u16,
     pub banned_weapons: String,
@@ -80,7 +87,7 @@ pub enum StarportClass {
     X,
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub struct StarportRecord {
     pub code: u16,
     pub class: StarportClass,
@@ -88,6 +95,16 @@ pub struct StarportRecord {
     pub fuel: String,
     pub facilities: String,
 }
+
+impl PartialEq for StarportRecord {
+    fn eq(&self, other: &Self) -> bool {
+        self.class == other.class
+            && self.berthing_cost == other.berthing_cost
+            && self.fuel == other.fuel
+            && self.facilities == other.facilities
+    }
+}
+
 pub type StarportTable = Vec<StarportRecord>;
 
 fn load_table<T: for<'de> Deserialize<'de>>(file_path: &str) -> Vec<T> {

@@ -2,6 +2,7 @@ mod table;
 mod world;
 
 use std::collections::BTreeMap;
+use std::error::Error;
 use std::fs;
 use std::ops::{Add, Sub};
 
@@ -18,9 +19,29 @@ pub struct Point {
     y: u16,
 }
 
-impl Point {
-    pub fn to_string(&self) -> String {
+impl ToString for Point {
+    fn to_string(&self) -> String {
         format!("{:02}{:02}", self.x, self.y)
+    }
+}
+
+impl TryFrom<&str> for Point {
+    type Error = Box<dyn Error>;
+    fn try_from(string: &str) -> Result<Self, Self::Error> {
+        let mut chars = string.strip_prefix("'").unwrap_or(&string).chars();
+
+        let mut x_str = String::new();
+        let mut y_str = String::new();
+        for string in [&mut x_str, &mut y_str] {
+            for _ in 0..2 {
+                let c = chars.next().ok_or("World location string too short")?;
+                string.push(c);
+            }
+        }
+
+        let x: u16 = x_str.parse()?;
+        let y: u16 = y_str.parse()?;
+        Ok(Self { x, y })
     }
 }
 
@@ -49,12 +70,13 @@ impl Sub for &Translation {
     }
 }
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Subsector {
     name: String,
     map: BTreeMap<Point, World>,
 }
 
+const SUBSECTOR_NAME_MARKER: &str = "Subsector Name";
 const CSV_HEADERS: &str = "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,,Name,Location,Government,Contraband,Culture,World Tag 1,World Tag 2,Faction 1,Strength,Government,Faction 2,Strength,Government,Faction 3,Strength,Government,Faction 4,Strength,Government,,Name,Location,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
 
 impl Subsector {
@@ -121,10 +143,9 @@ impl Subsector {
         println!("{}\n", hex_grid);
     }
 
-    #[allow(dead_code)]
-    pub fn generate_csv(&self) -> String {
+    pub fn to_csv(&self) -> String {
         let mut frontmatter = Vec::new();
-        frontmatter.push(format!("Sector Name,{}", self.name));
+        frontmatter.push(format!("{},{}", SUBSECTOR_NAME_MARKER, self.name));
         frontmatter.push(String::from(CSV_HEADERS));
         let frontmatter = frontmatter.join("\n");
 
@@ -142,7 +163,47 @@ impl Subsector {
         [frontmatter, table].join("\n")
     }
 
-    #[allow(dead_code)]
+    pub fn from_csv(csv: &str) -> Result<Self, Box<dyn Error>> {
+        let mut rows = csv.lines();
+
+        // Parsing for subsector name
+        let mut name_row = rows
+            .next()
+            .ok_or("Ran out of rows parsing subsector name")?
+            .split(",");
+
+        let err_str = format!("Failed to find marker '{}'", SUBSECTOR_NAME_MARKER);
+        match name_row.next().ok_or(err_str.clone())? {
+            SUBSECTOR_NAME_MARKER => (),
+            _ => return Err(err_str.into()),
+        }
+        let name = String::from(name_row.next().ok_or("Failed to find subsector name")?);
+
+        match rows.next().ok_or("Ran out of rows while parsing header")? {
+            CSV_HEADERS => (),
+            _ => return Err("Could not find column headers".into()),
+        }
+
+        let world_table = rows.collect::<Vec<_>>().join("\n");
+        let mut reader = csv::ReaderBuilder::new()
+            .has_headers(false)
+            .from_reader(world_table.as_bytes());
+
+        let mut map = BTreeMap::new();
+        for result in reader.deserialize() {
+            let world_record: WorldRecord = result?;
+            let name = world_record.name.clone();
+            let maybe_world = World::try_from(world_record);
+            if let Some(err) = maybe_world.as_ref().err() {
+                return Err(format!("Error while parsing world '{}': {}", name, err).into());
+            }
+            let world = maybe_world.unwrap();
+            map.insert(world.location.clone(), world);
+        }
+
+        Ok(Self { name, map })
+    }
+
     pub fn generate_svg(&self) -> String {
         let template_svg = fs::read_to_string("resources/traveller_sector_grid.svg").unwrap();
         let doc = xml::Document::parse(&template_svg).unwrap();
@@ -461,7 +522,7 @@ mod tests {
     }
 
     #[test]
-    fn subsector_serde() {
+    fn subsector_yaml_serde() {
         let subsector = Subsector::new(0);
         let yaml = serde_yaml::to_string(&subsector).unwrap();
 
@@ -470,11 +531,13 @@ mod tests {
     }
 
     #[test]
-    fn subsector_csv() {
-        const ATTEMPTS: usize = 10;
+    fn subsector_csv_serde() {
+        const ATTEMPTS: usize = 100;
         for _ in 0..ATTEMPTS {
             let subsector = Subsector::new(0);
-            let _csv = subsector.generate_csv();
+            let csv = subsector.to_csv();
+            let deserialized = Subsector::from_csv(&csv[..]);
+            assert_eq!(deserialized.unwrap(), subsector);
         }
     }
 
