@@ -77,7 +77,7 @@ pub struct Subsector {
 }
 
 const SUBSECTOR_NAME_MARKER: &str = "Subsector Name";
-const CSV_HEADERS: &str = "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,,Name,Location,Government,Contraband,Culture,World Tag 1,World Tag 2,Faction 1,Strength,Government,Faction 2,Strength,Government,Faction 3,Strength,Government,Faction 4,Strength,Government,,Name,Location,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
+const CSV_HEADERS: &str = "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,Name,Location,Government,Contraband,Culture,World Tag 1,World Tag 2,Faction 1,Strength,Government,Faction 2,Strength,Government,Faction 3,Strength,Government,Faction 4,Strength,Government,,Name,Location,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
 
 impl Subsector {
     const COLUMNS: usize = 8;
