@@ -7,7 +7,7 @@ if ! cargo fmt -- --check; then
 fi
 
 # Fail if `cargo check` finds any warnings or errors
-check="$(cargo check -q --color=always 2>&1)"
+check="$(cargo check -q --all-targets --color=always 2>&1)"
 if [ -n "$check" ]; then
     echo "$check" >&2
     echo "cargo check: found warnings/errors" >&2
