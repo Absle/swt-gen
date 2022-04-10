@@ -408,10 +408,10 @@ impl Subsector {
                 style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.8px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\" \
-                id=\"{point_str}StarportTlText\">\
+                id=\"{point_str}WorldProfileText\">\
                 <tspan \
                 sodipodi:role=\"line\" \
-                id=\"{point_str}StarportTlTspan\" \
+                id=\"{point_str}WorldProfileTspan\" \
                 style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\">{profile}</tspan></text>",

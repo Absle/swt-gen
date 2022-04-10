@@ -4,7 +4,7 @@ use std::time::SystemTime;
 use traveller_generator::*;
 
 fn main() {
-    let subsector = astrography::Subsector::new(-1);
+    let subsector = astrography::Subsector::new(0);
     let csv = subsector.to_csv();
     let svg = subsector.generate_svg();
 
