@@ -11,6 +11,14 @@ fn main() {
     let time = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap();
-    fs::write(format!("output/{:x}_output.csv", time.as_secs()), csv).unwrap();
-    fs::write(format!("output/{:x}_output.svg", time.as_secs()), svg).unwrap();
+    fs::write(
+        format!("output/{}-{:x}.csv", subsector.name(), time.as_secs()),
+        csv,
+    )
+    .unwrap();
+    fs::write(
+        format!("output/{}-{:x}.svg", subsector.name(), time.as_secs()),
+        svg,
+    )
+    .unwrap();
 }

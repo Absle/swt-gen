@@ -869,12 +869,17 @@ pub struct WorldRecord {
     culture: String,
     world_tag_1: String,
     world_tag_2: String,
+
+    empty_column_2: String,
+
+    fac_name: String,
+    fac_location: String,
     faction_1: SimpleFaction,
     faction_2: SimpleFaction,
     faction_3: SimpleFaction,
     faction_4: SimpleFaction,
 
-    empty_column_2: String,
+    empty_column_3: String,
 
     // Physical details
     det_name: String,
@@ -932,6 +937,8 @@ impl From<World> for WorldRecord {
         let world_tag_1 = world.world_tags[0].tag.clone();
         let world_tag_2 = world.world_tags[1].tag.clone();
 
+        let fac_name = name.clone();
+        let fac_location = location.clone();
         let faction_1: SimpleFaction;
         let faction_2: SimpleFaction;
         let faction_3: SimpleFaction;
@@ -992,6 +999,7 @@ impl From<World> for WorldRecord {
 
         let empty_column_1 = String::new();
         let empty_column_2 = String::new();
+        let empty_column_3 = String::new();
 
         WorldRecord {
             name,
@@ -1012,12 +1020,17 @@ impl From<World> for WorldRecord {
             culture,
             world_tag_1,
             world_tag_2,
+
+            empty_column_2,
+
+            fac_name,
+            fac_location,
             faction_1,
             faction_2,
             faction_3,
             faction_4,
 
-            empty_column_2,
+            empty_column_3,
 
             det_name,
             det_location,

@@ -77,7 +77,7 @@ pub struct Subsector {
 }
 
 const SUBSECTOR_NAME_MARKER: &str = "Subsector Name";
-const CSV_HEADERS: &str = "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,Name,Location,Government,Contraband,Culture,World Tag 1,World Tag 2,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,Name,Location,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
+const CSV_HEADERS: &str = "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
 
 impl Subsector {
     const COLUMNS: usize = 8;
@@ -88,6 +88,10 @@ impl Subsector {
             name: String::from("Subsector"),
             map: BTreeMap::new(),
         }
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name[..]
     }
 
     pub fn new(world_abundance_dm: i16) -> Self {
