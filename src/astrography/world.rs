@@ -707,7 +707,6 @@ impl TryFrom<WorldRecord> for World {
     type Error = Box<dyn Error>;
     fn try_from(record: WorldRecord) -> Result<Self, Self::Error> {
         let profile = record.profile.split("-").collect::<Vec<_>>().join("");
-        //dbg!(format!("profile: {}", profile));
         let mut chars = profile.chars();
 
         // Parsing profile string
@@ -751,8 +750,6 @@ impl TryFrom<WorldRecord> for World {
                 _ => c.to_string().parse()?,
             };
         }
-
-        //dbg!(format!("tech = {}", tech));
 
         let temperature = TABLES
             .temp_table
@@ -850,7 +847,7 @@ impl TryFrom<WorldRecord> for World {
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct WorldRecord {
     // Summary
-    pub name: String,
+    name: String,
     location: String,
     profile: String,
     bases: String,
@@ -889,6 +886,12 @@ pub struct WorldRecord {
     temperature: String,
     hydrographics: String,
     population: String,
+}
+
+impl WorldRecord {
+    pub fn name(&self) -> &str {
+        &self.name[..]
+    }
 }
 
 impl From<World> for WorldRecord {

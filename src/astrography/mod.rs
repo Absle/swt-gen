@@ -196,7 +196,7 @@ impl Subsector {
         let mut map = BTreeMap::new();
         for result in reader.deserialize() {
             let world_record: WorldRecord = result?;
-            let name = world_record.name.clone();
+            let name = String::from(world_record.name());
             let maybe_world = World::try_from(world_record);
             if let Some(err) = maybe_world.as_ref().err() {
                 return Err(format!("Error while parsing world '{}': {}", name, err).into());
