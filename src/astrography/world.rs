@@ -846,6 +846,7 @@ impl TryFrom<WorldRecord> for World {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct WorldRecord {
+    pub subsector_name: String,
     // Summary
     name: String,
     location: String,
@@ -896,6 +897,8 @@ impl WorldRecord {
 
 impl From<World> for WorldRecord {
     fn from(world: World) -> Self {
+        let subsector_name = String::new();
+
         // Summary
         let name = world.name.clone();
         let location = format!("'{}", world.location.to_string());
@@ -1005,6 +1008,7 @@ impl From<World> for WorldRecord {
         let empty_column_3 = String::new();
 
         WorldRecord {
+            subsector_name,
             name,
             location,
             profile,

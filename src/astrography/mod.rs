@@ -76,8 +76,7 @@ pub struct Subsector {
     map: BTreeMap<Point, World>,
 }
 
-const SUBSECTOR_NAME_MARKER: &str = "Subsector Name";
-const CSV_HEADERS: &str = "Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
+const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
 
 impl Subsector {
     const COLUMNS: usize = 8;
@@ -148,40 +147,23 @@ impl Subsector {
     }
 
     pub fn to_csv(&self) -> String {
-        let mut frontmatter = Vec::new();
-        frontmatter.push(format!("{},{}", SUBSECTOR_NAME_MARKER, self.name));
-        frontmatter.push(String::from(CSV_HEADERS));
-        let frontmatter = frontmatter.join("\n");
-
         let mut writer = csv::WriterBuilder::new()
             .has_headers(false)
             .from_writer(Vec::new());
 
         for (_, world) in &self.map {
-            let record = WorldRecord::from(world.clone());
+            let mut record = WorldRecord::from(world.clone());
+            record.subsector_name = self.name.clone();
             writer.serialize(record).unwrap();
         }
 
         let table = String::from_utf8(writer.into_inner().unwrap()).unwrap();
 
-        [frontmatter, table].join("\n")
+        [String::from(CSV_HEADERS), table].join("\n")
     }
 
     pub fn from_csv(csv: &str) -> Result<Self, Box<dyn Error>> {
         let mut rows = csv.lines();
-
-        // Parsing for subsector name
-        let mut name_row = rows
-            .next()
-            .ok_or("Ran out of rows parsing subsector name")?
-            .split(",");
-
-        let err_str = format!("Failed to find marker '{}'", SUBSECTOR_NAME_MARKER);
-        match name_row.next().ok_or(err_str.clone())? {
-            SUBSECTOR_NAME_MARKER => (),
-            _ => return Err(err_str.into()),
-        }
-        let name = String::from(name_row.next().ok_or("Failed to find subsector name")?);
 
         match rows.next().ok_or("Ran out of rows while parsing header")? {
             CSV_HEADERS => (),
@@ -193,13 +175,19 @@ impl Subsector {
             .has_headers(false)
             .from_reader(world_table.as_bytes());
 
+        let mut name = String::new();
         let mut map = BTreeMap::new();
         for result in reader.deserialize() {
             let world_record: WorldRecord = result?;
-            let name = String::from(world_record.name());
+
+            if name.is_empty() {
+                name = world_record.subsector_name.clone();
+            }
+
+            let world_name = String::from(world_record.name());
             let maybe_world = World::try_from(world_record);
             if let Some(err) = maybe_world.as_ref().err() {
-                return Err(format!("Error while parsing world '{}': {}", name, err).into());
+                return Err(format!("Error while parsing world '{}': {}", world_name, err).into());
             }
             let world = maybe_world.unwrap();
             map.insert(world.location.clone(), world);
