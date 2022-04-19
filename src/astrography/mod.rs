@@ -28,7 +28,10 @@ impl ToString for Point {
 impl TryFrom<&str> for Point {
     type Error = Box<dyn Error>;
     fn try_from(string: &str) -> Result<Self, Self::Error> {
-        let mut chars = string.strip_prefix("'").unwrap_or(&string).chars();
+        // Handle old and new prefix respectively
+        let string = string.strip_prefix("'").unwrap_or(&string);
+        let string = string.strip_prefix("_").unwrap_or(&string);
+        let mut chars = string.chars();
 
         let mut x_str = String::new();
         let mut y_str = String::new();

@@ -901,7 +901,7 @@ impl From<World> for WorldRecord {
 
         // Summary
         let name = world.name.clone();
-        let location = format!("'{}", world.location.to_string());
+        let location = format!("_{}", world.location.to_string());
         let profile = world.profile();
 
         let mut bases = Vec::new();
