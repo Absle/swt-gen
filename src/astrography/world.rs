@@ -570,6 +570,8 @@ impl World {
     }
 
     fn resolve_trade_codes(&mut self) {
+        self.trade_codes.clear();
+
         // Agricultural
         if (4..=9).contains(&self.atmosphere.code)
             && (4..=8).contains(&self.hydrographics.code)
@@ -815,7 +817,7 @@ impl TryFrom<WorldRecord> for World {
             trade_codes.insert(TradeCode::try_from(code)?);
         }
 
-        Ok(Self {
+        let mut world = Self {
             name: record.name,
             location: Point::try_from(&record.location[..])?,
             has_gas_giant: &record.gas_giant == "G",
@@ -840,7 +842,9 @@ impl TryFrom<WorldRecord> for World {
             has_tas: has_tas,
             travel_code: TravelCode::try_from(&record.travel_code[..])?,
             trade_codes: trade_codes,
-        })
+        };
+        world.resolve_trade_codes();
+        Ok(world)
     }
 }
 
