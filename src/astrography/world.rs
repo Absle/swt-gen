@@ -603,7 +603,7 @@ impl World {
         // Garden
         if (6..=8).contains(&self.size)
             && [5, 6, 8].contains(&self.atmosphere.code)
-            && (5..=7).contains(&self.population.code)
+            && (5..=7).contains(&self.hydrographics.code)
         {
             self.trade_codes.insert(TradeCode::Ga);
         }
