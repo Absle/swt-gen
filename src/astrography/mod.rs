@@ -79,7 +79,7 @@ pub struct Subsector {
     map: BTreeMap<Point, World>,
 }
 
-const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population";
+const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population,Notes";
 
 impl Subsector {
     const COLUMNS: usize = 8;

@@ -176,6 +176,7 @@ pub struct World {
     pub has_tas: bool,
     pub travel_code: TravelCode,
     pub trade_codes: BTreeSet<TradeCode>,
+    pub notes: String,
 }
 
 impl World {
@@ -248,6 +249,7 @@ impl World {
             has_tas: false,
             travel_code: TravelCode::Safe,
             trade_codes: BTreeSet::new(),
+            notes: String::new(),
         }
     }
 
@@ -824,24 +826,25 @@ impl TryFrom<WorldRecord> for World {
             size: size as u16,
             diameter: record.diameter,
             atmosphere: TABLES.atmo_table[atmo].clone(),
-            temperature: temperature,
+            temperature,
             hydrographics: TABLES.hydro_table[hydro].clone(),
             population: TABLES.pop_table[pop].clone(),
             // The true value of this is lost, but it's not needed after generation
             unmodified_pop: pop as u16,
             government: TABLES.gov_table[gov].clone(),
             law_level: TABLES.law_table[law].clone(),
-            factions: factions,
-            culture: culture,
-            world_tags: world_tags,
-            starport: starport,
+            factions,
+            culture,
+            world_tags,
+            starport,
             tech_level: tech as u16,
-            has_naval_base: has_naval_base,
-            has_scout_base: has_scout_base,
-            has_research_base: has_research_base,
-            has_tas: has_tas,
+            has_naval_base,
+            has_scout_base,
+            has_research_base,
+            has_tas,
             travel_code: TravelCode::try_from(&record.travel_code[..])?,
-            trade_codes: trade_codes,
+            trade_codes,
+            notes: record.notes,
         };
         world.resolve_trade_codes();
         Ok(world)
@@ -891,6 +894,8 @@ pub struct WorldRecord {
     temperature: String,
     hydrographics: String,
     population: String,
+
+    notes: String,
 }
 
 impl WorldRecord {
@@ -1050,6 +1055,8 @@ impl From<World> for WorldRecord {
             temperature,
             hydrographics,
             population,
+
+            notes: world.notes,
         }
     }
 }
