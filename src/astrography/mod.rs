@@ -200,7 +200,7 @@ impl Subsector {
     }
 
     pub fn generate_svg(&self) -> String {
-        let template_svg = fs::read_to_string("resources/traveller_sector_grid.svg").unwrap();
+        let template_svg = fs::read_to_string("resources/traveller_subsector_grid.svg").unwrap();
         let doc = xml::Document::parse(&template_svg).unwrap();
 
         // Parse through svg document to find coordinates of center markers
@@ -331,14 +331,14 @@ impl Subsector {
             output_buffer.push(format!(
                 "<text \
                 xml:space=\"preserve\" \
-                style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\" \
                 id=\"{point_str}NameText\">\
                 <tspan \
                 sodipodi:role=\"line\" \
                 id=\"{point_str}NameTspan\" \
-                style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\">{name}</tspan></text>",
                 translate_x = marker_coordinates[point].x,
@@ -377,14 +377,14 @@ impl Subsector {
             output_buffer.push(format!(
                 "<text \
                 xml:space=\"preserve\" \
-                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\" \
                 id=\"{point_str}StarportTlText\">\
                 <tspan \
                 sodipodi:role=\"line\" \
                 id=\"{point_str}StarportTlTspan\" \
-                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\">{starport:?}-{tech_level}</tspan></text>",
                 translate_x = translation.x,
@@ -400,14 +400,14 @@ impl Subsector {
             output_buffer.push(format!(
                 "<text \
                 xml:space=\"preserve\" \
-                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.8px;line-height:0;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.8px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\" \
                 id=\"{point_str}WorldProfileText\">\
                 <tspan \
                 sodipodi:role=\"line\" \
                 id=\"{point_str}WorldProfileTspan\" \
-                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:Arial;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
+                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\">{profile}</tspan></text>",
                 translate_x = translation.x,

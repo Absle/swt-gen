@@ -1,4 +1,5 @@
 .replit
+.vscode/
 replit.nix
 Cargo.lock
 target/
