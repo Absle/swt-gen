@@ -1,7 +1,6 @@
 use eframe::{App, Frame};
 use egui::{
-    vec2, CentralPanel, ColorImage, Context, Image, Label, Pos2, Rect, Response, Sense, Separator,
-    TopBottomPanel, Vec2,
+    vec2, CentralPanel, ColorImage, Context, Image, Label, Pos2, Rect, Sense, TopBottomPanel, Vec2,
 };
 use egui_extras::RetainedImage;
 
@@ -66,24 +65,16 @@ impl App for GeneratorApp {
                 desired_size *= (max_size.x / desired_size.x).min(1.0);
                 desired_size *= (max_size.y / desired_size.y).min(1.0);
 
-                ui.add(Separator::default().vertical());
-
                 let subsector_image =
                     Image::new(self.subsector_image.texture_id(&ctx), desired_size)
                         .sense(Sense::click());
 
                 let response = ui.add(subsector_image);
-                if response.clicked() {
-                    let pointer_pos = response.interact_pointer_pos();
-                    if let Some(pointer_pos) = pointer_pos {
-                        let point = pointer_pos_to_hex_point(pointer_pos, &response);
-                        if let Some(point) = point {
-                            self.selected_point = Some(point);
-                        }
-                    }
+                if let Some(pointer_pos) = response.interact_pointer_pos() {
+                    self.selected_point = pointer_pos_to_hex_point(pointer_pos, &response.rect);
                 }
 
-                ui.add(Separator::default().vertical());
+                ui.separator();
 
                 if let Some(point) = &self.selected_point {
                     let world = self.subsector.map.get(&point);
@@ -160,7 +151,7 @@ fn system_sans_serif_font() -> String {
 }
 
 /** Return `Point` of clicked hex or `None` if click position is outside the hex grid. */
-fn pointer_pos_to_hex_point(pointer_pos: Pos2, widget: &Response) -> Option<Point> {
+fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
     // In inches
     const SVG_WIDTH: f32 = 8.5;
     const SVG_HEIGHT: f32 = 11.0;
@@ -177,7 +168,7 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, widget: &Response) -> Option<Poin
     const HEX_SHORT_RADIUS: f32 = 0.45;
     const HEX_SHORT_DIAMETER: f32 = HEX_SHORT_RADIUS * 2.0;
 
-    let pixels_per_inch = widget.rect.width() / SVG_WIDTH;
+    let pixels_per_inch = rect.width() / SVG_WIDTH;
 
     let left_bound = LEFT_MARGIN * pixels_per_inch;
     let right_bound = (SVG_WIDTH - RIGHT_MARGIN) * pixels_per_inch;
@@ -189,7 +180,7 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, widget: &Response) -> Option<Poin
     let grid_rect = Rect::from_min_max(left_top, right_bottom);
 
     // Make sure click is inside the grid's rectangle, return None if not
-    let relative_pos = pointer_pos - widget.rect.left_top();
+    let relative_pos = pointer_pos - rect.left_top();
     let relative_pos = Pos2::from([relative_pos.x, relative_pos.y]);
     if !grid_rect.contains(relative_pos) {
         return None;
