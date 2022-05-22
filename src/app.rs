@@ -1,32 +1,51 @@
 use eframe::{App, Frame};
-use egui::{CentralPanel, ColorImage, Context, Image, Label, Sense};
+use egui::{
+    vec2, CentralPanel, ColorImage, Context, Image, Label, Pos2, Rect, Response, Sense, Separator,
+    TopBottomPanel, Vec2,
+};
 use egui_extras::RetainedImage;
 
-use super::astrography::Subsector;
+use super::astrography::{Point, Subsector};
 
 pub struct GeneratorApp {
     subsector: Subsector,
+    #[allow(dead_code)]
     subsector_svg: String,
     subsector_image: RetainedImage,
+    selected_point: Option<Point>,
+}
+
+impl GeneratorApp {
+    const CENTRAL_PANEL_MIN_SIZE: Vec2 = vec2(1584.0, 834.0);
+
+    #[allow(dead_code)]
+    /** Regenerate `subsector_svg` and `subsector_image` after a change to `subsector`. */
+    fn regenerate_subsector_image(&mut self) {
+        self.subsector_svg = self.subsector.generate_svg();
+        self.subsector_image =
+            generate_subsector_image(self.subsector.name(), &self.subsector_svg).unwrap();
+    }
 }
 
 impl Default for GeneratorApp {
     fn default() -> Self {
-        let subsector = Subsector::new(0);
+        let subsector = Subsector::default();
         let subsector_svg = subsector.generate_svg();
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
+        let selected_point = None;
 
         Self {
             subsector,
             subsector_svg,
             subsector_image,
+            selected_point,
         }
     }
 }
 
 impl App for GeneratorApp {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-        CentralPanel::default().show(ctx, |ui| {
+        TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.heading("SVG example");
 
             //ui.label("The SVG is rasterized and displayed as a texture.");
@@ -35,24 +54,44 @@ impl App for GeneratorApp {
             if ui.add(label).clicked() {
                 println!("Label Clicked!")
             }
+        });
 
-            ui.separator();
-
+        CentralPanel::default().show(ctx, |ui| {
             let max_size = ui.available_size();
-            let mut desired_size = self.subsector_image.size_vec2();
-            desired_size *= (max_size.x / desired_size.x).min(1.0);
-            desired_size *= (max_size.y / desired_size.y).min(1.0);
+            ui.horizontal(|ui| {
+                ui.set_min_size(Self::CENTRAL_PANEL_MIN_SIZE);
+                ui.set_max_size(max_size);
 
-            let image = Image::new(self.subsector_image.texture_id(&ctx), desired_size)
-                .sense(Sense::click());
+                let mut desired_size = self.subsector_image.size_vec2();
+                desired_size *= (max_size.x / desired_size.x).min(1.0);
+                desired_size *= (max_size.y / desired_size.y).min(1.0);
 
-            let response = ui.add(image);
-            if response.clicked() {
-                self.subsector = Subsector::new(0);
-                self.subsector_svg = self.subsector.generate_svg();
-                self.subsector_image =
-                    generate_subsector_image(self.subsector.name(), &self.subsector_svg).unwrap();
-            }
+                ui.add(Separator::default().vertical());
+
+                let subsector_image =
+                    Image::new(self.subsector_image.texture_id(&ctx), desired_size)
+                        .sense(Sense::click());
+
+                let response = ui.add(subsector_image);
+                if response.clicked() {
+                    let pointer_pos = response.interact_pointer_pos();
+                    if let Some(pointer_pos) = pointer_pos {
+                        let point = pointer_pos_to_hex_point(pointer_pos, &response);
+                        if let Some(point) = point {
+                            self.selected_point = Some(point);
+                        }
+                    }
+                }
+
+                ui.add(Separator::default().vertical());
+
+                if let Some(point) = &self.selected_point {
+                    let world = self.subsector.map.get(&point);
+                    if let Some(world) = world {
+                        ui.label(format!("Selected World: {}", world.name));
+                    }
+                }
+            });
         });
     }
 }
@@ -117,5 +156,80 @@ fn system_sans_serif_font() -> String {
     #[cfg(all(unix, not(any(target_os = "macos", target_os = "android"))))]
     {
         "Liberation Sans".to_string()
+    }
+}
+
+/** Return `Point` of clicked hex or `None` if click position is outside the hex grid. */
+fn pointer_pos_to_hex_point(pointer_pos: Pos2, widget: &Response) -> Option<Point> {
+    // In inches
+    const SVG_WIDTH: f32 = 8.5;
+    const SVG_HEIGHT: f32 = 11.0;
+
+    // Margins around hex grid in inches
+    const LEFT_MARGIN: f32 = 1.0;
+    const RIGHT_MARGIN: f32 = LEFT_MARGIN;
+    const TOP_MARGIN: f32 = 0.5;
+    const BOTTOM_MARGIN: f32 = 1.0;
+
+    // Hex dimensions in inches
+    const HEX_LONG_RADIUS: f32 = 0.52;
+    const HEX_LONG_DIAMETER: f32 = HEX_LONG_RADIUS * 2.0;
+    const HEX_SHORT_RADIUS: f32 = 0.45;
+    const HEX_SHORT_DIAMETER: f32 = HEX_SHORT_RADIUS * 2.0;
+
+    let pixels_per_inch = widget.rect.width() / SVG_WIDTH;
+
+    let left_bound = LEFT_MARGIN * pixels_per_inch;
+    let right_bound = (SVG_WIDTH - RIGHT_MARGIN) * pixels_per_inch;
+    let top_bound = TOP_MARGIN * pixels_per_inch;
+    let bottom_bound = (SVG_HEIGHT - BOTTOM_MARGIN) * pixels_per_inch;
+
+    let left_top = Pos2::from([left_bound, top_bound]);
+    let right_bottom = Pos2::from([right_bound, bottom_bound]);
+    let grid_rect = Rect::from_min_max(left_top, right_bottom);
+
+    // Make sure click is inside the grid's rectangle, return None if not
+    let relative_pos = pointer_pos - widget.rect.left_top();
+    let relative_pos = Pos2::from([relative_pos.x, relative_pos.y]);
+    if !grid_rect.contains(relative_pos) {
+        return None;
+    }
+
+    // Find the hex center that is nearest to the click position
+    let mut smallest_distance = f32::MAX;
+    let mut point = Point { x: 0, y: 0 };
+    for x in 1..=Subsector::COLUMNS {
+        for y in 1..=Subsector::ROWS {
+            let center_x = ((x - 1) as f32 * 0.75 * HEX_LONG_DIAMETER + HEX_LONG_RADIUS)
+                * pixels_per_inch
+                + left_bound;
+
+            // Even columns are shifted a short radius downwards
+            let offset = if x % 2 == 0 {
+                HEX_SHORT_RADIUS * pixels_per_inch
+            } else {
+                0.0
+            };
+            let center_y = ((y - 1) as f32 * HEX_SHORT_DIAMETER + HEX_SHORT_RADIUS)
+                * pixels_per_inch
+                + offset
+                + top_bound;
+
+            let center = Pos2::from([center_x, center_y]);
+            let distance = center.distance(relative_pos);
+            if distance < smallest_distance {
+                smallest_distance = distance;
+                point = Point {
+                    x: x as u16,
+                    y: y as u16,
+                };
+            }
+        }
+    }
+
+    if smallest_distance < HEX_SHORT_RADIUS * pixels_per_inch {
+        Some(point)
+    } else {
+        None
     }
 }

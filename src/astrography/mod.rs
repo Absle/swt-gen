@@ -1,5 +1,5 @@
 mod table;
-mod world;
+pub mod world;
 
 use std::collections::BTreeMap;
 use std::error::Error;
@@ -15,8 +15,8 @@ use world::{World, WorldRecord};
 
 #[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Point {
-    x: u16,
-    y: u16,
+    pub x: u16,
+    pub y: u16,
 }
 
 impl ToString for Point {
@@ -76,14 +76,14 @@ impl Sub for &Translation {
 #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Subsector {
     name: String,
-    map: BTreeMap<Point, World>,
+    pub map: BTreeMap<Point, World>,
 }
 
 const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population,Notes";
 
 impl Subsector {
-    const COLUMNS: usize = 8;
-    const ROWS: usize = 10;
+    pub const COLUMNS: usize = 8;
+    pub const ROWS: usize = 10;
 
     fn empty() -> Self {
         Subsector {
@@ -432,6 +432,12 @@ impl Subsector {
         }
 
         output_buffer.join("\n")
+    }
+}
+
+impl Default for Subsector {
+    fn default() -> Self {
+        Subsector::new(0)
     }
 }
 
