@@ -194,6 +194,35 @@ impl World {
         )
     }
 
+    pub fn base_str(&self) -> String {
+        let mut bases = Vec::new();
+        if self.has_naval_base {
+            bases.push(String::from("N"));
+        }
+        if self.has_research_base {
+            bases.push(String::from("R"));
+        }
+        if self.has_scout_base {
+            bases.push(String::from("S"));
+        }
+        if self.has_tas {
+            bases.push(String::from("T"));
+        }
+        bases.join(" ")
+    }
+
+    pub fn trade_code_str(&self) -> String {
+        self.trade_codes
+            .iter()
+            .map(|code| format!("{:?}", code))
+            .collect::<Vec<String>>()
+            .join(" ")
+    }
+
+    pub fn travel_code_str(&self) -> String {
+        format!("{:?}", self.travel_code)
+    }
+
     pub fn new(name: String, location: Point) -> Self {
         let mut world = Self::empty();
         world.name = name;
@@ -913,29 +942,11 @@ impl From<World> for WorldRecord {
         let location = format!("_{}", world.location.to_string());
         let profile = world.profile();
 
-        let mut bases = Vec::new();
-        if world.has_naval_base {
-            bases.push(String::from("N"));
-        }
-        if world.has_research_base {
-            bases.push(String::from("R"));
-        }
-        if world.has_scout_base {
-            bases.push(String::from("S"));
-        }
-        if world.has_tas {
-            bases.push(String::from("T"));
-        }
-        let bases = bases.join(" ");
+        let bases = world.base_str();
 
-        let trade_codes = world
-            .trade_codes
-            .iter()
-            .map(|code| format!("{:?}", code))
-            .collect::<Vec<String>>()
-            .join(" ");
+        let trade_codes = world.trade_code_str();
 
-        let travel_code = format!("{:?}", world.travel_code);
+        let travel_code = world.travel_code_str();
         let gas_giant = match world.has_gas_giant {
             true => String::from("G"),
             false => String::new(),

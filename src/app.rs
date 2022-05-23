@@ -1,7 +1,7 @@
 use eframe::{App, Frame};
 use egui::{
-    vec2, CentralPanel, ColorImage, Context, Image, Pos2, Rect, Sense, TextEdit, TopBottomPanel,
-    Vec2,
+    vec2, CentralPanel, Color32, ColorImage, Context, FontId, Image, Pos2, Rect, RichText,
+    ScrollArea, Sense, TextEdit, TopBottomPanel, Vec2,
 };
 use egui_extras::RetainedImage;
 
@@ -12,7 +12,13 @@ pub struct GeneratorApp {
     #[allow(dead_code)]
     subsector_svg: String,
     subsector_image: RetainedImage,
+
+    // Control fields
+    regen_needed: bool,
     selected_point: Option<Point>,
+
+    // Subsector mirror fields
+    world_loc_str: String,
 }
 
 impl GeneratorApp {
@@ -33,27 +39,34 @@ impl Default for GeneratorApp {
         let subsector_svg = subsector.generate_svg();
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
         let selected_point = None;
+        let world_loc_str = String::new();
 
         Self {
             subsector,
             subsector_svg,
             subsector_image,
+            regen_needed: false,
             selected_point,
+            world_loc_str,
         }
     }
 }
 
 impl App for GeneratorApp {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+        if self.regen_needed {
+            self.regenerate_subsector_image();
+            self.regen_needed = false;
+        }
+
         TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.heading("SVG example");
             ui.label("The SVG is rasterized and displayed as a texture.");
         });
 
         CentralPanel::default().show(ctx, |ui| {
-            let mut regen_needed = false;
             let max_size = ui.available_size();
-            ui.horizontal(|ui| {
+            ui.horizontal_top(|ui| {
                 ui.set_min_size(Self::CENTRAL_PANEL_MIN_SIZE);
                 ui.set_max_size(max_size);
 
@@ -65,9 +78,17 @@ impl App for GeneratorApp {
                     Image::new(self.subsector_image.texture_id(&ctx), desired_size)
                         .sense(Sense::click());
 
+                let mut new_point_selected = false;
                 let response = ui.add(subsector_image);
                 if let Some(pointer_pos) = response.interact_pointer_pos() {
-                    self.selected_point = pointer_pos_to_hex_point(pointer_pos, &response.rect);
+                    let point = pointer_pos_to_hex_point(pointer_pos, &response.rect);
+
+                    // Regenerate image when a new, valid point is selected
+                    if point.is_some() {
+                        self.regen_needed = true;
+                        new_point_selected = true;
+                        self.selected_point = point;
+                    }
                 }
 
                 ui.separator();
@@ -77,26 +98,90 @@ impl App for GeneratorApp {
                     selected_world = self.subsector.map.get_mut(&point);
                 }
 
-                if let Some(selected_world) = selected_world {
-                    ui.vertical(|ui| {
-                        ui.label("World Name");
-                        regen_needed |= ui
-                            .add(TextEdit::singleline(&mut selected_world.name))
-                            .lost_focus();
+                if let Some(world) = selected_world {
+                    // Update model state upon a new world selection
+                    if new_point_selected {
+                        self.world_loc_str = world.location.to_string();
+                    }
 
-                        ui.label("Atmosphere");
-                        regen_needed |= ui
-                            .add(TextEdit::singleline(
-                                &mut selected_world.atmosphere.composition,
-                            ))
-                            .lost_focus();
+                    ui.vertical(|ui| {
+                        ScrollArea::vertical().show(ui, |ui| {
+                            const LABEL_FONT: FontId = FontId::proportional(11.0);
+                            const LABEL_COLOR: Color32 = Color32::GRAY;
+                            const FIELD_SPACING: f32 = 15.0;
+
+                            // World Name | Profile | Bases | Trade Codes | Travel Code
+                            ui.horizontal(|ui| {
+                                ui.vertical(|ui| {
+                                    ui.label(
+                                        RichText::new("World Name")
+                                            .font(LABEL_FONT)
+                                            .color(LABEL_COLOR),
+                                    );
+                                    ui.add(
+                                        TextEdit::singleline(&mut world.name).desired_width(150.0),
+                                    );
+                                });
+
+                                ui.vertical(|ui| {
+                                    ui.label(
+                                        RichText::new("Location")
+                                            .font(LABEL_FONT)
+                                            .color(LABEL_COLOR),
+                                    );
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.world_loc_str)
+                                            .desired_width(50.0),
+                                    );
+                                });
+
+                                ui.vertical(|ui| {
+                                    ui.label(
+                                        RichText::new("World Profile")
+                                            .font(LABEL_FONT)
+                                            .color(LABEL_COLOR),
+                                    );
+                                    ui.label(world.profile());
+                                });
+
+                                ui.add_space(FIELD_SPACING);
+
+                                ui.vertical(|ui| {
+                                    ui.label(
+                                        RichText::new("Trade Codes")
+                                            .font(LABEL_FONT)
+                                            .color(LABEL_COLOR),
+                                    );
+                                    ui.label(world.trade_code_str());
+                                });
+
+                                ui.add_space(FIELD_SPACING);
+
+                                ui.vertical(|ui| {
+                                    // TODO: Make this a dropdown selection
+                                    ui.label(
+                                        RichText::new("Travel Code")
+                                            .font(LABEL_FONT)
+                                            .color(LABEL_COLOR),
+                                    );
+                                    ui.label(world.travel_code_str());
+                                });
+                            });
+
+                            ui.add_space(FIELD_SPACING);
+
+                            ui.label(
+                                RichText::new("Atmosphere")
+                                    .font(LABEL_FONT)
+                                    .color(LABEL_COLOR),
+                            );
+                            ui.add(TextEdit::singleline(&mut world.atmosphere.composition));
+
+                            ui.add_space(FIELD_SPACING);
+                        });
                     });
                 }
             });
-
-            if regen_needed {
-                self.regenerate_subsector_image();
-            }
         });
     }
 }
