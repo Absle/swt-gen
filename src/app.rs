@@ -1,6 +1,7 @@
 use eframe::{App, Frame};
 use egui::{
-    vec2, CentralPanel, ColorImage, Context, Image, Label, Pos2, Rect, Sense, TopBottomPanel, Vec2,
+    vec2, CentralPanel, ColorImage, Context, Image, Pos2, Rect, Sense, TextEdit, TopBottomPanel,
+    Vec2,
 };
 use egui_extras::RetainedImage;
 
@@ -46,16 +47,11 @@ impl App for GeneratorApp {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.heading("SVG example");
-
-            //ui.label("The SVG is rasterized and displayed as a texture.");
-            let label = Label::new("The SVG is rasterized and displayed as a texture.")
-                .sense(Sense::click());
-            if ui.add(label).clicked() {
-                println!("Label Clicked!")
-            }
+            ui.label("The SVG is rasterized and displayed as a texture.");
         });
 
         CentralPanel::default().show(ctx, |ui| {
+            let mut regen_needed = false;
             let max_size = ui.available_size();
             ui.horizontal(|ui| {
                 ui.set_min_size(Self::CENTRAL_PANEL_MIN_SIZE);
@@ -76,13 +72,31 @@ impl App for GeneratorApp {
 
                 ui.separator();
 
+                let mut selected_world = None;
                 if let Some(point) = &self.selected_point {
-                    let world = self.subsector.map.get(&point);
-                    if let Some(world) = world {
-                        ui.label(format!("Selected World: {}", world.name));
-                    }
+                    selected_world = self.subsector.map.get_mut(&point);
+                }
+
+                if let Some(selected_world) = selected_world {
+                    ui.vertical(|ui| {
+                        ui.label("World Name");
+                        regen_needed |= ui
+                            .add(TextEdit::singleline(&mut selected_world.name))
+                            .lost_focus();
+
+                        ui.label("Atmosphere");
+                        regen_needed |= ui
+                            .add(TextEdit::singleline(
+                                &mut selected_world.atmosphere.composition,
+                            ))
+                            .lost_focus();
+                    });
                 }
             });
+
+            if regen_needed {
+                self.regenerate_subsector_image();
+            }
         });
     }
 }
