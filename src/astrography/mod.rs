@@ -19,6 +19,12 @@ pub struct Point {
     pub y: u16,
 }
 
+impl Default for Point {
+    fn default() -> Self {
+        Point { x: 0, y: 0 }
+    }
+}
+
 impl ToString for Point {
     fn to_string(&self) -> String {
         format!("{:02}{:02}", self.x, self.y)

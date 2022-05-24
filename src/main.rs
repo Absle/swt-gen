@@ -6,7 +6,7 @@ use traveller_generator::*;
 
 fn main() {
     let options = eframe::NativeOptions {
-        min_window_size: Some(vec2(1600.0, 900.0)),
+        min_window_size: Some(vec2(1760.0, 990.0)),
         ..Default::default()
     };
 

@@ -250,10 +250,10 @@ impl World {
         world
     }
 
-    fn empty() -> Self {
+    pub(crate) fn empty() -> Self {
         World {
             name: String::from(""),
-            location: Point { x: 0, y: 0 },
+            location: Point::default(),
             has_gas_giant: false,
             size: 0,
             diameter: 0,
@@ -706,6 +706,12 @@ impl World {
         if self.hydrographics.code >= 10 {
             self.trade_codes.insert(TradeCode::Wa);
         }
+    }
+}
+
+impl Default for World {
+    fn default() -> Self {
+        World::new("".to_string(), Point::default())
     }
 }
 
