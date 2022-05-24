@@ -83,7 +83,7 @@ impl SimpleFaction {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub enum TravelCode {
     Safe,
     Amber,

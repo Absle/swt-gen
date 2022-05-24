@@ -1,11 +1,11 @@
 use eframe::{App, Frame};
 use egui::{
-    vec2, CentralPanel, Color32, ColorImage, Context, FontId, Image, Pos2, Rect, RichText,
-    ScrollArea, Sense, TextEdit, TopBottomPanel, Ui, Vec2,
+    vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Image, Label, Pos2, Rect,
+    RichText, ScrollArea, Sense, TextEdit, TopBottomPanel, Ui, Vec2,
 };
 use egui_extras::RetainedImage;
 
-use crate::astrography::world::World;
+use crate::astrography::world::{TravelCode, World};
 
 use super::astrography::{Point, Subsector};
 
@@ -153,7 +153,12 @@ impl GeneratorApp {
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
-                ui.label(world.profile());
+                if ui
+                    .add(Label::new(world.profile()).sense(Sense::click()))
+                    .clicked()
+                {
+                    ui.output().copied_text = world.profile();
+                }
             });
 
             ui.add_space(Self::FIELD_SPACING);
@@ -164,19 +169,33 @@ impl GeneratorApp {
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
-                ui.label(world.trade_code_str());
+                if ui
+                    .add(Label::new(world.trade_code_str()).sense(Sense::click()))
+                    .clicked()
+                {
+                    ui.output().copied_text = world.trade_code_str();
+                }
             });
 
             ui.add_space(Self::FIELD_SPACING);
 
             ui.vertical(|ui| {
-                // TODO: Make this a dropdown selection
                 ui.label(
                     RichText::new("Travel Code")
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
-                ui.label(world.travel_code_str());
+                ComboBox::from_id_source("Travel Code")
+                    .selected_text(world.travel_code_str())
+                    .show_ui(ui, |ui| {
+                        for code in [TravelCode::Safe, TravelCode::Amber, TravelCode::Red] {
+                            ui.selectable_value(
+                                &mut world.travel_code,
+                                code,
+                                format!("{:?}", code),
+                            );
+                        }
+                    })
             });
         });
     }
