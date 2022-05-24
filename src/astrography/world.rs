@@ -180,6 +180,9 @@ pub struct World {
 }
 
 impl World {
+    pub const SIZE_MIN: u16 = 0;
+    pub const SIZE_MAX: u16 = 10;
+
     pub fn profile(&self) -> String {
         format!(
             "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
@@ -289,8 +292,8 @@ impl World {
         }
     }
 
-    fn generate_size(&mut self) {
-        self.size = (dice::roll_2d(6) - 2).clamp(0, 10);
+    pub(crate) fn generate_size(&mut self) {
+        self.size = (dice::roll_2d(6) - 2).clamp(Self::SIZE_MIN, Self::SIZE_MAX);
 
         let median: u32 = match self.size {
             0 => 700,
@@ -600,7 +603,7 @@ impl World {
         }
     }
 
-    fn resolve_trade_codes(&mut self) {
+    pub(crate) fn resolve_trade_codes(&mut self) {
         self.trade_codes.clear();
 
         // Agricultural

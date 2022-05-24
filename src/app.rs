@@ -1,7 +1,8 @@
 use eframe::{App, Frame};
+
 use egui::{
     vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Image, Label, Pos2, Rect,
-    RichText, ScrollArea, Sense, TextEdit, TopBottomPanel, Ui, Vec2,
+    RichText, ScrollArea, Sense, TextEdit, Ui, Vec2,
 };
 use egui_extras::RetainedImage;
 
@@ -24,10 +25,12 @@ pub struct GeneratorApp {
     /// A world is currently selected
     world_selected: bool,
 
-    // Subsector mirror fields
     selected_point: Point,
     selected_world: World,
+
+    // Mirror fields
     world_loc: String,
+    world_diameter: String,
 }
 
 impl GeneratorApp {
@@ -65,7 +68,7 @@ impl GeneratorApp {
                 if let Some(new_point) = new_point {
                     self.new_point_selected = true;
 
-                    // Update subsector map with any user-edited data
+                    // Save world changes with any user-edited data
                     if self.world_selected {
                         self.subsector
                             .map
@@ -75,12 +78,13 @@ impl GeneratorApp {
                     self.point_selected = true;
                     self.selected_point = new_point;
 
-                    // Save world changes and update data fields to new worlds
+                    // Update data fields to new worlds
                     let world = self.subsector.map.get(&self.selected_point);
                     if let Some(world) = world {
                         self.world_selected = true;
                         self.selected_world = world.clone();
                         self.world_loc = self.selected_world.location.to_string();
+                        self.world_diameter = self.selected_world.diameter.to_string();
                     } else {
                         self.world_selected = false;
                     }
@@ -98,18 +102,7 @@ impl GeneratorApp {
             ui.separator();
             ui.add_space(Self::FIELD_SPACING / 2.0);
 
-            ScrollArea::vertical().show(ui, |ui| {
-                ui.label(
-                    RichText::new("Atmosphere")
-                        .font(Self::LABEL_FONT)
-                        .color(Self::LABEL_COLOR),
-                );
-                ui.add(TextEdit::singleline(
-                    &mut self.selected_world.atmosphere.composition,
-                ));
-
-                ui.add_space(Self::FIELD_SPACING);
-            });
+            self.world_fields_display(ui);
         });
     }
 
@@ -126,6 +119,7 @@ impl GeneratorApp {
             selected_point: _,
             selected_world: world,
             world_loc,
+            world_diameter: _,
         } = self;
 
         ui.horizontal(|ui| {
@@ -195,8 +189,92 @@ impl GeneratorApp {
                                 format!("{:?}", code),
                             );
                         }
-                    })
+                    });
             });
+
+            ui.add_space(Self::FIELD_SPACING);
+
+            ui.checkbox(
+                &mut world.has_gas_giant,
+                RichText::new("Gas Giant Present")
+                    .font(Self::LABEL_FONT)
+                    .color(Self::LABEL_COLOR),
+            );
+        });
+    }
+
+    fn world_fields_display(&mut self, ui: &mut Ui) {
+        ScrollArea::vertical().show(ui, |ui| {
+            // World size fields
+            ui.horizontal(|ui| {
+                ui.vertical(|ui| {
+                    ui.label(
+                        RichText::new("Size")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    ComboBox::from_id_source("Size")
+                        .selected_text(format!("{}", self.selected_world.size))
+                        .width(45.0)
+                        .show_ui(ui, |ui| {
+                            for size in World::SIZE_MIN..=World::SIZE_MAX {
+                                ui.selectable_value(
+                                    &mut self.selected_world.size,
+                                    size,
+                                    format!("{:?}", size),
+                                );
+                            }
+                        });
+                });
+
+                ui.add_space(Self::FIELD_SPACING / 2.0);
+
+                ui.vertical(|ui| {
+                    ui.label(
+                        RichText::new("Diameter (km)")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    if ui
+                        .add(TextEdit::singleline(&mut self.world_diameter).desired_width(50.0))
+                        .lost_focus()
+                    {
+                        if let Ok(diameter) = self.world_diameter.parse::<u32>() {
+                            self.selected_world.diameter = diameter;
+                        } else {
+                            self.world_diameter = self.selected_world.diameter.to_string();
+                        }
+                    }
+                });
+
+                ui.add_space(Self::FIELD_SPACING);
+
+                ui.vertical(|ui| {
+                    // This just here to push the button down in line with Combobox
+                    ui.label(
+                        RichText::new("")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    // Regenerate size
+                    if ui.button("🎲").clicked() {
+                        self.selected_world.generate_size();
+                        self.selected_world.resolve_trade_codes();
+                        self.world_diameter = self.selected_world.diameter.to_string();
+                    }
+                });
+            });
+
+            ui.add_space(Self::FIELD_SPACING);
+
+            ui.label(
+                RichText::new("Atmosphere")
+                    .font(Self::LABEL_FONT)
+                    .color(Self::LABEL_COLOR),
+            );
+            ui.add(TextEdit::singleline(
+                &mut self.selected_world.atmosphere.composition,
+            ));
         });
     }
 }
@@ -208,7 +286,8 @@ impl Default for GeneratorApp {
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
         let selected_point = Point::default();
         let selected_world = World::empty();
-        let world_loc_str = String::new();
+        let world_loc = String::new();
+        let world_diameter = String::new();
 
         Self {
             subsector,
@@ -219,7 +298,8 @@ impl Default for GeneratorApp {
             world_selected: false,
             selected_point,
             selected_world,
-            world_loc: world_loc_str,
+            world_loc,
+            world_diameter,
         }
     }
 }
@@ -230,11 +310,6 @@ impl App for GeneratorApp {
             self.regenerate_subsector_image();
             self.new_point_selected = false;
         }
-
-        TopBottomPanel::top("top_panel").show(ctx, |ui| {
-            ui.heading("SVG example");
-            ui.label("The SVG is rasterized and displayed as a texture.");
-        });
 
         CentralPanel::default().show(ctx, |ui| {
             ui.horizontal_top(|ui| {
