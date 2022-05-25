@@ -8,9 +8,11 @@ use egui::{
 };
 use egui_extras::RetainedImage;
 
-use crate::astrography::world::{TravelCode, World};
+use crate::astrography::{Point, Subsector};
 
-use super::astrography::{Point, Subsector};
+use crate::astrography::table::TABLES;
+
+use crate::astrography::world::{TravelCode, World};
 
 /** Set of messages respresenting all non-trivial GUI events. */
 enum Message {
@@ -24,6 +26,7 @@ enum Message {
     WorldLocUpdated,
     WorldDiameterUpdated,
     RegenWorldSize,
+    RegenWorldAtmosphere,
 }
 
 pub struct GeneratorApp {
@@ -114,6 +117,11 @@ impl GeneratorApp {
                 self.selected_world.generate_size();
                 self.selected_world.resolve_trade_codes();
                 self.world_diameter = self.selected_world.diameter.to_string();
+            }
+
+            RegenWorldAtmosphere => {
+                self.selected_world.generate_atmosphere();
+                self.selected_world.resolve_trade_codes();
             }
         }
     }
@@ -263,7 +271,7 @@ impl GeneratorApp {
                     ui.end_row();
 
                     // Size code
-                    ComboBox::from_id_source("Size")
+                    ComboBox::from_id_source("size_selection")
                         .selected_text(format!("{}", self.selected_world.size))
                         .width(45.0)
                         .show_ui(ui, |ui| {
@@ -300,9 +308,38 @@ impl GeneratorApp {
                     .font(Self::LABEL_FONT)
                     .color(Self::LABEL_COLOR),
             );
-            ui.add(TextEdit::singleline(
-                &mut self.selected_world.atmosphere.composition,
-            ));
+
+            ui.horizontal(|ui| {
+                ComboBox::from_id_source("atmosphere_selection")
+                    .selected_text(format!(
+                        "{}: {}",
+                        self.selected_world.atmosphere.code,
+                        TABLES.atmo_table[self.selected_world.atmosphere.code as usize].composition
+                    ))
+                    .width(200.0)
+                    .show_ui(ui, |ui| {
+                        for atmo in TABLES.atmo_table.iter() {
+                            ui.selectable_value(
+                                &mut self.selected_world.atmosphere,
+                                atmo.clone(),
+                                format!(
+                                    "{}: {}",
+                                    atmo.code, TABLES.atmo_table[atmo.code as usize].composition
+                                ),
+                            );
+                        }
+                    });
+
+                ui.add_space(Self::FIELD_SPACING);
+
+                // Regen atmosphere button
+                if ui
+                    .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                    .clicked()
+                {
+                    self.message_immediate(Message::RegenWorldAtmosphere);
+                }
+            });
         });
     }
 }

@@ -304,7 +304,7 @@ impl World {
         self.diameter = dice::roll(min..=max);
     }
 
-    fn generate_atmosphere(&mut self) {
+    pub(crate) fn generate_atmosphere(&mut self) {
         let lower = 0;
         let upper = (TABLES.atmo_table.len() - 1) as i32;
         let roll: i32 = dice::roll_2d(6) - 7 + self.size as i32;

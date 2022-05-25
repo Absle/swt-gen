@@ -1,4 +1,4 @@
-mod table;
+pub(crate) mod table;
 pub mod world;
 
 use std::collections::BTreeMap;
