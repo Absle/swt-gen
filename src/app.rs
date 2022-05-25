@@ -25,6 +25,7 @@ enum Message {
     #[allow(dead_code)]
     WorldLocUpdated,
     WorldDiameterUpdated,
+    WorldModelUpdated,
     RegenWorldSize,
     RegenWorldAtmosphere,
     RegenWorldTemperature,
@@ -115,25 +116,26 @@ impl GeneratorApp {
                 }
             }
 
+            WorldModelUpdated => self.selected_world.resolve_trade_codes(),
+
             RegenWorldSize => {
                 self.selected_world.generate_size();
-                self.selected_world.resolve_trade_codes();
-                self.world_diameter = self.selected_world.diameter.to_string();
+                self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldAtmosphere => {
                 self.selected_world.generate_atmosphere();
-                self.selected_world.resolve_trade_codes();
+                self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldTemperature => {
                 self.selected_world.generate_temperature();
-                self.selected_world.resolve_trade_codes();
+                self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldPopulation => {
                 self.selected_world.generate_population();
-                self.selected_world.resolve_trade_codes();
+                self.message_next_frame(Message::WorldModelUpdated);
             }
         }
     }
@@ -302,11 +304,16 @@ impl GeneratorApp {
                     .width(45.0)
                     .show_ui(ui, |ui| {
                         for size in World::SIZE_MIN..=World::SIZE_MAX {
-                            ui.selectable_value(
-                                &mut self.selected_world.size,
-                                size,
-                                format!("{:?}", size),
-                            );
+                            if ui
+                                .selectable_value(
+                                    &mut self.selected_world.size,
+                                    size,
+                                    format!("{:?}", size),
+                                )
+                                .clicked()
+                            {
+                                self.message_next_frame(Message::WorldModelUpdated);
+                            }
                         }
                     });
 
@@ -345,14 +352,19 @@ impl GeneratorApp {
                 .width(200.0)
                 .show_ui(ui, |ui| {
                     for atmo in TABLES.atmo_table.iter() {
-                        ui.selectable_value(
-                            &mut self.selected_world.atmosphere,
-                            atmo.clone(),
-                            format!(
-                                "{}: {}",
-                                atmo.code, TABLES.atmo_table[atmo.code as usize].composition
-                            ),
-                        );
+                        if ui
+                            .selectable_value(
+                                &mut self.selected_world.atmosphere,
+                                atmo.clone(),
+                                format!(
+                                    "{}: {}",
+                                    atmo.code, TABLES.atmo_table[atmo.code as usize].composition
+                                ),
+                            )
+                            .clicked()
+                        {
+                            self.message_next_frame(Message::WorldModelUpdated);
+                        }
                     }
                 });
             ui.add_space(Self::FIELD_SPACING);
@@ -384,14 +396,19 @@ impl GeneratorApp {
                 .width(200.0)
                 .show_ui(ui, |ui| {
                     for temp in TABLES.temp_table.iter() {
-                        ui.selectable_value(
-                            &mut self.selected_world.temperature,
-                            temp.clone(),
-                            format!(
-                                "{}: {}",
-                                temp.code, TABLES.temp_table[temp.code as usize].kind
-                            ),
-                        );
+                        if ui
+                            .selectable_value(
+                                &mut self.selected_world.temperature,
+                                temp.clone(),
+                                format!(
+                                    "{}: {}",
+                                    temp.code, TABLES.temp_table[temp.code as usize].kind
+                                ),
+                            )
+                            .clicked()
+                        {
+                            self.message_next_frame(Message::WorldModelUpdated);
+                        }
                     }
                 });
             ui.add_space(Self::FIELD_SPACING);
@@ -423,14 +440,19 @@ impl GeneratorApp {
                 .width(200.0)
                 .show_ui(ui, |ui| {
                     for pop in TABLES.pop_table.iter() {
-                        ui.selectable_value(
-                            &mut self.selected_world.population,
-                            pop.clone(),
-                            format!(
-                                "{}: {}",
-                                pop.code, TABLES.pop_table[pop.code as usize].inhabitants
-                            ),
-                        );
+                        if ui
+                            .selectable_value(
+                                &mut self.selected_world.population,
+                                pop.clone(),
+                                format!(
+                                    "{}: {}",
+                                    pop.code, TABLES.pop_table[pop.code as usize].inhabitants
+                                ),
+                            )
+                            .clicked()
+                        {
+                            self.message_next_frame(Message::WorldModelUpdated);
+                        }
                     }
                 });
             ui.add_space(Self::FIELD_SPACING);
