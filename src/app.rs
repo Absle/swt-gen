@@ -163,31 +163,18 @@ impl GeneratorApp {
     }
 
     fn world_profile_display(&mut self, ui: &mut Ui) {
-        let Self {
-            subsector: _,
-            subsector_svg: _,
-            subsector_image: _,
-
-            message_queue: _,
-            point_selected: _,
-            world_selected: _,
-
-            selected_point: _,
-            selected_world: world,
-            world_loc,
-            world_diameter: _,
-        } = self;
-
         ui.horizontal(|ui| {
+            // Name
             ui.vertical(|ui| {
                 ui.label(
                     RichText::new("World Name")
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
-                ui.add(TextEdit::singleline(&mut world.name).desired_width(150.0));
+                ui.add(TextEdit::singleline(&mut self.selected_world.name).desired_width(150.0));
             });
 
+            // Location
             ui.vertical(|ui| {
                 ui.label(
                     RichText::new("Location")
@@ -196,41 +183,47 @@ impl GeneratorApp {
                 );
 
                 // TODO hook a message into this
-                ui.add(TextEdit::singleline(world_loc).desired_width(50.0));
+                ui.add(TextEdit::singleline(&mut self.world_loc).desired_width(50.0));
             });
 
+            // Profile string
             ui.vertical(|ui| {
                 ui.label(
                     RichText::new("World Profile")
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
+                let profile = self.selected_world.profile();
                 if ui
-                    .add(Label::new(world.profile()).sense(Sense::click()))
+                    .add(Label::new(profile.clone()).sense(Sense::click()))
                     .clicked()
                 {
-                    ui.output().copied_text = world.profile();
+                    ui.output().copied_text = profile;
                 }
             });
 
             ui.add_space(Self::FIELD_SPACING);
 
+            // Trade codes
             ui.vertical(|ui| {
                 ui.label(
                     RichText::new("Trade Codes")
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
+
+                let trade_codes = self.selected_world.trade_code_str();
                 if ui
-                    .add(Label::new(world.trade_code_str()).sense(Sense::click()))
+                    .add(Label::new(trade_codes.clone()).sense(Sense::click()))
                     .clicked()
                 {
-                    ui.output().copied_text = world.trade_code_str();
+                    ui.output().copied_text = trade_codes;
                 }
             });
 
             ui.add_space(Self::FIELD_SPACING);
 
+            // Travel code
             ui.vertical(|ui| {
                 ui.label(
                     RichText::new("Travel Code")
@@ -238,11 +231,11 @@ impl GeneratorApp {
                         .color(Self::LABEL_COLOR),
                 );
                 ComboBox::from_id_source("Travel Code")
-                    .selected_text(world.travel_code_str())
+                    .selected_text(self.selected_world.travel_code_str())
                     .show_ui(ui, |ui| {
                         for code in [TravelCode::Safe, TravelCode::Amber, TravelCode::Red] {
                             ui.selectable_value(
-                                &mut world.travel_code,
+                                &mut self.selected_world.travel_code,
                                 code,
                                 format!("{:?}", code),
                             );
@@ -252,8 +245,9 @@ impl GeneratorApp {
 
             ui.add_space(Self::FIELD_SPACING);
 
+            // Gas giant presence
             ui.checkbox(
-                &mut world.has_gas_giant,
+                &mut self.selected_world.has_gas_giant,
                 RichText::new("Gas Giant Present")
                     .font(Self::LABEL_FONT)
                     .color(Self::LABEL_COLOR),
@@ -265,6 +259,7 @@ impl GeneratorApp {
         ScrollArea::vertical().show(ui, |ui| {
             // World size fields
             ui.horizontal(|ui| {
+                // Size code
                 ui.vertical(|ui| {
                     ui.label(
                         RichText::new("Size")
@@ -287,6 +282,7 @@ impl GeneratorApp {
 
                 ui.add_space(Self::FIELD_SPACING / 2.0);
 
+                // Diameter
                 ui.vertical(|ui| {
                     ui.label(
                         RichText::new("Diameter (km)")
@@ -301,8 +297,9 @@ impl GeneratorApp {
                     }
                 });
 
-                ui.add_space(Self::FIELD_SPACING);
+                ui.add_space(Self::FIELD_SPACING / 2.0);
 
+                // Regenerate size
                 ui.vertical(|ui| {
                     // This just here to push the button down in line with above Combobox
                     ui.label(
@@ -310,7 +307,10 @@ impl GeneratorApp {
                             .font(Self::LABEL_FONT)
                             .color(Self::LABEL_COLOR),
                     );
-                    if ui.button("🎲").clicked() {
+                    if ui
+                        .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                        .clicked()
+                    {
                         self.message_immediate(Message::RegenWorldSize);
                     }
                 });
