@@ -255,91 +255,99 @@ impl GeneratorApp {
     fn world_fields_display(&mut self, ui: &mut Ui) {
         // World size fields
         ScrollArea::vertical().show(ui, |ui| {
-            Grid::new("world_size_grid")
-                .spacing([Self::FIELD_SPACING, Self::LABEL_SPACING])
-                .show(ui, |ui| {
-                    ui.label(
-                        RichText::new("Size")
-                            .font(Self::LABEL_FONT)
-                            .color(Self::LABEL_COLOR),
-                    );
-                    ui.label(
-                        RichText::new("Diameter (km)")
-                            .font(Self::LABEL_FONT)
-                            .color(Self::LABEL_COLOR),
-                    );
-                    ui.end_row();
+            self.world_size_selection(ui);
 
-                    // Size code
-                    ComboBox::from_id_source("size_selection")
-                        .selected_text(format!("{}", self.selected_world.size))
-                        .width(45.0)
-                        .show_ui(ui, |ui| {
-                            for size in World::SIZE_MIN..=World::SIZE_MAX {
-                                ui.selectable_value(
-                                    &mut self.selected_world.size,
-                                    size,
-                                    format!("{:?}", size),
-                                );
-                            }
-                        });
+            ui.add_space(Self::FIELD_SPACING);
 
-                    // Diameter
-                    if ui
-                        .add(TextEdit::singleline(&mut self.world_diameter).desired_width(50.0))
-                        .lost_focus()
-                    {
-                        self.message_immediate(Message::WorldDiameterUpdated);
-                    }
+            self.world_atmosphere_selection(ui);
+        });
+    }
 
-                    // Regen size button
-                    if ui
-                        .button(RichText::new("🎲").font(FontId::proportional(16.0)))
-                        .clicked()
-                    {
-                        self.message_immediate(Message::RegenWorldSize);
+    fn world_size_selection(&mut self, ui: &mut Ui) {
+        Grid::new("world_size_grid")
+            .spacing([Self::FIELD_SPACING, Self::LABEL_SPACING])
+            .show(ui, |ui| {
+                ui.label(
+                    RichText::new("Size")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.label(
+                    RichText::new("Diameter (km)")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.end_row();
+
+                // Size code
+                ComboBox::from_id_source("size_selection")
+                    .selected_text(format!("{}", self.selected_world.size))
+                    .width(45.0)
+                    .show_ui(ui, |ui| {
+                        for size in World::SIZE_MIN..=World::SIZE_MAX {
+                            ui.selectable_value(
+                                &mut self.selected_world.size,
+                                size,
+                                format!("{:?}", size),
+                            );
+                        }
+                    });
+
+                // Diameter
+                if ui
+                    .add(TextEdit::singleline(&mut self.world_diameter).desired_width(50.0))
+                    .lost_focus()
+                {
+                    self.message_immediate(Message::WorldDiameterUpdated);
+                }
+
+                // Regen size button
+                if ui
+                    .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                    .clicked()
+                {
+                    self.message_immediate(Message::RegenWorldSize);
+                }
+            });
+    }
+
+    fn world_atmosphere_selection(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Atmosphere")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+
+        ui.horizontal(|ui| {
+            ComboBox::from_id_source("atmosphere_selection")
+                .selected_text(format!(
+                    "{}: {}",
+                    self.selected_world.atmosphere.code,
+                    TABLES.atmo_table[self.selected_world.atmosphere.code as usize].composition
+                ))
+                .width(200.0)
+                .show_ui(ui, |ui| {
+                    for atmo in TABLES.atmo_table.iter() {
+                        ui.selectable_value(
+                            &mut self.selected_world.atmosphere,
+                            atmo.clone(),
+                            format!(
+                                "{}: {}",
+                                atmo.code, TABLES.atmo_table[atmo.code as usize].composition
+                            ),
+                        );
                     }
                 });
 
             ui.add_space(Self::FIELD_SPACING);
 
-            ui.label(
-                RichText::new("Atmosphere")
-                    .font(Self::LABEL_FONT)
-                    .color(Self::LABEL_COLOR),
-            );
-
-            ui.horizontal(|ui| {
-                ComboBox::from_id_source("atmosphere_selection")
-                    .selected_text(format!(
-                        "{}: {}",
-                        self.selected_world.atmosphere.code,
-                        TABLES.atmo_table[self.selected_world.atmosphere.code as usize].composition
-                    ))
-                    .width(200.0)
-                    .show_ui(ui, |ui| {
-                        for atmo in TABLES.atmo_table.iter() {
-                            ui.selectable_value(
-                                &mut self.selected_world.atmosphere,
-                                atmo.clone(),
-                                format!(
-                                    "{}: {}",
-                                    atmo.code, TABLES.atmo_table[atmo.code as usize].composition
-                                ),
-                            );
-                        }
-                    });
-
-                ui.add_space(Self::FIELD_SPACING);
-
-                // Regen atmosphere button
-                if ui
-                    .button(RichText::new("🎲").font(FontId::proportional(16.0)))
-                    .clicked()
-                {
-                    self.message_immediate(Message::RegenWorldAtmosphere);
-                }
-            });
+            // Regen atmosphere button
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldAtmosphere);
+            }
         });
     }
 }
