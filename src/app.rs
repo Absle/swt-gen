@@ -28,6 +28,7 @@ enum Message {
     RegenWorldSize,
     RegenWorldAtmosphere,
     RegenWorldTemperature,
+    RegenWorldPopulation,
 }
 
 pub struct GeneratorApp {
@@ -127,6 +128,11 @@ impl GeneratorApp {
 
             RegenWorldTemperature => {
                 self.selected_world.generate_temperature();
+                self.selected_world.resolve_trade_codes();
+            }
+
+            RegenWorldPopulation => {
+                self.selected_world.generate_population();
                 self.selected_world.resolve_trade_codes();
             }
         }
@@ -268,6 +274,9 @@ impl GeneratorApp {
 
             self.world_temperature_selection(ui);
             ui.add_space(Self::FIELD_SPACING);
+
+            self.world_population_selection(ui);
+            ui.add_space(Self::FIELD_SPACING);
         });
     }
 
@@ -392,6 +401,45 @@ impl GeneratorApp {
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldTemperature);
+            }
+        });
+    }
+
+    fn world_population_selection(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Population")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal(|ui| {
+            ComboBox::from_id_source("population_selection")
+                .selected_text(format!(
+                    "{}: {}",
+                    self.selected_world.population.code,
+                    TABLES.pop_table[self.selected_world.population.code as usize].inhabitants
+                ))
+                .width(200.0)
+                .show_ui(ui, |ui| {
+                    for pop in TABLES.pop_table.iter() {
+                        ui.selectable_value(
+                            &mut self.selected_world.population,
+                            pop.clone(),
+                            format!(
+                                "{}: {}",
+                                pop.code, TABLES.pop_table[pop.code as usize].inhabitants
+                            ),
+                        );
+                    }
+                });
+            ui.add_space(Self::FIELD_SPACING);
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldPopulation);
             }
         });
     }

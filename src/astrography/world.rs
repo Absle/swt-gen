@@ -367,7 +367,7 @@ impl World {
         self.hydrographics = TABLES.hydro_table[index].clone();
     }
 
-    fn generate_population(&mut self) {
+    pub(crate) fn generate_population(&mut self) {
         // By default, the population roll is a straight 2d6-2; in my opinion
         // the population of a planet should be modified by the habitability of
         // its size, atmosphere, and hydrographic. See this reddit post for the
