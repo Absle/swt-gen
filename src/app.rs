@@ -27,6 +27,7 @@ enum Message {
     WorldDiameterUpdated,
     RegenWorldSize,
     RegenWorldAtmosphere,
+    RegenWorldTemperature,
 }
 
 pub struct GeneratorApp {
@@ -121,6 +122,11 @@ impl GeneratorApp {
 
             RegenWorldAtmosphere => {
                 self.selected_world.generate_atmosphere();
+                self.selected_world.resolve_trade_codes();
+            }
+
+            RegenWorldTemperature => {
+                self.selected_world.generate_temperature();
                 self.selected_world.resolve_trade_codes();
             }
         }
@@ -253,13 +259,15 @@ impl GeneratorApp {
     }
 
     fn world_fields_display(&mut self, ui: &mut Ui) {
-        // World size fields
         ScrollArea::vertical().show(ui, |ui| {
             self.world_size_selection(ui);
-
             ui.add_space(Self::FIELD_SPACING);
 
             self.world_atmosphere_selection(ui);
+            ui.add_space(Self::FIELD_SPACING);
+
+            self.world_temperature_selection(ui);
+            ui.add_space(Self::FIELD_SPACING);
         });
     }
 
@@ -301,7 +309,6 @@ impl GeneratorApp {
                     self.message_immediate(Message::WorldDiameterUpdated);
                 }
 
-                // Regen size button
                 if ui
                     .button(RichText::new("🎲").font(FontId::proportional(16.0)))
                     .clicked()
@@ -317,6 +324,7 @@ impl GeneratorApp {
                 .font(Self::LABEL_FONT)
                 .color(Self::LABEL_COLOR),
         );
+        ui.add_space(Self::LABEL_SPACING);
 
         ui.horizontal(|ui| {
             ComboBox::from_id_source("atmosphere_selection")
@@ -338,15 +346,52 @@ impl GeneratorApp {
                         );
                     }
                 });
-
             ui.add_space(Self::FIELD_SPACING);
 
-            // Regen atmosphere button
             if ui
                 .button(RichText::new("🎲").font(FontId::proportional(16.0)))
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldAtmosphere);
+            }
+        });
+    }
+
+    fn world_temperature_selection(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Temperature")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal(|ui| {
+            ComboBox::from_id_source("temperature_selection")
+                .selected_text(format!(
+                    "{}: {}",
+                    self.selected_world.temperature.code,
+                    TABLES.temp_table[self.selected_world.temperature.code as usize].kind
+                ))
+                .width(200.0)
+                .show_ui(ui, |ui| {
+                    for temp in TABLES.temp_table.iter() {
+                        ui.selectable_value(
+                            &mut self.selected_world.temperature,
+                            temp.clone(),
+                            format!(
+                                "{}: {}",
+                                temp.code, TABLES.temp_table[temp.code as usize].kind
+                            ),
+                        );
+                    }
+                });
+            ui.add_space(Self::FIELD_SPACING);
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldTemperature);
             }
         });
     }

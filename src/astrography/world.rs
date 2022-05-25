@@ -312,7 +312,7 @@ impl World {
         self.atmosphere = TABLES.atmo_table[index].clone();
     }
 
-    fn generate_temperature(&mut self) {
+    pub(crate) fn generate_temperature(&mut self) {
         let atmo_modifier: i32 = match self.atmosphere.code {
             0 | 1 => 0,
             2 | 3 => -2,
