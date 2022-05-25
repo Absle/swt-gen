@@ -3,8 +3,8 @@ use std::collections::VecDeque;
 use eframe::{App, Frame};
 
 use egui::{
-    vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Image, Label, Pos2, Rect,
-    RichText, ScrollArea, Sense, TextEdit, Ui, Vec2,
+    vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label, Pos2,
+    Rect, RichText, ScrollArea, Sense, TextEdit, Ui, Vec2,
 };
 use egui_extras::RetainedImage;
 
@@ -51,6 +51,7 @@ impl GeneratorApp {
 
     const LABEL_FONT: FontId = FontId::proportional(11.0);
     const LABEL_COLOR: Color32 = Color32::GRAY;
+    const LABEL_SPACING: f32 = 4.0;
     const FIELD_SPACING: f32 = 15.0;
 
     /** Queue a message to be handled at the beginning of the next frame. */
@@ -163,36 +164,46 @@ impl GeneratorApp {
     }
 
     fn world_profile_display(&mut self, ui: &mut Ui) {
-        ui.horizontal(|ui| {
-            // Name
-            ui.vertical(|ui| {
+        Grid::new("world_profile_grid")
+            .spacing([Self::FIELD_SPACING / 2.0, Self::LABEL_SPACING])
+            .min_col_width(100.0)
+            .max_col_width(200.0)
+            .show(ui, |ui| {
                 ui.label(
                     RichText::new("World Name")
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
-                ui.add(TextEdit::singleline(&mut self.selected_world.name).desired_width(150.0));
-            });
-
-            // Location
-            ui.vertical(|ui| {
                 ui.label(
                     RichText::new("Location")
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
-
-                // TODO hook a message into this
-                ui.add(TextEdit::singleline(&mut self.world_loc).desired_width(50.0));
-            });
-
-            // Profile string
-            ui.vertical(|ui| {
                 ui.label(
                     RichText::new("World Profile")
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
                 );
+                ui.label(
+                    RichText::new("Trade Codes")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.label(
+                    RichText::new("Travel Code")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.end_row();
+
+                // Name
+                ui.add(TextEdit::singleline(&mut self.selected_world.name).desired_width(150.0));
+
+                // Location
+                // TODO hook a message into this
+                ui.add(TextEdit::singleline(&mut self.world_loc).desired_width(50.0));
+
+                // World profile
                 let profile = self.selected_world.profile();
                 if ui
                     .add(Label::new(profile.clone()).sense(Sense::click()))
@@ -200,18 +211,8 @@ impl GeneratorApp {
                 {
                     ui.output().copied_text = profile;
                 }
-            });
 
-            ui.add_space(Self::FIELD_SPACING);
-
-            // Trade codes
-            ui.vertical(|ui| {
-                ui.label(
-                    RichText::new("Trade Codes")
-                        .font(Self::LABEL_FONT)
-                        .color(Self::LABEL_COLOR),
-                );
-
+                // Trade codes
                 let trade_codes = self.selected_world.trade_code_str();
                 if ui
                     .add(Label::new(trade_codes.clone()).sense(Sense::click()))
@@ -219,18 +220,9 @@ impl GeneratorApp {
                 {
                     ui.output().copied_text = trade_codes;
                 }
-            });
 
-            ui.add_space(Self::FIELD_SPACING);
-
-            // Travel code
-            ui.vertical(|ui| {
-                ui.label(
-                    RichText::new("Travel Code")
-                        .font(Self::LABEL_FONT)
-                        .color(Self::LABEL_COLOR),
-                );
-                ComboBox::from_id_source("Travel Code")
+                // Travel Code
+                ComboBox::from_id_source("travel_code_selection")
                     .selected_text(self.selected_world.travel_code_str())
                     .show_ui(ui, |ui| {
                         for code in [TravelCode::Safe, TravelCode::Amber, TravelCode::Red] {
@@ -241,31 +233,36 @@ impl GeneratorApp {
                             );
                         }
                     });
+
+                // Gas giant presence
+                ui.checkbox(
+                    &mut self.selected_world.has_gas_giant,
+                    RichText::new("Gas Giant Present")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
             });
-
-            ui.add_space(Self::FIELD_SPACING);
-
-            // Gas giant presence
-            ui.checkbox(
-                &mut self.selected_world.has_gas_giant,
-                RichText::new("Gas Giant Present")
-                    .font(Self::LABEL_FONT)
-                    .color(Self::LABEL_COLOR),
-            );
-        });
     }
 
     fn world_fields_display(&mut self, ui: &mut Ui) {
+        // World size fields
         ScrollArea::vertical().show(ui, |ui| {
-            // World size fields
-            ui.horizontal(|ui| {
-                // Size code
-                ui.vertical(|ui| {
+            Grid::new("world_size_grid")
+                .spacing([Self::FIELD_SPACING, Self::LABEL_SPACING])
+                .show(ui, |ui| {
                     ui.label(
                         RichText::new("Size")
                             .font(Self::LABEL_FONT)
                             .color(Self::LABEL_COLOR),
                     );
+                    ui.label(
+                        RichText::new("Diameter (km)")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    ui.end_row();
+
+                    // Size code
                     ComboBox::from_id_source("Size")
                         .selected_text(format!("{}", self.selected_world.size))
                         .width(45.0)
@@ -278,35 +275,16 @@ impl GeneratorApp {
                                 );
                             }
                         });
-                });
 
-                ui.add_space(Self::FIELD_SPACING / 2.0);
-
-                // Diameter
-                ui.vertical(|ui| {
-                    ui.label(
-                        RichText::new("Diameter (km)")
-                            .font(Self::LABEL_FONT)
-                            .color(Self::LABEL_COLOR),
-                    );
+                    // Diameter
                     if ui
                         .add(TextEdit::singleline(&mut self.world_diameter).desired_width(50.0))
                         .lost_focus()
                     {
                         self.message_immediate(Message::WorldDiameterUpdated);
                     }
-                });
 
-                ui.add_space(Self::FIELD_SPACING / 2.0);
-
-                // Regenerate size
-                ui.vertical(|ui| {
-                    // This just here to push the button down in line with above Combobox
-                    ui.label(
-                        RichText::new("")
-                            .font(Self::LABEL_FONT)
-                            .color(Self::LABEL_COLOR),
-                    );
+                    // Regen size button
                     if ui
                         .button(RichText::new("🎲").font(FontId::proportional(16.0)))
                         .clicked()
@@ -314,7 +292,6 @@ impl GeneratorApp {
                         self.message_immediate(Message::RegenWorldSize);
                     }
                 });
-            });
 
             ui.add_space(Self::FIELD_SPACING);
 
