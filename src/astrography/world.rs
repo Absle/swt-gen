@@ -403,7 +403,7 @@ impl World {
         self.population = TABLES.pop_table[index].clone();
     }
 
-    fn generate_government(&mut self) {
+    pub(crate) fn generate_government(&mut self) {
         if self.population.code == 0 {
             self.government = TABLES.gov_table[0].clone();
             return;

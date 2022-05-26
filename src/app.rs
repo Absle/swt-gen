@@ -10,7 +10,7 @@ use egui_extras::RetainedImage;
 
 use crate::astrography::{Point, Subsector};
 
-use crate::astrography::table::TABLES;
+use crate::astrography::table::{GovRecord, TABLES};
 
 use crate::astrography::world::{TravelCode, World};
 
@@ -31,6 +31,7 @@ enum Message {
     RegenWorldTemperature,
     RegenWorldHydrographics,
     RegenWorldPopulation,
+    RegenWorldGovernment,
 }
 
 pub struct GeneratorApp {
@@ -145,10 +146,32 @@ impl GeneratorApp {
                 self.selected_world.generate_population();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
+
+            RegenWorldGovernment => {
+                let old_code = self.selected_world.government.code as usize;
+                let old_description = self.selected_world.government.description.clone();
+                let old_contraband = self.selected_world.government.contraband.clone();
+                self.selected_world.generate_government();
+
+                // If description or contraband have been changed from the default, keep them;
+                // otherwise, allow them to be overwritten by the new government's default
+                if old_description != TABLES.gov_table[old_code].description {
+                    self.selected_world.government.description = old_description;
+                }
+                if old_contraband != TABLES.gov_table[old_code].contraband {
+                    self.selected_world.government.contraband = old_contraband;
+                }
+
+                self.message_next_frame(Message::WorldModelUpdated);
+            }
         }
     }
 
-    /** Regenerate `subsector_svg` and `subsector_image` after a change to `subsector`. */
+    /** Regenerate `subsector_svg` and `subsector_image` after a change to `subsector`.
+
+    "Redraw" is actually a misgnomer since it's redrawn every frame, but "regenerate" isn't as
+    descriptive.
+    */
     fn redraw_subsector_image(&mut self) {
         self.subsector_svg = self.subsector.generate_svg();
         self.subsector_image =
@@ -289,6 +312,9 @@ impl GeneratorApp {
             ui.add_space(Self::FIELD_SPACING);
 
             self.world_population_selection(ui);
+            ui.add_space(Self::FIELD_SPACING);
+
+            self.world_government_selection(ui);
             ui.add_space(Self::FIELD_SPACING);
         });
     }
@@ -518,6 +544,88 @@ impl GeneratorApp {
             {
                 self.message_immediate(Message::RegenWorldPopulation);
             }
+        });
+    }
+
+    fn world_government_selection(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Government")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal(|ui| {
+            ComboBox::from_id_source("government_selection")
+                .selected_text(format!(
+                    "{}: {}",
+                    self.selected_world.government.code,
+                    TABLES.gov_table[self.selected_world.government.code as usize].kind
+                ))
+                .width(Self::FIELD_SELECTION_WIDTH)
+                .show_ui(ui, |ui| {
+                    for gov in TABLES.gov_table.iter() {
+                        let GovRecord {
+                            code: world_gov_code,
+                            kind: world_gov_kind,
+                            ..
+                        } = &mut self.selected_world.government;
+
+                        if ui
+                            .selectable_value(
+                                world_gov_code,
+                                gov.code,
+                                format!("{}: {}", gov.code, gov.kind),
+                            )
+                            .on_hover_text(gov.description.clone())
+                            .clicked()
+                        {
+                            *world_gov_kind = gov.kind.clone();
+                            self.message_next_frame(Message::WorldModelUpdated);
+                        }
+                    }
+                });
+            ui.add_space(Self::FIELD_SPACING);
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldGovernment);
+            }
+        });
+
+        ui.add_space(Self::LABEL_SPACING * 1.5);
+        ui.label(
+            RichText::new("Contraband")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.add(
+            TextEdit::singleline(&mut self.selected_world.government.contraband)
+                .desired_width(Self::FIELD_SELECTION_WIDTH),
+        )
+        .on_hover_text(format!(
+            "Common contraband: {}",
+            TABLES.gov_table[self.selected_world.government.code as usize].contraband
+        ));
+
+        ui.add_space(Self::LABEL_SPACING * 1.5);
+        ui.label(
+            RichText::new("Description")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ScrollArea::vertical().max_height(172.0).show(ui, |ui| {
+            ui.add(
+                TextEdit::multiline(&mut self.selected_world.government.description)
+                    .desired_width(Self::FIELD_SELECTION_WIDTH)
+                    .desired_rows(12),
+            );
         });
     }
 }
