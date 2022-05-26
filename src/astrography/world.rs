@@ -332,7 +332,7 @@ impl World {
         self.temperature = TABLES.temp_table[index].clone();
     }
 
-    fn generate_hydrographics(&mut self) {
+    pub(crate) fn generate_hydrographics(&mut self) {
         let roll = if self.size > 1 {
             let atmo_modifier: i32 = match self.atmosphere.code {
                 0 | 1 | 10 | 11 | 12 => -4,

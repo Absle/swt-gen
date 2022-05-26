@@ -29,6 +29,7 @@ enum Message {
     RegenWorldSize,
     RegenWorldAtmosphere,
     RegenWorldTemperature,
+    RegenWorldHydrographics,
     RegenWorldPopulation,
 }
 
@@ -53,12 +54,14 @@ pub struct GeneratorApp {
 }
 
 impl GeneratorApp {
-    const CENTRAL_PANEL_MIN_SIZE: Vec2 = vec2(1584.0, 834.0);
+    const SUBSECTOR_IMAGE_MIN_SIZE: Vec2 = vec2(1584.0, 834.0);
 
     const LABEL_FONT: FontId = FontId::proportional(11.0);
     const LABEL_COLOR: Color32 = Color32::GRAY;
     const LABEL_SPACING: f32 = 4.0;
+
     const FIELD_SPACING: f32 = 15.0;
+    const FIELD_SELECTION_WIDTH: f32 = 225.0;
 
     /** Queue a message to be handled at the beginning of the next frame. */
     fn message_next_frame(&mut self, message: Message) {
@@ -133,6 +136,11 @@ impl GeneratorApp {
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
+            RegenWorldHydrographics => {
+                self.selected_world.generate_hydrographics();
+                self.message_next_frame(Message::WorldModelUpdated);
+            }
+
             RegenWorldPopulation => {
                 self.selected_world.generate_population();
                 self.message_next_frame(Message::WorldModelUpdated);
@@ -149,7 +157,7 @@ impl GeneratorApp {
 
     fn subsector_map_display(&mut self, ctx: &Context, ui: &mut Ui) {
         let max_size = ui.available_size();
-        ui.set_min_size(Self::CENTRAL_PANEL_MIN_SIZE);
+        ui.set_min_size(Self::SUBSECTOR_IMAGE_MIN_SIZE);
         ui.set_max_size(max_size);
 
         let mut desired_size = self.subsector_image.size_vec2();
@@ -277,6 +285,9 @@ impl GeneratorApp {
             self.world_temperature_selection(ui);
             ui.add_space(Self::FIELD_SPACING);
 
+            self.world_hydrographics_selection(ui);
+            ui.add_space(Self::FIELD_SPACING);
+
             self.world_population_selection(ui);
             ui.add_space(Self::FIELD_SPACING);
         });
@@ -349,7 +360,7 @@ impl GeneratorApp {
                     self.selected_world.atmosphere.code,
                     TABLES.atmo_table[self.selected_world.atmosphere.code as usize].composition
                 ))
-                .width(200.0)
+                .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for atmo in TABLES.atmo_table.iter() {
                         if ui
@@ -393,7 +404,7 @@ impl GeneratorApp {
                     self.selected_world.temperature.code,
                     TABLES.temp_table[self.selected_world.temperature.code as usize].kind
                 ))
-                .width(200.0)
+                .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for temp in TABLES.temp_table.iter() {
                         if ui
@@ -422,6 +433,50 @@ impl GeneratorApp {
         });
     }
 
+    fn world_hydrographics_selection(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Hydrographics")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal(|ui| {
+            ComboBox::from_id_source("hydrographics_selection")
+                .selected_text(format!(
+                    "{}: {}",
+                    self.selected_world.hydrographics.code,
+                    TABLES.hydro_table[self.selected_world.hydrographics.code as usize].description
+                ))
+                .width(Self::FIELD_SELECTION_WIDTH)
+                .show_ui(ui, |ui| {
+                    for hydro in TABLES.hydro_table.iter() {
+                        if ui
+                            .selectable_value(
+                                &mut self.selected_world.hydrographics,
+                                hydro.clone(),
+                                format!(
+                                    "{}: {}",
+                                    hydro.code, TABLES.hydro_table[hydro.code as usize].description
+                                ),
+                            )
+                            .clicked()
+                        {
+                            self.message_next_frame(Message::WorldModelUpdated);
+                        }
+                    }
+                });
+            ui.add_space(Self::FIELD_SPACING);
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldHydrographics);
+            }
+        });
+    }
+
     fn world_population_selection(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Population")
@@ -437,7 +492,7 @@ impl GeneratorApp {
                     self.selected_world.population.code,
                     TABLES.pop_table[self.selected_world.population.code as usize].inhabitants
                 ))
-                .width(200.0)
+                .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for pop in TABLES.pop_table.iter() {
                         if ui
