@@ -32,6 +32,7 @@ enum Message {
     RegenWorldHydrographics,
     RegenWorldPopulation,
     RegenWorldGovernment,
+    RegenWorldLawLevel,
 }
 
 pub struct GeneratorApp {
@@ -162,6 +163,11 @@ impl GeneratorApp {
                     self.selected_world.government.contraband = old_contraband;
                 }
 
+                self.message_next_frame(Message::WorldModelUpdated);
+            }
+
+            RegenWorldLawLevel => {
+                self.selected_world.generate_law_level();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
         }
@@ -299,23 +305,37 @@ impl GeneratorApp {
 
     fn world_fields_display(&mut self, ui: &mut Ui) {
         ScrollArea::vertical().show(ui, |ui| {
-            self.world_size_selection(ui);
-            ui.add_space(Self::FIELD_SPACING);
+            ui.horizontal(|ui| {
+                let available_width = ui.available_size().x;
+                ui.vertical(|ui| {
+                    ui.set_width(available_width / 2.0);
 
-            self.world_atmosphere_selection(ui);
-            ui.add_space(Self::FIELD_SPACING);
+                    self.world_size_selection(ui);
+                    ui.add_space(Self::FIELD_SPACING);
 
-            self.world_temperature_selection(ui);
-            ui.add_space(Self::FIELD_SPACING);
+                    self.world_atmosphere_selection(ui);
+                    ui.add_space(Self::FIELD_SPACING);
 
-            self.world_hydrographics_selection(ui);
-            ui.add_space(Self::FIELD_SPACING);
+                    self.world_temperature_selection(ui);
+                    ui.add_space(Self::FIELD_SPACING);
 
-            self.world_population_selection(ui);
-            ui.add_space(Self::FIELD_SPACING);
+                    self.world_hydrographics_selection(ui);
+                    ui.add_space(Self::FIELD_SPACING);
 
-            self.world_government_selection(ui);
-            ui.add_space(Self::FIELD_SPACING);
+                    self.world_population_selection(ui);
+                    ui.add_space(Self::FIELD_SPACING);
+                });
+
+                ui.vertical(|ui| {
+                    ui.set_width(available_width / 2.0);
+
+                    self.world_government_selection(ui);
+                    ui.add_space(Self::FIELD_SPACING);
+
+                    self.world_law_level(ui);
+                    ui.add_space(Self::FIELD_SPACING);
+                });
+            });
         });
     }
 
@@ -627,6 +647,69 @@ impl GeneratorApp {
                     .desired_rows(12),
             );
         });
+    }
+
+    fn world_law_level(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Law Level")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal(|ui| {
+            ComboBox::from_id_source("law_level_selection")
+                .selected_text(format!("{}", self.selected_world.law_level.code))
+                .width(45.0)
+                .show_ui(ui, |ui| {
+                    for law_level in TABLES.law_table.iter() {
+                        if ui
+                            .selectable_value(
+                                &mut self.selected_world.law_level,
+                                law_level.clone(),
+                                format!("{}", law_level.code),
+                            )
+                            .clicked()
+                        {
+                            self.message_next_frame(Message::WorldModelUpdated);
+                        }
+                    }
+                });
+            ui.add_space(Self::FIELD_SPACING);
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldLawLevel);
+            }
+        });
+
+        Grid::new("banned_equipment_grid")
+            .spacing([Self::FIELD_SPACING / 2.0, Self::LABEL_SPACING])
+            .min_col_width(Self::FIELD_SELECTION_WIDTH)
+            .max_col_width(Self::FIELD_SELECTION_WIDTH)
+            .striped(true)
+            .show(ui, |ui| {
+                ui.label(
+                    RichText::new("Banned Weapons")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.label(
+                    RichText::new("Banned Armor")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.end_row();
+
+                let law_level = self.selected_world.law_level.code as usize;
+                for i in 0..=law_level {
+                    ui.label(TABLES.law_table[i].banned_weapons.clone());
+                    ui.label(TABLES.law_table[i].banned_armor.clone());
+                    ui.end_row();
+                }
+            });
     }
 }
 

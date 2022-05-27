@@ -416,7 +416,7 @@ impl World {
         self.government = TABLES.gov_table[index].clone();
     }
 
-    fn generate_law_level(&mut self) {
+    pub(crate) fn generate_law_level(&mut self) {
         if self.population.code == 0 {
             self.law_level = TABLES.law_table[0].clone();
             return;
