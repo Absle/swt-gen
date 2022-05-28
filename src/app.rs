@@ -343,29 +343,29 @@ impl GeneratorApp {
                 ui.vertical(|ui| {
                     ui.set_width(available_width / 2.0);
 
-                    self.world_size_selection(ui);
+                    self.world_size_display(ui);
                     ui.add_space(Self::FIELD_SPACING);
 
-                    self.world_atmosphere_selection(ui);
+                    self.world_atmosphere_display(ui);
                     ui.add_space(Self::FIELD_SPACING);
 
-                    self.world_temperature_selection(ui);
+                    self.world_temperature_display(ui);
                     ui.add_space(Self::FIELD_SPACING);
 
-                    self.world_hydrographics_selection(ui);
+                    self.world_hydrographics_display(ui);
                     ui.add_space(Self::FIELD_SPACING);
 
-                    self.world_population_selection(ui);
+                    self.world_population_display(ui);
                     ui.add_space(Self::FIELD_SPACING);
                 });
 
                 ui.vertical(|ui| {
                     ui.set_width(available_width / 2.0);
 
-                    self.world_government_selection(ui);
+                    self.world_government_display(ui);
                     ui.add_space(Self::FIELD_SPACING);
 
-                    self.world_law_level_selection(ui);
+                    self.world_law_level_display(ui);
                     ui.add_space(Self::FIELD_SPACING);
 
                     self.world_faction_display(ui);
@@ -375,7 +375,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_size_selection(&mut self, ui: &mut Ui) {
+    fn world_size_display(&mut self, ui: &mut Ui) {
         Grid::new("world_size_grid")
             .spacing([Self::FIELD_SPACING, Self::LABEL_SPACING])
             .show(ui, |ui| {
@@ -427,7 +427,7 @@ impl GeneratorApp {
             });
     }
 
-    fn world_atmosphere_selection(&mut self, ui: &mut Ui) {
+    fn world_atmosphere_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Atmosphere")
                 .font(Self::LABEL_FONT)
@@ -471,7 +471,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_temperature_selection(&mut self, ui: &mut Ui) {
+    fn world_temperature_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Temperature")
                 .font(Self::LABEL_FONT)
@@ -515,7 +515,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_hydrographics_selection(&mut self, ui: &mut Ui) {
+    fn world_hydrographics_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Hydrographics")
                 .font(Self::LABEL_FONT)
@@ -559,7 +559,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_population_selection(&mut self, ui: &mut Ui) {
+    fn world_population_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Population")
                 .font(Self::LABEL_FONT)
@@ -603,7 +603,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_government_selection(&mut self, ui: &mut Ui) {
+    fn world_government_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Government")
                 .font(Self::LABEL_FONT)
@@ -684,7 +684,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_law_level_selection(&mut self, ui: &mut Ui) {
+    fn world_law_level_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Law Level")
                 .font(Self::LABEL_FONT)
