@@ -13,10 +13,24 @@ use crate::histogram::Histogram;
 
 #[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub struct Faction {
-    name: String,
-    code: u16,
-    strength: String,
-    government: GovRecord,
+    pub(crate) name: String,
+    pub(crate) code: u16,
+    pub(crate) strength: String,
+    pub(crate) government: GovRecord,
+}
+
+impl Faction {
+    pub(crate) fn random() -> Faction {
+        let gov_roll = dice::roll_2d(6);
+        let faction_roll = dice::roll_2d(6);
+
+        Faction {
+            name: String::from("Unnamed"),
+            code: TABLES.faction_table[faction_roll].code,
+            strength: TABLES.faction_table[faction_roll].strength.clone(),
+            government: TABLES.gov_table[gov_roll].clone(),
+        }
+    }
 }
 
 impl PartialEq for Faction {
@@ -442,15 +456,7 @@ impl World {
             };
 
         for _ in 0..faction_count {
-            let gov_roll = dice::roll_2d(6);
-            let faction_roll = dice::roll_2d(6);
-
-            self.factions.push(Faction {
-                name: String::from("Unnamed"),
-                code: TABLES.faction_table[faction_roll].code,
-                strength: TABLES.faction_table[faction_roll].strength.clone(),
-                government: TABLES.gov_table[gov_roll].clone(),
-            });
+            self.factions.push(Faction::random());
         }
     }
 

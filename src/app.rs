@@ -12,7 +12,7 @@ use crate::astrography::{Point, Subsector};
 
 use crate::astrography::table::{GovRecord, TABLES};
 
-use crate::astrography::world::{TravelCode, World};
+use crate::astrography::world::{Faction, TravelCode, World};
 
 /** Set of messages respresenting all non-trivial GUI events. */
 enum Message {
@@ -33,6 +33,9 @@ enum Message {
     RegenWorldPopulation,
     RegenWorldGovernment,
     RegenWorldLawLevel,
+    AddNewFaction,
+    RemoveSelectedFaction,
+    RegenSelectedFaction,
 }
 
 pub struct GeneratorApp {
@@ -49,6 +52,8 @@ pub struct GeneratorApp {
     /// A world is currently selected
     world_selected: bool,
     selected_world: World,
+
+    selected_faction_index: usize,
 
     // Mirror fields
     world_loc: String,
@@ -91,6 +96,7 @@ impl GeneratorApp {
 
                 self.point_selected = true;
                 self.selected_point = new_point;
+                self.selected_faction_index = 0;
                 let world = self.subsector.map.get(&self.selected_point);
                 if let Some(world) = world {
                     self.world_selected = true;
@@ -169,6 +175,33 @@ impl GeneratorApp {
             RegenWorldLawLevel => {
                 self.selected_world.generate_law_level();
                 self.message_next_frame(Message::WorldModelUpdated);
+            }
+
+            AddNewFaction => {
+                self.selected_world.factions.push(Faction::random());
+                // Select the newly generated faction
+                self.selected_faction_index = self.selected_world.factions.len() - 1;
+            }
+
+            RemoveSelectedFaction => {
+                self.selected_world
+                    .factions
+                    .remove(self.selected_faction_index);
+            }
+
+            RegenSelectedFaction => {
+                let index = self.selected_faction_index;
+                if let Some(faction) = self.selected_world.factions.get_mut(index) {
+                    let old_code = faction.government.code as usize;
+                    let name = faction.name.clone();
+                    let old_description = faction.government.description.clone();
+                    *faction = Faction::random();
+
+                    faction.name = name;
+                    if old_description != TABLES.gov_table[old_code].description {
+                        faction.government.description = old_description;
+                    }
+                }
             }
         }
     }
@@ -332,8 +365,11 @@ impl GeneratorApp {
                     self.world_government_selection(ui);
                     ui.add_space(Self::FIELD_SPACING);
 
-                    self.world_law_level(ui);
+                    self.world_law_level_selection(ui);
                     ui.add_space(Self::FIELD_SPACING);
+
+                    self.world_faction_display(ui);
+                    ui.add_space(Self::FIELD_SPACING)
                 });
             });
         });
@@ -640,16 +676,15 @@ impl GeneratorApp {
         );
         ui.add_space(Self::LABEL_SPACING);
 
-        ScrollArea::vertical().max_height(172.0).show(ui, |ui| {
+        ScrollArea::vertical().show(ui, |ui| {
             ui.add(
                 TextEdit::multiline(&mut self.selected_world.government.description)
-                    .desired_width(Self::FIELD_SELECTION_WIDTH)
-                    .desired_rows(12),
+                    .desired_width(Self::FIELD_SELECTION_WIDTH),
             );
         });
     }
 
-    fn world_law_level(&mut self, ui: &mut Ui) {
+    fn world_law_level_selection(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Law Level")
                 .font(Self::LABEL_FONT)
@@ -711,6 +746,120 @@ impl GeneratorApp {
                 }
             });
     }
+
+    fn world_faction_display(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Factions")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal_top(|ui| {
+            ui.vertical(|ui| {
+                ui.set_width(100.0);
+                for (index, faction) in self.selected_world.factions.iter().enumerate() {
+                    ui.selectable_value(
+                        &mut self.selected_faction_index,
+                        index,
+                        faction.name.clone(),
+                    );
+                }
+                if ui.button("+").clicked() {
+                    self.message_immediate(Message::AddNewFaction)
+                }
+            });
+
+            let fac_idx = self.selected_faction_index;
+            if self.selected_world.factions.get(fac_idx).is_some() {
+                ui.vertical(|ui| {
+                    ui.set_min_height(200.0);
+
+                    ui.add(
+                        TextEdit::singleline(&mut self.selected_world.factions[fac_idx].name)
+                            .desired_width(Self::FIELD_SELECTION_WIDTH),
+                    );
+
+                    let strength_code = self.selected_world.factions[fac_idx].code as usize;
+                    ComboBox::from_id_source("faction_strength_selection")
+                        .selected_text(format!(
+                            "{}: {}",
+                            strength_code, TABLES.faction_table[strength_code].strength
+                        ))
+                        .width(Self::FIELD_SELECTION_WIDTH)
+                        .show_ui(ui, |ui| {
+                            for faction in TABLES.faction_table.iter() {
+                                let Faction { code, strength, .. } =
+                                    &mut self.selected_world.factions[fac_idx];
+
+                                if ui
+                                    .selectable_value(
+                                        strength,
+                                        faction.strength.clone(),
+                                        format!("{}: {}", faction.code, faction.strength),
+                                    )
+                                    .clicked()
+                                {
+                                    *code = faction.code;
+                                }
+                            }
+                        });
+
+                    let gov_code = self.selected_world.factions[fac_idx].government.code as usize;
+                    ComboBox::from_id_source("faction_government_selection")
+                        .selected_text(format!("{}: {}", gov_code, TABLES.gov_table[gov_code].kind))
+                        .width(Self::FIELD_SELECTION_WIDTH)
+                        .show_ui(ui, |ui| {
+                            for gov in TABLES.gov_table.iter() {
+                                let GovRecord {
+                                    code: fac_gov_code,
+                                    kind: fac_gov_kind,
+                                    ..
+                                } = &mut self.selected_world.factions[fac_idx].government;
+
+                                if ui
+                                    .selectable_value(
+                                        fac_gov_code,
+                                        gov.code,
+                                        format!("{}: {}", gov.code, gov.kind),
+                                    )
+                                    .on_hover_text(gov.description.clone())
+                                    .clicked()
+                                {
+                                    *fac_gov_kind = gov.kind.clone();
+                                }
+                            }
+                        });
+
+                    ScrollArea::vertical().max_height(172.0).show(ui, |ui| {
+                        let GovRecord { description, .. } =
+                            &mut self.selected_world.factions[fac_idx].government;
+                        ui.add(
+                            TextEdit::multiline(description)
+                                .desired_width(Self::FIELD_SELECTION_WIDTH),
+                        )
+                    });
+                });
+
+                ui.vertical(|ui| {
+                    if ui
+                        .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                        .clicked()
+                    {
+                        self.message_immediate(Message::RegenSelectedFaction);
+                    }
+
+                    if ui
+                        .button(RichText::new("❌").font(FontId::proportional(16.0)))
+                        .on_hover_text_at_pointer("Double click to delete")
+                        .double_clicked()
+                    {
+                        self.message_immediate(Message::RemoveSelectedFaction);
+                    }
+                });
+            }
+        });
+    }
 }
 
 impl Default for GeneratorApp {
@@ -733,6 +882,7 @@ impl Default for GeneratorApp {
             world_selected: false,
             selected_point,
             selected_world,
+            selected_faction_index: 0,
             world_loc,
             world_diameter,
         }
