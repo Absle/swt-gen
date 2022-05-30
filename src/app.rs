@@ -10,7 +10,7 @@ use egui_extras::RetainedImage;
 
 use crate::astrography::{Point, Subsector};
 
-use crate::astrography::table::{GovRecord, TABLES};
+use crate::astrography::table::{CulturalDiffRecord, GovRecord, TABLES};
 
 use crate::astrography::world::{Faction, TravelCode, World};
 
@@ -36,6 +36,7 @@ enum Message {
     AddNewFaction,
     RemoveSelectedFaction,
     RegenSelectedFaction,
+    RegenWorldCulture,
 }
 
 pub struct GeneratorApp {
@@ -203,6 +204,16 @@ impl GeneratorApp {
                     }
                 }
             }
+
+            RegenWorldCulture => {
+                let old_code = self.selected_world.culture.code as usize;
+                let old_description = self.selected_world.culture.description.clone();
+                self.selected_world.generate_culture();
+
+                if old_description != TABLES.culture_table[old_code].description {
+                    self.selected_world.culture.description = old_description;
+                }
+            }
         }
     }
 
@@ -356,6 +367,9 @@ impl GeneratorApp {
                     ui.add_space(Self::FIELD_SPACING);
 
                     self.world_population_display(ui);
+                    ui.add_space(Self::FIELD_SPACING);
+
+                    self.world_culture_display(ui);
                     ui.add_space(Self::FIELD_SPACING);
                 });
 
@@ -676,12 +690,15 @@ impl GeneratorApp {
         );
         ui.add_space(Self::LABEL_SPACING);
 
-        ScrollArea::vertical().show(ui, |ui| {
-            ui.add(
-                TextEdit::multiline(&mut self.selected_world.government.description)
-                    .desired_width(Self::FIELD_SELECTION_WIDTH),
-            );
-        });
+        ScrollArea::vertical()
+            .max_height(Self::FIELD_SELECTION_WIDTH)
+            .show(ui, |ui| {
+                ui.add(
+                    TextEdit::multiline(&mut self.selected_world.government.description)
+                        .desired_width(Self::FIELD_SELECTION_WIDTH)
+                        .desired_rows(12),
+                );
+            });
     }
 
     fn world_law_level_display(&mut self, ui: &mut Ui) {
@@ -831,14 +848,17 @@ impl GeneratorApp {
                             }
                         });
 
-                    ScrollArea::vertical().max_height(172.0).show(ui, |ui| {
-                        let GovRecord { description, .. } =
-                            &mut self.selected_world.factions[fac_idx].government;
-                        ui.add(
-                            TextEdit::multiline(description)
-                                .desired_width(Self::FIELD_SELECTION_WIDTH),
-                        )
-                    });
+                    ScrollArea::vertical()
+                        .max_height(Self::FIELD_SELECTION_WIDTH)
+                        .show(ui, |ui| {
+                            let GovRecord { description, .. } =
+                                &mut self.selected_world.factions[fac_idx].government;
+                            ui.add(
+                                TextEdit::multiline(description)
+                                    .desired_width(Self::FIELD_SELECTION_WIDTH)
+                                    .desired_rows(12),
+                            )
+                        });
                 });
 
                 ui.vertical(|ui| {
@@ -859,6 +879,71 @@ impl GeneratorApp {
                 });
             }
         });
+    }
+
+    fn world_culture_display(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Culture")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal(|ui| {
+            let code = self.selected_world.culture.code as usize;
+            ComboBox::from_id_source("culture_selection")
+                .selected_text(TABLES.culture_table[code].cultural_difference.clone())
+                .width(Self::FIELD_SELECTION_WIDTH)
+                .show_ui(ui, |ui| {
+                    for item in TABLES.culture_table.iter() {
+                        let CulturalDiffRecord {
+                            code,
+                            cultural_difference,
+                            ..
+                        } = &mut self.selected_world.culture;
+
+                        if ui
+                            .selectable_value(
+                                cultural_difference,
+                                item.cultural_difference.clone(),
+                                format!("{}", item.cultural_difference),
+                            )
+                            .on_hover_text(item.description.clone())
+                            .clicked()
+                        {
+                            *code = item.code;
+                        }
+                    }
+                });
+            ui.add_space(Self::FIELD_SPACING);
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .clicked()
+            {
+                // TODO
+                self.message_immediate(Message::RegenWorldCulture);
+            }
+        });
+        ui.add_space(Self::LABEL_SPACING * 1.5);
+
+        ui.label(
+            RichText::new("Description")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ScrollArea::vertical()
+            .id_source("culture_description")
+            .max_height(Self::FIELD_SELECTION_WIDTH)
+            .show(ui, |ui| {
+                ui.add(
+                    TextEdit::multiline(&mut self.selected_world.culture.description)
+                        .desired_width(Self::FIELD_SELECTION_WIDTH)
+                        .desired_rows(12),
+                );
+            });
     }
 }
 

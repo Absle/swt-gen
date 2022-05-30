@@ -460,7 +460,7 @@ impl World {
         }
     }
 
-    fn generate_culture(&mut self) {
+    pub(crate) fn generate_culture(&mut self) {
         let range = 0..TABLES.culture_table.len();
         let roll = dice::roll(range);
         self.culture = TABLES.culture_table[roll].clone();
