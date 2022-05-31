@@ -359,17 +359,14 @@ impl GeneratorApp {
 
                 // World profile
                 let profile = self.selected_world.profile();
-                if ui
-                    .add(Label::new(profile.clone()).sense(Sense::click()))
-                    .clicked()
-                {
+                if ui.add(Label::new(&profile).sense(Sense::click())).clicked() {
                     ui.output().copied_text = profile;
                 }
 
                 // Trade codes
                 let trade_codes = self.selected_world.trade_code_str();
                 if ui
-                    .add(Label::new(trade_codes.clone()).sense(Sense::click()))
+                    .add(Label::new(&trade_codes).sense(Sense::click()))
                     .clicked()
                 {
                     ui.output().copied_text = trade_codes;
@@ -697,7 +694,7 @@ impl GeneratorApp {
                                 gov.kind.clone(),
                                 format!("{}: {}", gov.code, gov.kind),
                             )
-                            .on_hover_text(gov.description.clone())
+                            .on_hover_text(&gov.description)
                             .clicked()
                         {
                             self.message_immediate(Message::NewWorldGovSelected {
@@ -770,7 +767,7 @@ impl GeneratorApp {
                             .selectable_value(
                                 &mut self.selected_world.law_level,
                                 law_level.clone(),
-                                format!("{}", law_level.code),
+                                law_level.code.to_string(),
                             )
                             .clicked()
                         {
@@ -808,8 +805,8 @@ impl GeneratorApp {
 
                 let law_level = self.selected_world.law_level.code as usize;
                 for i in 0..=law_level {
-                    ui.label(TABLES.law_table[i].banned_weapons.clone());
-                    ui.label(TABLES.law_table[i].banned_armor.clone());
+                    ui.label(&TABLES.law_table[i].banned_weapons);
+                    ui.label(&TABLES.law_table[i].banned_armor);
                     ui.end_row();
                 }
             });
@@ -827,11 +824,7 @@ impl GeneratorApp {
             ui.vertical(|ui| {
                 ui.set_width(100.0);
                 for (index, faction) in self.selected_world.factions.iter().enumerate() {
-                    ui.selectable_value(
-                        &mut self.selected_faction_index,
-                        index,
-                        faction.name.clone(),
-                    );
+                    ui.selectable_value(&mut self.selected_faction_index, index, &faction.name);
                 }
                 if ui.button("+").clicked() {
                     self.message_immediate(Message::AddNewFaction)
@@ -889,7 +882,7 @@ impl GeneratorApp {
                                         gov.kind.clone(),
                                         format!("{}: {}", gov.code, gov.kind),
                                     )
-                                    .on_hover_text(gov.description.clone())
+                                    .on_hover_text(&gov.description)
                                     .clicked()
                                 {
                                     self.message_immediate(Message::NewFactionGovSelected {
@@ -943,7 +936,7 @@ impl GeneratorApp {
         ui.horizontal(|ui| {
             let code = self.selected_world.culture.code as usize;
             ComboBox::from_id_source("culture_selection")
-                .selected_text(TABLES.culture_table[code].cultural_difference.clone())
+                .selected_text(&TABLES.culture_table[code].cultural_difference)
                 .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for item in TABLES.culture_table.iter() {
@@ -956,9 +949,9 @@ impl GeneratorApp {
                             .selectable_value(
                                 cultural_difference,
                                 item.cultural_difference.clone(),
-                                item.cultural_difference.clone(),
+                                &item.cultural_difference,
                             )
-                            .on_hover_text(item.description.clone())
+                            .on_hover_text(&item.description)
                             .clicked()
                         {
                             self.message_immediate(Message::NewWorldCultureSelected {
