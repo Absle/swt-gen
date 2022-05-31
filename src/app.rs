@@ -31,11 +31,20 @@ enum Message {
     RegenWorldTemperature,
     RegenWorldHydrographics,
     RegenWorldPopulation,
+    NewWorldGovSelected {
+        new_code: u16,
+    },
     RegenWorldGovernment,
     RegenWorldLawLevel,
     AddNewFaction,
     RemoveSelectedFaction,
+    NewFactionGovSelected {
+        new_code: u16,
+    },
     RegenSelectedFaction,
+    NewWorldCultureSelected {
+        new_code: u16,
+    },
     RegenWorldCulture,
 }
 
@@ -118,7 +127,9 @@ impl GeneratorApp {
             }
 
             // TODO
-            WorldLocUpdated => (),
+            WorldLocUpdated => {
+                todo!("Add ability to change world location.")
+            }
 
             WorldDiameterUpdated => {
                 if let Ok(diameter) = self.world_diameter.parse::<u32>() {
@@ -152,6 +163,19 @@ impl GeneratorApp {
 
             RegenWorldPopulation => {
                 self.selected_world.generate_population();
+                self.message_next_frame(Message::WorldModelUpdated);
+            }
+
+            NewWorldGovSelected { new_code } => {
+                let old_code = self.selected_world.government.code as usize;
+                let old_description = &mut self.selected_world.government.description;
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if *old_description == TABLES.gov_table[old_code].description {
+                    *old_description = TABLES.gov_table[new_code as usize].description.clone();
+                }
+
+                self.selected_world.government.code = new_code;
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
@@ -190,6 +214,21 @@ impl GeneratorApp {
                     .remove(self.selected_faction_index);
             }
 
+            NewFactionGovSelected { new_code } => {
+                let fac_index = self.selected_faction_index;
+                let old_code = self.selected_world.factions[fac_index].government.code as usize;
+                let old_description = &mut self.selected_world.factions[fac_index]
+                    .government
+                    .description;
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if *old_description == TABLES.gov_table[old_code].description {
+                    *old_description = TABLES.gov_table[new_code as usize].description.clone();
+                }
+
+                self.selected_world.factions[fac_index].government.code = new_code;
+            }
+
             RegenSelectedFaction => {
                 let index = self.selected_faction_index;
                 if let Some(faction) = self.selected_world.factions.get_mut(index) {
@@ -203,6 +242,18 @@ impl GeneratorApp {
                         faction.government.description = old_description;
                     }
                 }
+            }
+
+            NewWorldCultureSelected { new_code } => {
+                let old_code = self.selected_world.culture.code as usize;
+                let old_description = &mut self.selected_world.culture.description;
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if *old_description == TABLES.culture_table[old_code].description {
+                    *old_description = TABLES.culture_table[new_code as usize].description.clone();
+                }
+
+                self.selected_world.culture.code = new_code;
             }
 
             RegenWorldCulture => {
@@ -636,22 +687,22 @@ impl GeneratorApp {
                 .show_ui(ui, |ui| {
                     for gov in TABLES.gov_table.iter() {
                         let GovRecord {
-                            code: world_gov_code,
                             kind: world_gov_kind,
                             ..
                         } = &mut self.selected_world.government;
 
                         if ui
                             .selectable_value(
-                                world_gov_code,
-                                gov.code,
+                                world_gov_kind,
+                                gov.kind.clone(),
                                 format!("{}: {}", gov.code, gov.kind),
                             )
                             .on_hover_text(gov.description.clone())
                             .clicked()
                         {
-                            *world_gov_kind = gov.kind.clone();
-                            self.message_next_frame(Message::WorldModelUpdated);
+                            self.message_immediate(Message::NewWorldGovSelected {
+                                new_code: gov.code,
+                            });
                         }
                     }
                 });
@@ -829,21 +880,21 @@ impl GeneratorApp {
                         .show_ui(ui, |ui| {
                             for gov in TABLES.gov_table.iter() {
                                 let GovRecord {
-                                    code: fac_gov_code,
-                                    kind: fac_gov_kind,
-                                    ..
+                                    kind: fac_gov_kind, ..
                                 } = &mut self.selected_world.factions[fac_idx].government;
 
                                 if ui
                                     .selectable_value(
-                                        fac_gov_code,
-                                        gov.code,
+                                        fac_gov_kind,
+                                        gov.kind.clone(),
                                         format!("{}: {}", gov.code, gov.kind),
                                     )
                                     .on_hover_text(gov.description.clone())
                                     .clicked()
                                 {
-                                    *fac_gov_kind = gov.kind.clone();
+                                    self.message_immediate(Message::NewFactionGovSelected {
+                                        new_code: gov.code,
+                                    });
                                 }
                             }
                         });
@@ -897,7 +948,6 @@ impl GeneratorApp {
                 .show_ui(ui, |ui| {
                     for item in TABLES.culture_table.iter() {
                         let CulturalDiffRecord {
-                            code,
                             cultural_difference,
                             ..
                         } = &mut self.selected_world.culture;
@@ -906,12 +956,14 @@ impl GeneratorApp {
                             .selectable_value(
                                 cultural_difference,
                                 item.cultural_difference.clone(),
-                                format!("{}", item.cultural_difference),
+                                item.cultural_difference.clone(),
                             )
                             .on_hover_text(item.description.clone())
                             .clicked()
                         {
-                            *code = item.code;
+                            self.message_immediate(Message::NewWorldCultureSelected {
+                                new_code: item.code,
+                            });
                         }
                     }
                 });
