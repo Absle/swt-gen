@@ -4,7 +4,7 @@ use eframe::{App, Frame};
 
 use egui::{
     vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label, Pos2,
-    Rect, RichText, ScrollArea, Sense, TextEdit, Ui, Vec2,
+    Rect, RichText, ScrollArea, Sense, TextEdit, TextStyle, Ui, Vec2,
 };
 use egui_extras::RetainedImage;
 
@@ -48,6 +48,28 @@ enum Message {
     RegenWorldCulture,
 }
 
+#[derive(PartialEq)]
+enum TabLabel {
+    PlanetarySurvey,
+    GovernmentLaw,
+    Factions,
+    CultureErrata,
+    Notes,
+}
+
+impl ToString for TabLabel {
+    fn to_string(&self) -> String {
+        use TabLabel::*;
+        match self {
+            PlanetarySurvey => "Planetary Survey".to_string(),
+            GovernmentLaw => "Government & Law".to_string(),
+            Factions => "Factions".to_string(),
+            CultureErrata => "Culture & Errata".to_string(),
+            Notes => "Notes".to_string(),
+        }
+    }
+}
+
 pub struct GeneratorApp {
     subsector: Subsector,
     subsector_svg: String,
@@ -63,6 +85,7 @@ pub struct GeneratorApp {
     world_selected: bool,
     selected_world: World,
 
+    selected_tab: TabLabel,
     selected_faction_index: usize,
 
     // Mirror fields
@@ -76,6 +99,8 @@ impl GeneratorApp {
     const LABEL_FONT: FontId = FontId::proportional(11.0);
     const LABEL_COLOR: Color32 = Color32::GRAY;
     const LABEL_SPACING: f32 = 4.0;
+
+    const BUTTON_FONT_SIZE: f32 = 16.0;
 
     const FIELD_SPACING: f32 = 15.0;
     const FIELD_SELECTION_WIDTH: f32 = 225.0;
@@ -279,6 +304,20 @@ impl GeneratorApp {
             generate_subsector_image(self.subsector.name(), &self.subsector_svg).unwrap();
     }
 
+    fn central_panel(&mut self, ctx: &Context) {
+        CentralPanel::default().show(ctx, |ui| {
+            ui.horizontal_top(|ui| {
+                self.subsector_map_display(ctx, ui);
+
+                ui.separator();
+
+                if self.point_selected && self.world_selected {
+                    self.world_data_display(ui);
+                }
+            });
+        });
+    }
+
     fn subsector_map_display(&mut self, ctx: &Context, ui: &mut Ui) {
         let max_size = ui.available_size();
         ui.set_min_size(Self::SUBSECTOR_IMAGE_MIN_SIZE);
@@ -306,28 +345,31 @@ impl GeneratorApp {
 
     fn world_data_display(&mut self, ui: &mut Ui) {
         ui.vertical(|ui| {
-            ui.heading("World Data");
-            self.world_profile_display(ui);
+            self.profile_display(ui);
 
-            ui.add_space(Self::FIELD_SPACING / 2.0);
+            ui.add_space(Self::FIELD_SPACING);
+
+            self.tab_labels(ui);
             ui.separator();
-            ui.add_space(Self::FIELD_SPACING / 2.0);
 
-            self.world_fields_display(ui);
+            use TabLabel::*;
+            match self.selected_tab {
+                PlanetarySurvey => self.survey_data_display(ui),
+                GovernmentLaw => self.government_law_display(ui),
+                Factions => self.factions_display(ui),
+                CultureErrata => self.culture_errata_display(ui),
+                Notes => (),
+            }
         });
     }
 
-    fn world_profile_display(&mut self, ui: &mut Ui) {
+    fn profile_display(&mut self, ui: &mut Ui) {
+        ui.add(TextEdit::singleline(&mut self.selected_world.name).font(TextStyle::Heading));
         Grid::new("world_profile_grid")
             .spacing([Self::FIELD_SPACING / 2.0, Self::LABEL_SPACING])
             .min_col_width(100.0)
             .max_col_width(200.0)
             .show(ui, |ui| {
-                ui.label(
-                    RichText::new("World Name")
-                        .font(Self::LABEL_FONT)
-                        .color(Self::LABEL_COLOR),
-                );
                 ui.label(
                     RichText::new("Location")
                         .font(Self::LABEL_FONT)
@@ -349,9 +391,6 @@ impl GeneratorApp {
                         .color(Self::LABEL_COLOR),
                 );
                 ui.end_row();
-
-                // Name
-                ui.add(TextEdit::singleline(&mut self.selected_world.name).desired_width(150.0));
 
                 // Location
                 // TODO hook a message into this
@@ -395,49 +434,57 @@ impl GeneratorApp {
             });
     }
 
-    fn world_fields_display(&mut self, ui: &mut Ui) {
-        ScrollArea::vertical().show(ui, |ui| {
-            ui.horizontal(|ui| {
-                let available_width = ui.available_size().x;
-                ui.vertical(|ui| {
-                    ui.set_width(available_width / 2.0);
-
-                    self.world_size_display(ui);
-                    ui.add_space(Self::FIELD_SPACING);
-
-                    self.world_atmosphere_display(ui);
-                    ui.add_space(Self::FIELD_SPACING);
-
-                    self.world_temperature_display(ui);
-                    ui.add_space(Self::FIELD_SPACING);
-
-                    self.world_hydrographics_display(ui);
-                    ui.add_space(Self::FIELD_SPACING);
-
-                    self.world_population_display(ui);
-                    ui.add_space(Self::FIELD_SPACING);
-
-                    self.world_culture_display(ui);
-                    ui.add_space(Self::FIELD_SPACING);
-                });
-
-                ui.vertical(|ui| {
-                    ui.set_width(available_width / 2.0);
-
-                    self.world_government_display(ui);
-                    ui.add_space(Self::FIELD_SPACING);
-
-                    self.world_law_level_display(ui);
-                    ui.add_space(Self::FIELD_SPACING);
-
-                    self.world_faction_display(ui);
-                    ui.add_space(Self::FIELD_SPACING)
-                });
-            });
+    fn tab_labels(&mut self, ui: &mut Ui) {
+        use TabLabel::*;
+        ui.horizontal(|ui| {
+            for tab_label in [
+                PlanetarySurvey,
+                GovernmentLaw,
+                Factions,
+                CultureErrata,
+                Notes,
+            ] {
+                let text = tab_label.to_string();
+                ui.selectable_value(&mut self.selected_tab, tab_label, text);
+            }
         });
     }
 
-    fn world_size_display(&mut self, ui: &mut Ui) {
+    fn survey_data_display(&mut self, ui: &mut Ui) {
+        ui.heading("Planetary Data");
+        ui.add_space(Self::LABEL_SPACING);
+
+        self.size_display(ui);
+        ui.add_space(Self::FIELD_SPACING);
+
+        self.atmosphere_display(ui);
+        ui.add_space(Self::FIELD_SPACING);
+
+        self.temperature_display(ui);
+        ui.add_space(Self::FIELD_SPACING);
+
+        self.hydrographics_display(ui);
+        ui.add_space(Self::FIELD_SPACING);
+
+        self.population_display(ui);
+        ui.add_space(Self::FIELD_SPACING);
+    }
+
+    fn government_law_display(&mut self, ui: &mut Ui) {
+        ui.columns(2, |columns| {
+            self.government_display(&mut columns[0]);
+            self.law_level_display(&mut columns[1]);
+        });
+    }
+
+    fn culture_errata_display(&mut self, ui: &mut Ui) {
+        ui.columns(2, |columns| {
+            self.culture_display(&mut columns[0]);
+            columns[1].heading("World Tags");
+        });
+    }
+
+    fn size_display(&mut self, ui: &mut Ui) {
         Grid::new("world_size_grid")
             .spacing([Self::FIELD_SPACING, Self::LABEL_SPACING])
             .show(ui, |ui| {
@@ -481,7 +528,7 @@ impl GeneratorApp {
                 }
 
                 if ui
-                    .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                    .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                     .clicked()
                 {
                     self.message_immediate(Message::RegenWorldSize);
@@ -489,7 +536,7 @@ impl GeneratorApp {
             });
     }
 
-    fn world_atmosphere_display(&mut self, ui: &mut Ui) {
+    fn atmosphere_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Atmosphere")
                 .font(Self::LABEL_FONT)
@@ -525,7 +572,7 @@ impl GeneratorApp {
             ui.add_space(Self::FIELD_SPACING);
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldAtmosphere);
@@ -533,7 +580,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_temperature_display(&mut self, ui: &mut Ui) {
+    fn temperature_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Temperature")
                 .font(Self::LABEL_FONT)
@@ -569,7 +616,7 @@ impl GeneratorApp {
             ui.add_space(Self::FIELD_SPACING);
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldTemperature);
@@ -577,7 +624,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_hydrographics_display(&mut self, ui: &mut Ui) {
+    fn hydrographics_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Hydrographics")
                 .font(Self::LABEL_FONT)
@@ -613,7 +660,7 @@ impl GeneratorApp {
             ui.add_space(Self::FIELD_SPACING);
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldHydrographics);
@@ -621,7 +668,7 @@ impl GeneratorApp {
         });
     }
 
-    fn world_population_display(&mut self, ui: &mut Ui) {
+    fn population_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Population")
                 .font(Self::LABEL_FONT)
@@ -657,7 +704,7 @@ impl GeneratorApp {
             ui.add_space(Self::FIELD_SPACING);
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldPopulation);
@@ -665,12 +712,8 @@ impl GeneratorApp {
         });
     }
 
-    fn world_government_display(&mut self, ui: &mut Ui) {
-        ui.label(
-            RichText::new("Government")
-                .font(Self::LABEL_FONT)
-                .color(Self::LABEL_COLOR),
-        );
+    fn government_display(&mut self, ui: &mut Ui) {
+        ui.heading("Government");
         ui.add_space(Self::LABEL_SPACING);
 
         ui.horizontal(|ui| {
@@ -706,7 +749,7 @@ impl GeneratorApp {
             ui.add_space(Self::FIELD_SPACING);
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldGovernment);
@@ -738,23 +781,15 @@ impl GeneratorApp {
         );
         ui.add_space(Self::LABEL_SPACING);
 
-        ScrollArea::vertical()
-            .max_height(Self::FIELD_SELECTION_WIDTH)
-            .show(ui, |ui| {
-                ui.add(
-                    TextEdit::multiline(&mut self.selected_world.government.description)
-                        .desired_width(Self::FIELD_SELECTION_WIDTH)
-                        .desired_rows(12),
-                );
-            });
+        ScrollArea::vertical().show(ui, |ui| {
+            ui.add(TextEdit::multiline(
+                &mut self.selected_world.government.description,
+            ));
+        });
     }
 
-    fn world_law_level_display(&mut self, ui: &mut Ui) {
-        ui.label(
-            RichText::new("Law Level")
-                .font(Self::LABEL_FONT)
-                .color(Self::LABEL_COLOR),
-        );
+    fn law_level_display(&mut self, ui: &mut Ui) {
+        ui.heading("Law Level");
         ui.add_space(Self::LABEL_SPACING);
 
         ui.horizontal(|ui| {
@@ -778,7 +813,7 @@ impl GeneratorApp {
             ui.add_space(Self::FIELD_SPACING);
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldLawLevel);
@@ -812,7 +847,7 @@ impl GeneratorApp {
             });
     }
 
-    fn world_faction_display(&mut self, ui: &mut Ui) {
+    fn factions_display(&mut self, ui: &mut Ui) {
         ui.label(
             RichText::new("Factions")
                 .font(Self::LABEL_FONT)
@@ -822,24 +857,62 @@ impl GeneratorApp {
 
         ui.horizontal_top(|ui| {
             ui.vertical(|ui| {
-                ui.set_width(100.0);
-                for (index, faction) in self.selected_world.factions.iter().enumerate() {
-                    ui.selectable_value(&mut self.selected_faction_index, index, &faction.name);
-                }
-                if ui.button("+").clicked() {
-                    self.message_immediate(Message::AddNewFaction)
-                }
+                ui.set_width(150.0);
+                ScrollArea::vertical()
+                    .id_source("faction_selection")
+                    .show(ui, |ui| {
+                        for (index, faction) in self.selected_world.factions.iter().enumerate() {
+                            ui.selectable_value(
+                                &mut self.selected_faction_index,
+                                index,
+                                &faction.name,
+                            );
+                        }
+                        if ui.button("+").clicked() {
+                            self.message_immediate(Message::AddNewFaction)
+                        }
+                    });
             });
 
             let fac_idx = self.selected_faction_index;
             if self.selected_world.factions.get(fac_idx).is_some() {
                 ui.vertical(|ui| {
-                    ui.set_min_height(200.0);
+                    ui.set_width(Self::FIELD_SELECTION_WIDTH * 2.5);
+                    ui.horizontal(|ui| {
+                        if ui
+                            .button(
+                                RichText::new("🎲")
+                                    .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                            )
+                            .clicked()
+                        {
+                            self.message_immediate(Message::RegenSelectedFaction);
+                        }
+
+                        if ui
+                            .button(
+                                RichText::new("❌")
+                                    .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                            )
+                            .on_hover_text_at_pointer("Double click to delete this faction")
+                            .double_clicked()
+                        {
+                            self.message_immediate(Message::RemoveSelectedFaction);
+                        }
+                    });
 
                     ui.add(
                         TextEdit::singleline(&mut self.selected_world.factions[fac_idx].name)
                             .desired_width(Self::FIELD_SELECTION_WIDTH),
                     );
+                    ui.add_space(Self::LABEL_SPACING * 1.5);
+
+                    ui.label(
+                        RichText::new("Strength")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    ui.add_space(Self::LABEL_SPACING);
 
                     let strength_code = self.selected_world.factions[fac_idx].code as usize;
                     ComboBox::from_id_source("faction_strength_selection")
@@ -865,6 +938,14 @@ impl GeneratorApp {
                                 }
                             }
                         });
+                    ui.add_space(Self::LABEL_SPACING * 1.5);
+
+                    ui.label(
+                        RichText::new("Leadership")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    ui.add_space(Self::LABEL_SPACING);
 
                     let gov_code = self.selected_world.factions[fac_idx].government.code as usize;
                     ComboBox::from_id_source("faction_government_selection")
@@ -891,46 +972,29 @@ impl GeneratorApp {
                                 }
                             }
                         });
+                    ui.add_space(Self::LABEL_SPACING * 1.5);
+
+                    ui.label(
+                        RichText::new("Description")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    ui.add_space(Self::LABEL_SPACING);
 
                     ScrollArea::vertical()
-                        .max_height(Self::FIELD_SELECTION_WIDTH)
+                        .id_source("faction_description")
                         .show(ui, |ui| {
                             let GovRecord { description, .. } =
                                 &mut self.selected_world.factions[fac_idx].government;
-                            ui.add(
-                                TextEdit::multiline(description)
-                                    .desired_width(Self::FIELD_SELECTION_WIDTH)
-                                    .desired_rows(12),
-                            )
+                            ui.add(TextEdit::multiline(description).desired_width(f32::INFINITY))
                         });
-                });
-
-                ui.vertical(|ui| {
-                    if ui
-                        .button(RichText::new("🎲").font(FontId::proportional(16.0)))
-                        .clicked()
-                    {
-                        self.message_immediate(Message::RegenSelectedFaction);
-                    }
-
-                    if ui
-                        .button(RichText::new("❌").font(FontId::proportional(16.0)))
-                        .on_hover_text_at_pointer("Double click to delete")
-                        .double_clicked()
-                    {
-                        self.message_immediate(Message::RemoveSelectedFaction);
-                    }
                 });
             }
         });
     }
 
-    fn world_culture_display(&mut self, ui: &mut Ui) {
-        ui.label(
-            RichText::new("Culture")
-                .font(Self::LABEL_FONT)
-                .color(Self::LABEL_COLOR),
-        );
+    fn culture_display(&mut self, ui: &mut Ui) {
+        ui.heading("Culture");
         ui.add_space(Self::LABEL_SPACING);
 
         ui.horizontal(|ui| {
@@ -963,7 +1027,7 @@ impl GeneratorApp {
             ui.add_space(Self::FIELD_SPACING);
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(16.0)))
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
                 // TODO
@@ -979,16 +1043,11 @@ impl GeneratorApp {
         );
         ui.add_space(Self::LABEL_SPACING);
 
-        ScrollArea::vertical()
-            .id_source("culture_description")
-            .max_height(Self::FIELD_SELECTION_WIDTH)
-            .show(ui, |ui| {
-                ui.add(
-                    TextEdit::multiline(&mut self.selected_world.culture.description)
-                        .desired_width(Self::FIELD_SELECTION_WIDTH)
-                        .desired_rows(12),
-                );
-            });
+        ScrollArea::vertical().show(ui, |ui| {
+            ui.add(TextEdit::multiline(
+                &mut self.selected_world.culture.description,
+            ));
+        });
     }
 }
 
@@ -1012,6 +1071,7 @@ impl Default for GeneratorApp {
             world_selected: false,
             selected_point,
             selected_world,
+            selected_tab: TabLabel::PlanetarySurvey,
             selected_faction_index: 0,
             world_loc,
             world_diameter,
@@ -1022,18 +1082,7 @@ impl Default for GeneratorApp {
 impl App for GeneratorApp {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         self.process_message_queue();
-
-        CentralPanel::default().show(ctx, |ui| {
-            ui.horizontal_top(|ui| {
-                self.subsector_map_display(ctx, ui);
-
-                ui.separator();
-
-                if self.point_selected && self.world_selected {
-                    self.world_data_display(ui);
-                }
-            });
-        });
+        self.central_panel(ctx);
     }
 }
 
