@@ -1,6 +1,8 @@
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 
+use crate::dice;
+
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct AtmoRecord {
     pub code: u16,
@@ -67,6 +69,15 @@ pub struct WorldTagRecord {
     pub tag: String,
     pub description: String,
 }
+
+impl WorldTagRecord {
+    pub(crate) fn random() -> Self {
+        let range = 0..TABLES.world_tag_table.len();
+        let roll = dice::roll(range);
+        TABLES.world_tag_table[roll].clone()
+    }
+}
+
 pub type WorldTagTable = Vec<WorldTagRecord>;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]

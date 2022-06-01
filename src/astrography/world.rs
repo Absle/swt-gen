@@ -167,35 +167,37 @@ impl TryFrom<&str> for TradeCode {
 
 #[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub struct World {
-    pub name: String,
-    pub location: Point,
-    pub has_gas_giant: bool,
-    pub size: u16,
-    pub diameter: u32,
-    pub atmosphere: AtmoRecord,
-    pub temperature: TempRecord,
-    pub hydrographics: HydroRecord,
-    pub population: PopRecord,
-    pub unmodified_pop: u16,
-    pub government: GovRecord,
-    pub law_level: LawRecord,
-    pub factions: Vec<Faction>,
-    pub culture: CulturalDiffRecord,
-    pub world_tags: [WorldTagRecord; 2],
-    pub starport: StarportRecord,
-    pub tech_level: u16,
-    pub has_naval_base: bool,
-    pub has_scout_base: bool,
-    pub has_research_base: bool,
-    pub has_tas: bool,
-    pub travel_code: TravelCode,
-    pub trade_codes: BTreeSet<TradeCode>,
-    pub notes: String,
+    pub(crate) name: String,
+    pub(crate) location: Point,
+    pub(crate) has_gas_giant: bool,
+    pub(crate) size: u16,
+    pub(crate) diameter: u32,
+    pub(crate) atmosphere: AtmoRecord,
+    pub(crate) temperature: TempRecord,
+    pub(crate) hydrographics: HydroRecord,
+    pub(crate) population: PopRecord,
+    pub(crate) unmodified_pop: u16,
+    pub(crate) government: GovRecord,
+    pub(crate) law_level: LawRecord,
+    pub(crate) factions: Vec<Faction>,
+    pub(crate) culture: CulturalDiffRecord,
+    pub(crate) world_tags: [WorldTagRecord; Self::NUM_TAGS],
+    pub(crate) starport: StarportRecord,
+    pub(crate) tech_level: u16,
+    pub(crate) has_naval_base: bool,
+    pub(crate) has_scout_base: bool,
+    pub(crate) has_research_base: bool,
+    pub(crate) has_tas: bool,
+    pub(crate) travel_code: TravelCode,
+    pub(crate) trade_codes: BTreeSet<TradeCode>,
+    pub(crate) notes: String,
 }
 
 impl World {
     pub const SIZE_MIN: u16 = 0;
     pub const SIZE_MAX: u16 = 10;
+
+    pub const NUM_TAGS: usize = 2;
 
     pub fn profile(&self) -> String {
         format!(
@@ -468,9 +470,7 @@ impl World {
 
     fn generate_world_tags(&mut self) {
         for tag in self.world_tags.iter_mut() {
-            let range = 0..TABLES.world_tag_table.len();
-            let roll = dice::roll(range);
-            *tag = TABLES.world_tag_table[roll].clone();
+            *tag = WorldTagRecord::random();
         }
     }
 

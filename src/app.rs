@@ -10,7 +10,7 @@ use egui_extras::RetainedImage;
 
 use crate::astrography::{Point, Subsector};
 
-use crate::astrography::table::{CulturalDiffRecord, GovRecord, TABLES};
+use crate::astrography::table::{CulturalDiffRecord, GovRecord, WorldTagRecord, TABLES};
 
 use crate::astrography::world::{Faction, TravelCode, World};
 
@@ -46,6 +46,13 @@ enum Message {
         new_code: u16,
     },
     RegenWorldCulture,
+    NewWorldTagSelected {
+        index: usize,
+        new_code: u16,
+    },
+    RegenWorldTag {
+        index: usize,
+    },
 }
 
 #[derive(PartialEq)]
@@ -290,6 +297,34 @@ impl GeneratorApp {
                     self.selected_world.culture.description = old_description;
                 }
             }
+
+            NewWorldTagSelected { index, new_code } => {
+                let world_tag = &mut self.selected_world.world_tags[index];
+                let old_code = world_tag.code as usize;
+
+                world_tag.code = new_code;
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if world_tag.description == TABLES.world_tag_table[old_code].description {
+                    world_tag.description = TABLES.world_tag_table[new_code as usize]
+                        .description
+                        .clone();
+                }
+            }
+
+            RegenWorldTag { index } => {
+                let world_tag = &mut self.selected_world.world_tags[index];
+                let old_code = world_tag.code as usize;
+
+                let new_tag = WorldTagRecord::random();
+                world_tag.code = new_tag.code;
+                world_tag.tag = new_tag.tag.clone();
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if world_tag.description == TABLES.world_tag_table[old_code].description {
+                    world_tag.description = new_tag.description.clone();
+                }
+            }
         }
     }
 
@@ -478,9 +513,11 @@ impl GeneratorApp {
     }
 
     fn culture_errata_display(&mut self, ui: &mut Ui) {
-        ui.columns(2, |columns| {
+        const NUM_COLUMNS: usize = World::NUM_TAGS + 1;
+        ui.columns(NUM_COLUMNS, |columns| {
             self.culture_display(&mut columns[0]);
-            columns[1].heading("World Tags");
+
+            self.world_tags_display(&mut columns[1..]);
         });
     }
 
@@ -569,7 +606,6 @@ impl GeneratorApp {
                         }
                     }
                 });
-            ui.add_space(Self::FIELD_SPACING);
 
             if ui
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
@@ -613,7 +649,6 @@ impl GeneratorApp {
                         }
                     }
                 });
-            ui.add_space(Self::FIELD_SPACING);
 
             if ui
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
@@ -657,7 +692,6 @@ impl GeneratorApp {
                         }
                     }
                 });
-            ui.add_space(Self::FIELD_SPACING);
 
             if ui
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
@@ -701,7 +735,6 @@ impl GeneratorApp {
                         }
                     }
                 });
-            ui.add_space(Self::FIELD_SPACING);
 
             if ui
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
@@ -746,7 +779,6 @@ impl GeneratorApp {
                         }
                     }
                 });
-            ui.add_space(Self::FIELD_SPACING);
 
             if ui
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
@@ -810,7 +842,6 @@ impl GeneratorApp {
                         }
                     }
                 });
-            ui.add_space(Self::FIELD_SPACING);
 
             if ui
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
@@ -1024,13 +1055,11 @@ impl GeneratorApp {
                         }
                     }
                 });
-            ui.add_space(Self::FIELD_SPACING);
 
             if ui
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                // TODO
                 self.message_immediate(Message::RegenWorldCulture);
             }
         });
@@ -1043,11 +1072,131 @@ impl GeneratorApp {
         );
         ui.add_space(Self::LABEL_SPACING);
 
-        ScrollArea::vertical().show(ui, |ui| {
-            ui.add(TextEdit::multiline(
-                &mut self.selected_world.culture.description,
-            ));
+        ScrollArea::vertical()
+            .id_source("culture_description")
+            .show(ui, |ui| {
+                ui.add(TextEdit::multiline(
+                    &mut self.selected_world.culture.description,
+                ));
+            });
+    }
+
+    fn world_tags_display(&mut self, columns: &mut [Ui]) {
+        // In a perfect world, this would loop through the `Subsector::world_tags` array with
+        // something like,
+        //
+        // `for (index, (column, world_tag)) in zip(columns, world_tags.iter_mut()).enumerate()`
+        //
+        // Unfortunately, Rust's borrowing rules will not allow mutably borrowing the
+        // `world_tags` iterator and calling a method at the same time. The only way around this
+        // would be to collect copies of the world tags into a temporary collection or to
+        // heavily refactor the `Subsector` struct to allow for interior mutability with
+        // `RefCell`.
+        //
+        // The length of `world_tags` isn't expected to ever grow, so this manual option works
+        // for now. Refactoring for interior mutability would be a "nice-to-have" in the distant
+        // future for several reasons, but copying arbitrarily long `description` strings into
+        // a temporary collection is a no-go.
+        let index = 0;
+        columns[index].heading("World Tags");
+        columns[index].add_space(Self::LABEL_SPACING);
+        columns[index].horizontal(|ui| {
+            let code = self.selected_world.world_tags[index].code as usize;
+            ComboBox::from_id_source(format!("world_tag_{}_selection", index))
+                .selected_text(&TABLES.world_tag_table[code].tag)
+                .width(Self::FIELD_SELECTION_WIDTH)
+                .show_ui(ui, |ui| {
+                    for item in TABLES.world_tag_table.iter() {
+                        if ui
+                            .selectable_value(
+                                &mut self.selected_world.world_tags[index].tag,
+                                item.tag.clone(),
+                                &item.tag,
+                            )
+                            .clicked()
+                        {
+                            self.message_immediate(Message::NewWorldTagSelected {
+                                index,
+                                new_code: item.code,
+                            })
+                        }
+                    }
+                });
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldTag { index });
+            }
         });
+        columns[index].add_space(Self::LABEL_SPACING * 1.5);
+
+        columns[index].label(
+            RichText::new("Description")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        columns[index].add_space(Self::LABEL_SPACING);
+
+        ScrollArea::vertical()
+            .id_source(format!("world_tag_{}_description", index))
+            .show(&mut columns[index], |ui| {
+                ui.add(TextEdit::multiline(
+                    &mut self.selected_world.world_tags[index].description,
+                ));
+            });
+
+        let index = 1;
+        // This is just to push down the rest of the column in line
+        columns[index].heading("");
+        columns[index].add_space(Self::LABEL_SPACING);
+        columns[index].horizontal(|ui| {
+            let code = self.selected_world.world_tags[index].code as usize;
+            ComboBox::from_id_source(format!("world_tag_{}_selection", index))
+                .selected_text(&TABLES.world_tag_table[code].tag)
+                .width(Self::FIELD_SELECTION_WIDTH)
+                .show_ui(ui, |ui| {
+                    for item in TABLES.world_tag_table.iter() {
+                        if ui
+                            .selectable_value(
+                                &mut self.selected_world.world_tags[index].tag,
+                                item.tag.clone(),
+                                &item.tag,
+                            )
+                            .clicked()
+                        {
+                            self.message_immediate(Message::NewWorldTagSelected {
+                                index,
+                                new_code: item.code,
+                            })
+                        }
+                    }
+                });
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldTag { index });
+            }
+        });
+        columns[index].add_space(Self::LABEL_SPACING * 1.5);
+
+        columns[index].label(
+            RichText::new("Description")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        columns[index].add_space(Self::LABEL_SPACING);
+
+        ScrollArea::vertical()
+            .id_source(format!("world_tag_{}_description", index))
+            .show(&mut columns[index], |ui| {
+                ui.add(TextEdit::multiline(
+                    &mut self.selected_world.world_tags[index].description,
+                ));
+            });
     }
 }
 
