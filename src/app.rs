@@ -81,30 +81,23 @@ pub struct GeneratorApp {
     subsector: Subsector,
     subsector_svg: String,
     subsector_image: RetainedImage,
-
     message_queue: VecDeque<Message>,
-
-    /// A point is currently selected
-    point_selected: bool,
-
-    /// Selected point
-    point: Point,
-
-    /// A world is currently selected
-    world_selected: bool,
-
-    /// Selected world
-    world: World,
-
-    /// Selected display tab
+    /// Selected display `TabLabel`
     tab: TabLabel,
-
-    /// Index of selected faction
+    /// Whether a `Point` on the hex grid is currently selected or not
+    point_selected: bool,
+    /// Selected `Point`
+    point: Point,
+    /// Whether a `World` is at the selected `Point` or not
+    world_selected: bool,
+    /// Selected `World`
+    world: World,
+    /// `String` representation of the selected world's `Point` location
+    location: String,
+    /// `String` representation of the selected world's diameter in km
+    diameter: String,
+    /// Index of selected `Faction`
     faction_idx: usize,
-
-    // Mirror fields
-    world_loc: String,
-    world_diameter: String,
 }
 
 impl GeneratorApp {
@@ -150,8 +143,8 @@ impl GeneratorApp {
                 if let Some(world) = world {
                     self.world_selected = true;
                     self.world = world.clone();
-                    self.world_loc = self.world.location.to_string();
-                    self.world_diameter = self.world.diameter.to_string();
+                    self.location = self.world.location.to_string();
+                    self.diameter = self.world.diameter.to_string();
                 } else {
                     self.world_selected = false;
                 }
@@ -171,10 +164,10 @@ impl GeneratorApp {
             }
 
             WorldDiameterUpdated => {
-                if let Ok(diameter) = self.world_diameter.parse::<u32>() {
+                if let Ok(diameter) = self.diameter.parse::<u32>() {
                     self.world.diameter = diameter;
                 } else {
-                    self.world_diameter = self.world.diameter.to_string();
+                    self.diameter = self.world.diameter.to_string();
                 }
             }
 
@@ -441,7 +434,7 @@ impl GeneratorApp {
 
                 // Location
                 // TODO hook a message into this
-                ui.add(TextEdit::singleline(&mut self.world_loc).desired_width(50.0));
+                ui.add(TextEdit::singleline(&mut self.location).desired_width(50.0));
 
                 // World profile
                 let profile = self.world.profile();
@@ -566,7 +559,7 @@ impl GeneratorApp {
 
                 // Diameter
                 if ui
-                    .add(TextEdit::singleline(&mut self.world_diameter).desired_width(50.0))
+                    .add(TextEdit::singleline(&mut self.diameter).desired_width(50.0))
                     .lost_focus()
                 {
                     self.message_immediate(Message::WorldDiameterUpdated);
@@ -1221,8 +1214,8 @@ impl Default for GeneratorApp {
             world: selected_world,
             tab: TabLabel::PlanetarySurvey,
             faction_idx: 0,
-            world_loc,
-            world_diameter,
+            location: world_loc,
+            diameter: world_diameter,
         }
     }
 }

@@ -8,6 +8,8 @@ TODOs will be removed from this file when made into Github issues and have ~~str
 
 ### General Issues
 - Make executable portable by using `include_str!` and `include!` macros
+- Improve unit test coverage
+- More doc-comments where useful
 
 ### App/GUI Issues
 - Refactor older "description saving" messages to minimize cloning
