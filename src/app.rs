@@ -31,6 +31,7 @@ enum Message {
     RegenWorldTemperature,
     RegenWorldHydrographics,
     RegenWorldPopulation,
+    RegenWorldTechLevel,
     NewWorldGovSelected {
         new_code: u16,
     },
@@ -195,6 +196,11 @@ impl GeneratorApp {
 
             RegenWorldPopulation => {
                 self.world.generate_population();
+                self.message_next_frame(Message::WorldModelUpdated);
+            }
+
+            RegenWorldTechLevel => {
+                self.world.generate_tech_level();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
@@ -394,7 +400,7 @@ impl GeneratorApp {
 
             use TabLabel::*;
             match self.tab {
-                PlanetarySurvey => self.survey_data_display(ui),
+                PlanetarySurvey => self.planetary_survey_display(ui),
                 GovernmentLaw => self.government_law_display(ui),
                 Factions => self.factions_display(ui),
                 CultureErrata => self.culture_errata_display(ui),
@@ -490,7 +496,7 @@ impl GeneratorApp {
         });
     }
 
-    fn survey_data_display(&mut self, ui: &mut Ui) {
+    fn planetary_survey_display(&mut self, ui: &mut Ui) {
         ui.heading("Planetary Data");
         ui.add_space(Self::LABEL_SPACING);
 
@@ -508,6 +514,8 @@ impl GeneratorApp {
 
         self.population_display(ui);
         ui.add_space(Self::FIELD_SPACING);
+
+        self.tech_level_display(ui);
     }
 
     fn government_law_display(&mut self, ui: &mut Ui) {
@@ -544,12 +552,12 @@ impl GeneratorApp {
 
                 // Size code
                 ComboBox::from_id_source("size_selection")
-                    .selected_text(format!("{}", self.world.size))
+                    .selected_text(self.world.size.to_string())
                     .width(45.0)
                     .show_ui(ui, |ui| {
                         for size in World::SIZE_MIN..=World::SIZE_MAX {
                             if ui
-                                .selectable_value(&mut self.world.size, size, format!("{:?}", size))
+                                .selectable_value(&mut self.world.size, size, size.to_string())
                                 .clicked()
                             {
                                 self.message_next_frame(Message::WorldModelUpdated);
@@ -742,6 +750,41 @@ impl GeneratorApp {
                 .clicked()
             {
                 self.message_immediate(Message::RegenWorldPopulation);
+            }
+        });
+    }
+
+    fn tech_level_display(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Technology Level")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+
+        ui.horizontal(|ui| {
+            ComboBox::from_id_source("tech_level_selection")
+                .selected_text(self.world.tech_level.to_string())
+                .width(45.0)
+                .show_ui(ui, |ui| {
+                    for tech_level in World::TECH_MIN..=World::TECH_MAX {
+                        if ui
+                            .selectable_value(
+                                &mut self.world.tech_level,
+                                tech_level as u16,
+                                tech_level.to_string(),
+                            )
+                            .clicked()
+                        {
+                            self.message_next_frame(Message::WorldModelUpdated);
+                        }
+                    }
+                });
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldTechLevel);
             }
         });
     }

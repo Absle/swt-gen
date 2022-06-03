@@ -197,6 +197,9 @@ impl World {
     pub const SIZE_MIN: u16 = 0;
     pub const SIZE_MAX: u16 = 10;
 
+    pub const TECH_MIN: i16 = 0;
+    pub const TECH_MAX: i16 = 15;
+
     pub const NUM_TAGS: usize = 2;
 
     pub fn profile(&self) -> String {
@@ -492,7 +495,7 @@ impl World {
         self.starport.berthing_cost *= dice::roll_1d(6);
     }
 
-    fn generate_tech_level(&mut self) {
+    pub(crate) fn generate_tech_level(&mut self) {
         let size_mod = match self.size {
             0..=1 => 2,
             2..=4 => 1,
@@ -538,7 +541,7 @@ impl World {
 
         let roll: i16 =
             dice::roll_1d(6) + size_mod + atmo_mod + hydro_mod + pop_mod + gov_mod + starport_mod;
-        self.tech_level = roll.clamp(0, 15) as u16;
+        self.tech_level = roll.clamp(Self::TECH_MIN, Self::TECH_MAX) as u16;
     }
 
     fn generate_bases(&mut self) {
