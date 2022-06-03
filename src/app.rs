@@ -86,14 +86,21 @@ pub struct GeneratorApp {
 
     /// A point is currently selected
     point_selected: bool,
-    selected_point: Point,
+
+    /// Selected point
+    point: Point,
 
     /// A world is currently selected
     world_selected: bool,
-    selected_world: World,
 
-    selected_tab: TabLabel,
-    selected_faction_index: usize,
+    /// Selected world
+    world: World,
+
+    /// Selected display tab
+    tab: TabLabel,
+
+    /// Index of selected faction
+    faction_idx: usize,
 
     // Mirror fields
     world_loc: String,
@@ -137,14 +144,14 @@ impl GeneratorApp {
                 }
 
                 self.point_selected = true;
-                self.selected_point = new_point;
-                self.selected_faction_index = 0;
-                let world = self.subsector.map.get(&self.selected_point);
+                self.point = new_point;
+                self.faction_idx = 0;
+                let world = self.subsector.map.get(&self.point);
                 if let Some(world) = world {
                     self.world_selected = true;
-                    self.selected_world = world.clone();
-                    self.world_loc = self.selected_world.location.to_string();
-                    self.world_diameter = self.selected_world.diameter.to_string();
+                    self.world = world.clone();
+                    self.world_loc = self.world.location.to_string();
+                    self.world_diameter = self.world.diameter.to_string();
                 } else {
                     self.world_selected = false;
                 }
@@ -155,7 +162,7 @@ impl GeneratorApp {
             SaveWorld => {
                 self.subsector
                     .map
-                    .insert(self.selected_point.clone(), self.selected_world.clone());
+                    .insert(self.point.clone(), self.world.clone());
             }
 
             // TODO
@@ -165,105 +172,110 @@ impl GeneratorApp {
 
             WorldDiameterUpdated => {
                 if let Ok(diameter) = self.world_diameter.parse::<u32>() {
-                    self.selected_world.diameter = diameter;
+                    self.world.diameter = diameter;
                 } else {
-                    self.world_diameter = self.selected_world.diameter.to_string();
+                    self.world_diameter = self.world.diameter.to_string();
                 }
             }
 
-            WorldModelUpdated => self.selected_world.resolve_trade_codes(),
+            WorldModelUpdated => self.world.resolve_trade_codes(),
 
             RegenWorldSize => {
-                self.selected_world.generate_size();
+                self.world.generate_size();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldAtmosphere => {
-                self.selected_world.generate_atmosphere();
+                self.world.generate_atmosphere();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldTemperature => {
-                self.selected_world.generate_temperature();
+                self.world.generate_temperature();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldHydrographics => {
-                self.selected_world.generate_hydrographics();
+                self.world.generate_hydrographics();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldPopulation => {
-                self.selected_world.generate_population();
+                self.world.generate_population();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
             NewWorldGovSelected { new_code } => {
-                let old_code = self.selected_world.government.code as usize;
-                let old_description = &mut self.selected_world.government.description;
+                let old_code = self.world.government.code as usize;
+                let old_description = &mut self.world.government.description;
 
                 // Replace existing description iff the user hasn't changed it from the default
                 if *old_description == TABLES.gov_table[old_code].description {
                     *old_description = TABLES.gov_table[new_code as usize].description.clone();
                 }
 
-                self.selected_world.government.code = new_code;
+                self.world.government.code = new_code;
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldGovernment => {
-                let old_code = self.selected_world.government.code as usize;
-                let old_description = self.selected_world.government.description.clone();
-                let old_contraband = self.selected_world.government.contraband.clone();
-                self.selected_world.generate_government();
+                let old_code = self.world.government.code as usize;
+                let old_description = self.world.government.description.clone();
+                let old_contraband = self.world.government.contraband.clone();
+                self.world.generate_government();
 
                 // If description or contraband have been changed from the default, keep them;
                 // otherwise, allow them to be overwritten by the new government's default
                 if old_description != TABLES.gov_table[old_code].description {
-                    self.selected_world.government.description = old_description;
+                    self.world.government.description = old_description;
                 }
                 if old_contraband != TABLES.gov_table[old_code].contraband {
-                    self.selected_world.government.contraband = old_contraband;
+                    self.world.government.contraband = old_contraband;
                 }
 
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldLawLevel => {
-                self.selected_world.generate_law_level();
+                self.world.generate_law_level();
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
             AddNewFaction => {
-                self.selected_world.factions.push(Faction::random());
+                self.world.factions.push(Faction::random());
                 // Select the newly generated faction
-                self.selected_faction_index = self.selected_world.factions.len() - 1;
+                self.faction_idx = self.world.factions.len() - 1;
             }
 
             RemoveSelectedFaction => {
-                self.selected_world
-                    .factions
-                    .remove(self.selected_faction_index);
+                let index = &mut self.faction_idx;
+                let factions = &mut self.world.factions;
+
+                factions.remove(*index);
+
+                if factions.len() == 0 {
+                    *index = 0;
+                } else if *index >= factions.len() {
+                    *index = factions.len() - 1;
+                }
             }
 
             NewFactionGovSelected { new_code } => {
-                let fac_index = self.selected_faction_index;
-                let old_code = self.selected_world.factions[fac_index].government.code as usize;
-                let old_description = &mut self.selected_world.factions[fac_index]
-                    .government
-                    .description;
+                let fac_index = self.faction_idx;
+                let old_code = self.world.factions[fac_index].government.code as usize;
+                let old_description = &mut self.world.factions[fac_index].government.description;
 
                 // Replace existing description iff the user hasn't changed it from the default
                 if *old_description == TABLES.gov_table[old_code].description {
                     *old_description = TABLES.gov_table[new_code as usize].description.clone();
                 }
 
-                self.selected_world.factions[fac_index].government.code = new_code;
+                self.world.factions[fac_index].government.code = new_code;
             }
 
             RegenSelectedFaction => {
-                let index = self.selected_faction_index;
-                if let Some(faction) = self.selected_world.factions.get_mut(index) {
+                let index = self.faction_idx;
+                if let Some(faction) = self.world.factions.get_mut(index) {
                     let old_code = faction.government.code as usize;
                     let name = faction.name.clone();
                     let old_description = faction.government.description.clone();
@@ -277,29 +289,29 @@ impl GeneratorApp {
             }
 
             NewWorldCultureSelected { new_code } => {
-                let old_code = self.selected_world.culture.code as usize;
-                let old_description = &mut self.selected_world.culture.description;
+                let old_code = self.world.culture.code as usize;
+                let old_description = &mut self.world.culture.description;
 
                 // Replace existing description iff the user hasn't changed it from the default
                 if *old_description == TABLES.culture_table[old_code].description {
                     *old_description = TABLES.culture_table[new_code as usize].description.clone();
                 }
 
-                self.selected_world.culture.code = new_code;
+                self.world.culture.code = new_code;
             }
 
             RegenWorldCulture => {
-                let old_code = self.selected_world.culture.code as usize;
-                let old_description = self.selected_world.culture.description.clone();
-                self.selected_world.generate_culture();
+                let old_code = self.world.culture.code as usize;
+                let old_description = self.world.culture.description.clone();
+                self.world.generate_culture();
 
                 if old_description != TABLES.culture_table[old_code].description {
-                    self.selected_world.culture.description = old_description;
+                    self.world.culture.description = old_description;
                 }
             }
 
             NewWorldTagSelected { index, new_code } => {
-                let world_tag = &mut self.selected_world.world_tags[index];
+                let world_tag = &mut self.world.world_tags[index];
                 let old_code = world_tag.code as usize;
 
                 world_tag.code = new_code;
@@ -313,7 +325,7 @@ impl GeneratorApp {
             }
 
             RegenWorldTag { index } => {
-                let world_tag = &mut self.selected_world.world_tags[index];
+                let world_tag = &mut self.world.world_tags[index];
                 let old_code = world_tag.code as usize;
 
                 let new_tag = WorldTagRecord::random();
@@ -388,7 +400,7 @@ impl GeneratorApp {
             ui.separator();
 
             use TabLabel::*;
-            match self.selected_tab {
+            match self.tab {
                 PlanetarySurvey => self.survey_data_display(ui),
                 GovernmentLaw => self.government_law_display(ui),
                 Factions => self.factions_display(ui),
@@ -399,7 +411,7 @@ impl GeneratorApp {
     }
 
     fn profile_display(&mut self, ui: &mut Ui) {
-        ui.add(TextEdit::singleline(&mut self.selected_world.name).font(TextStyle::Heading));
+        ui.add(TextEdit::singleline(&mut self.world.name).font(TextStyle::Heading));
         Grid::new("world_profile_grid")
             .spacing([Self::FIELD_SPACING / 2.0, Self::LABEL_SPACING])
             .min_col_width(100.0)
@@ -432,13 +444,13 @@ impl GeneratorApp {
                 ui.add(TextEdit::singleline(&mut self.world_loc).desired_width(50.0));
 
                 // World profile
-                let profile = self.selected_world.profile();
+                let profile = self.world.profile();
                 if ui.add(Label::new(&profile).sense(Sense::click())).clicked() {
                     ui.output().copied_text = profile;
                 }
 
                 // Trade codes
-                let trade_codes = self.selected_world.trade_code_str();
+                let trade_codes = self.world.trade_code_str();
                 if ui
                     .add(Label::new(&trade_codes).sense(Sense::click()))
                     .clicked()
@@ -448,11 +460,11 @@ impl GeneratorApp {
 
                 // Travel Code
                 ComboBox::from_id_source("travel_code_selection")
-                    .selected_text(self.selected_world.travel_code_str())
+                    .selected_text(self.world.travel_code_str())
                     .show_ui(ui, |ui| {
                         for code in [TravelCode::Safe, TravelCode::Amber, TravelCode::Red] {
                             ui.selectable_value(
-                                &mut self.selected_world.travel_code,
+                                &mut self.world.travel_code,
                                 code,
                                 format!("{:?}", code),
                             );
@@ -461,7 +473,7 @@ impl GeneratorApp {
 
                 // Gas giant presence
                 ui.checkbox(
-                    &mut self.selected_world.has_gas_giant,
+                    &mut self.world.has_gas_giant,
                     RichText::new("Gas Giant Present")
                         .font(Self::LABEL_FONT)
                         .color(Self::LABEL_COLOR),
@@ -480,7 +492,7 @@ impl GeneratorApp {
                 Notes,
             ] {
                 let text = tab_label.to_string();
-                ui.selectable_value(&mut self.selected_tab, tab_label, text);
+                ui.selectable_value(&mut self.tab, tab_label, text);
             }
         });
     }
@@ -539,16 +551,12 @@ impl GeneratorApp {
 
                 // Size code
                 ComboBox::from_id_source("size_selection")
-                    .selected_text(format!("{}", self.selected_world.size))
+                    .selected_text(format!("{}", self.world.size))
                     .width(45.0)
                     .show_ui(ui, |ui| {
                         for size in World::SIZE_MIN..=World::SIZE_MAX {
                             if ui
-                                .selectable_value(
-                                    &mut self.selected_world.size,
-                                    size,
-                                    format!("{:?}", size),
-                                )
+                                .selectable_value(&mut self.world.size, size, format!("{:?}", size))
                                 .clicked()
                             {
                                 self.message_next_frame(Message::WorldModelUpdated);
@@ -585,15 +593,15 @@ impl GeneratorApp {
             ComboBox::from_id_source("atmosphere_selection")
                 .selected_text(format!(
                     "{}: {}",
-                    self.selected_world.atmosphere.code,
-                    TABLES.atmo_table[self.selected_world.atmosphere.code as usize].composition
+                    self.world.atmosphere.code,
+                    TABLES.atmo_table[self.world.atmosphere.code as usize].composition
                 ))
                 .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for atmo in TABLES.atmo_table.iter() {
                         if ui
                             .selectable_value(
-                                &mut self.selected_world.atmosphere,
+                                &mut self.world.atmosphere,
                                 atmo.clone(),
                                 format!(
                                     "{}: {}",
@@ -628,15 +636,15 @@ impl GeneratorApp {
             ComboBox::from_id_source("temperature_selection")
                 .selected_text(format!(
                     "{}: {}",
-                    self.selected_world.temperature.code,
-                    TABLES.temp_table[self.selected_world.temperature.code as usize].kind
+                    self.world.temperature.code,
+                    TABLES.temp_table[self.world.temperature.code as usize].kind
                 ))
                 .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for temp in TABLES.temp_table.iter() {
                         if ui
                             .selectable_value(
-                                &mut self.selected_world.temperature,
+                                &mut self.world.temperature,
                                 temp.clone(),
                                 format!(
                                     "{}: {}",
@@ -671,15 +679,15 @@ impl GeneratorApp {
             ComboBox::from_id_source("hydrographics_selection")
                 .selected_text(format!(
                     "{}: {}",
-                    self.selected_world.hydrographics.code,
-                    TABLES.hydro_table[self.selected_world.hydrographics.code as usize].description
+                    self.world.hydrographics.code,
+                    TABLES.hydro_table[self.world.hydrographics.code as usize].description
                 ))
                 .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for hydro in TABLES.hydro_table.iter() {
                         if ui
                             .selectable_value(
-                                &mut self.selected_world.hydrographics,
+                                &mut self.world.hydrographics,
                                 hydro.clone(),
                                 format!(
                                     "{}: {}",
@@ -714,15 +722,15 @@ impl GeneratorApp {
             ComboBox::from_id_source("population_selection")
                 .selected_text(format!(
                     "{}: {}",
-                    self.selected_world.population.code,
-                    TABLES.pop_table[self.selected_world.population.code as usize].inhabitants
+                    self.world.population.code,
+                    TABLES.pop_table[self.world.population.code as usize].inhabitants
                 ))
                 .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for pop in TABLES.pop_table.iter() {
                         if ui
                             .selectable_value(
-                                &mut self.selected_world.population,
+                                &mut self.world.population,
                                 pop.clone(),
                                 format!(
                                     "{}: {}",
@@ -753,8 +761,8 @@ impl GeneratorApp {
             ComboBox::from_id_source("government_selection")
                 .selected_text(format!(
                     "{}: {}",
-                    self.selected_world.government.code,
-                    TABLES.gov_table[self.selected_world.government.code as usize].kind
+                    self.world.government.code,
+                    TABLES.gov_table[self.world.government.code as usize].kind
                 ))
                 .width(Self::FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
@@ -762,7 +770,7 @@ impl GeneratorApp {
                         let GovRecord {
                             kind: world_gov_kind,
                             ..
-                        } = &mut self.selected_world.government;
+                        } = &mut self.world.government;
 
                         if ui
                             .selectable_value(
@@ -797,12 +805,12 @@ impl GeneratorApp {
         ui.add_space(Self::LABEL_SPACING);
 
         ui.add(
-            TextEdit::singleline(&mut self.selected_world.government.contraband)
+            TextEdit::singleline(&mut self.world.government.contraband)
                 .desired_width(Self::FIELD_SELECTION_WIDTH),
         )
         .on_hover_text(format!(
             "Common contraband: {}",
-            TABLES.gov_table[self.selected_world.government.code as usize].contraband
+            TABLES.gov_table[self.world.government.code as usize].contraband
         ));
 
         ui.add_space(Self::LABEL_SPACING * 1.5);
@@ -814,9 +822,7 @@ impl GeneratorApp {
         ui.add_space(Self::LABEL_SPACING);
 
         ScrollArea::vertical().show(ui, |ui| {
-            ui.add(TextEdit::multiline(
-                &mut self.selected_world.government.description,
-            ));
+            ui.add(TextEdit::multiline(&mut self.world.government.description));
         });
     }
 
@@ -826,13 +832,13 @@ impl GeneratorApp {
 
         ui.horizontal(|ui| {
             ComboBox::from_id_source("law_level_selection")
-                .selected_text(format!("{}", self.selected_world.law_level.code))
+                .selected_text(format!("{}", self.world.law_level.code))
                 .width(45.0)
                 .show_ui(ui, |ui| {
                     for law_level in TABLES.law_table.iter() {
                         if ui
                             .selectable_value(
-                                &mut self.selected_world.law_level,
+                                &mut self.world.law_level,
                                 law_level.clone(),
                                 law_level.code.to_string(),
                             )
@@ -869,7 +875,7 @@ impl GeneratorApp {
                 );
                 ui.end_row();
 
-                let law_level = self.selected_world.law_level.code as usize;
+                let law_level = self.world.law_level.code as usize;
                 for i in 0..=law_level {
                     ui.label(&TABLES.law_table[i].banned_weapons);
                     ui.label(&TABLES.law_table[i].banned_armor);
@@ -892,12 +898,8 @@ impl GeneratorApp {
                 ScrollArea::vertical()
                     .id_source("faction_selection")
                     .show(ui, |ui| {
-                        for (index, faction) in self.selected_world.factions.iter().enumerate() {
-                            ui.selectable_value(
-                                &mut self.selected_faction_index,
-                                index,
-                                &faction.name,
-                            );
+                        for (index, faction) in self.world.factions.iter().enumerate() {
+                            ui.selectable_value(&mut self.faction_idx, index, &faction.name);
                         }
                         if ui.button("+").clicked() {
                             self.message_immediate(Message::AddNewFaction)
@@ -905,8 +907,7 @@ impl GeneratorApp {
                     });
             });
 
-            let fac_idx = self.selected_faction_index;
-            if self.selected_world.factions.get(fac_idx).is_some() {
+            if self.world.factions.get(self.faction_idx).is_some() {
                 ui.vertical(|ui| {
                     ui.set_width(Self::FIELD_SELECTION_WIDTH * 2.5);
                     ui.horizontal(|ui| {
@@ -928,12 +929,12 @@ impl GeneratorApp {
                             .on_hover_text_at_pointer("Double click to delete this faction")
                             .double_clicked()
                         {
-                            self.message_immediate(Message::RemoveSelectedFaction);
+                            self.message_next_frame(Message::RemoveSelectedFaction);
                         }
                     });
 
                     ui.add(
-                        TextEdit::singleline(&mut self.selected_world.factions[fac_idx].name)
+                        TextEdit::singleline(&mut self.world.factions[self.faction_idx].name)
                             .desired_width(Self::FIELD_SELECTION_WIDTH),
                     );
                     ui.add_space(Self::LABEL_SPACING * 1.5);
@@ -945,7 +946,7 @@ impl GeneratorApp {
                     );
                     ui.add_space(Self::LABEL_SPACING);
 
-                    let strength_code = self.selected_world.factions[fac_idx].code as usize;
+                    let strength_code = self.world.factions[self.faction_idx].code as usize;
                     ComboBox::from_id_source("faction_strength_selection")
                         .selected_text(format!(
                             "{}: {}",
@@ -955,7 +956,7 @@ impl GeneratorApp {
                         .show_ui(ui, |ui| {
                             for faction in TABLES.faction_table.iter() {
                                 let Faction { code, strength, .. } =
-                                    &mut self.selected_world.factions[fac_idx];
+                                    &mut self.world.factions[self.faction_idx];
 
                                 if ui
                                     .selectable_value(
@@ -978,7 +979,7 @@ impl GeneratorApp {
                     );
                     ui.add_space(Self::LABEL_SPACING);
 
-                    let gov_code = self.selected_world.factions[fac_idx].government.code as usize;
+                    let gov_code = self.world.factions[self.faction_idx].government.code as usize;
                     ComboBox::from_id_source("faction_government_selection")
                         .selected_text(format!("{}: {}", gov_code, TABLES.gov_table[gov_code].kind))
                         .width(Self::FIELD_SELECTION_WIDTH)
@@ -986,7 +987,7 @@ impl GeneratorApp {
                             for gov in TABLES.gov_table.iter() {
                                 let GovRecord {
                                     kind: fac_gov_kind, ..
-                                } = &mut self.selected_world.factions[fac_idx].government;
+                                } = &mut self.world.factions[self.faction_idx].government;
 
                                 if ui
                                     .selectable_value(
@@ -1016,7 +1017,7 @@ impl GeneratorApp {
                         .id_source("faction_description")
                         .show(ui, |ui| {
                             let GovRecord { description, .. } =
-                                &mut self.selected_world.factions[fac_idx].government;
+                                &mut self.world.factions[self.faction_idx].government;
                             ui.add(TextEdit::multiline(description).desired_width(f32::INFINITY))
                         });
                 });
@@ -1029,7 +1030,7 @@ impl GeneratorApp {
         ui.add_space(Self::LABEL_SPACING);
 
         ui.horizontal(|ui| {
-            let code = self.selected_world.culture.code as usize;
+            let code = self.world.culture.code as usize;
             ComboBox::from_id_source("culture_selection")
                 .selected_text(&TABLES.culture_table[code].cultural_difference)
                 .width(Self::FIELD_SELECTION_WIDTH)
@@ -1038,7 +1039,7 @@ impl GeneratorApp {
                         let CulturalDiffRecord {
                             cultural_difference,
                             ..
-                        } = &mut self.selected_world.culture;
+                        } = &mut self.world.culture;
 
                         if ui
                             .selectable_value(
@@ -1075,9 +1076,7 @@ impl GeneratorApp {
         ScrollArea::vertical()
             .id_source("culture_description")
             .show(ui, |ui| {
-                ui.add(TextEdit::multiline(
-                    &mut self.selected_world.culture.description,
-                ));
+                ui.add(TextEdit::multiline(&mut self.world.culture.description));
             });
     }
 
@@ -1101,7 +1100,7 @@ impl GeneratorApp {
         columns[index].heading("World Tags");
         columns[index].add_space(Self::LABEL_SPACING);
         columns[index].horizontal(|ui| {
-            let code = self.selected_world.world_tags[index].code as usize;
+            let code = self.world.world_tags[index].code as usize;
             ComboBox::from_id_source(format!("world_tag_{}_selection", index))
                 .selected_text(&TABLES.world_tag_table[code].tag)
                 .width(Self::FIELD_SELECTION_WIDTH)
@@ -1109,7 +1108,7 @@ impl GeneratorApp {
                     for item in TABLES.world_tag_table.iter() {
                         if ui
                             .selectable_value(
-                                &mut self.selected_world.world_tags[index].tag,
+                                &mut self.world.world_tags[index].tag,
                                 item.tag.clone(),
                                 &item.tag,
                             )
@@ -1143,7 +1142,7 @@ impl GeneratorApp {
             .id_source(format!("world_tag_{}_description", index))
             .show(&mut columns[index], |ui| {
                 ui.add(TextEdit::multiline(
-                    &mut self.selected_world.world_tags[index].description,
+                    &mut self.world.world_tags[index].description,
                 ));
             });
 
@@ -1152,7 +1151,7 @@ impl GeneratorApp {
         columns[index].heading("");
         columns[index].add_space(Self::LABEL_SPACING);
         columns[index].horizontal(|ui| {
-            let code = self.selected_world.world_tags[index].code as usize;
+            let code = self.world.world_tags[index].code as usize;
             ComboBox::from_id_source(format!("world_tag_{}_selection", index))
                 .selected_text(&TABLES.world_tag_table[code].tag)
                 .width(Self::FIELD_SELECTION_WIDTH)
@@ -1160,7 +1159,7 @@ impl GeneratorApp {
                     for item in TABLES.world_tag_table.iter() {
                         if ui
                             .selectable_value(
-                                &mut self.selected_world.world_tags[index].tag,
+                                &mut self.world.world_tags[index].tag,
                                 item.tag.clone(),
                                 &item.tag,
                             )
@@ -1194,7 +1193,7 @@ impl GeneratorApp {
             .id_source(format!("world_tag_{}_description", index))
             .show(&mut columns[index], |ui| {
                 ui.add(TextEdit::multiline(
-                    &mut self.selected_world.world_tags[index].description,
+                    &mut self.world.world_tags[index].description,
                 ));
             });
     }
@@ -1218,10 +1217,10 @@ impl Default for GeneratorApp {
             message_queue,
             point_selected: false,
             world_selected: false,
-            selected_point,
-            selected_world,
-            selected_tab: TabLabel::PlanetarySurvey,
-            selected_faction_index: 0,
+            point: selected_point,
+            world: selected_world,
+            tab: TabLabel::PlanetarySurvey,
+            faction_idx: 0,
             world_loc,
             world_diameter,
         }
