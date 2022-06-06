@@ -12,7 +12,7 @@ use crate::dice;
 use crate::histogram::Histogram;
 
 #[derive(Clone, Debug, Deserialize, Eq, Serialize)]
-pub struct Faction {
+pub(crate) struct Faction {
     pub(crate) name: String,
     pub(crate) code: u16,
     pub(crate) strength: String,
@@ -20,7 +20,7 @@ pub struct Faction {
 }
 
 impl Faction {
-    pub(crate) fn random() -> Faction {
+    pub fn random() -> Faction {
         let gov_roll = dice::roll_2d(6);
         let faction_roll = dice::roll_2d(6);
 
@@ -98,7 +98,7 @@ impl SimpleFaction {
 }
 
 #[derive(Copy, Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
-pub enum TravelCode {
+pub(crate) enum TravelCode {
     Safe,
     Amber,
     Red,
@@ -117,7 +117,7 @@ impl TryFrom<&str> for TravelCode {
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum TradeCode {
+pub(crate) enum TradeCode {
     Ag,
     As,
     Ba,
@@ -166,7 +166,7 @@ impl TryFrom<&str> for TradeCode {
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, Serialize)]
-pub struct World {
+pub(crate) struct World {
     pub(crate) name: String,
     pub(crate) location: Point,
     pub(crate) has_gas_giant: bool,
@@ -194,13 +194,13 @@ pub struct World {
 }
 
 impl World {
-    pub const SIZE_MIN: u16 = 0;
-    pub const SIZE_MAX: u16 = 10;
+    pub(crate) const SIZE_MIN: u16 = 0;
+    pub(crate) const SIZE_MAX: u16 = 10;
 
-    pub const TECH_MIN: i16 = 0;
-    pub const TECH_MAX: i16 = 15;
+    pub(crate) const TECH_MIN: i16 = 0;
+    pub(crate) const TECH_MAX: i16 = 15;
 
-    pub const NUM_TAGS: usize = 2;
+    pub(crate) const NUM_TAGS: usize = 2;
 
     pub fn profile(&self) -> String {
         format!(
@@ -592,7 +592,7 @@ impl World {
         self.has_tas = dice::roll_2d(6) >= tas_target;
     }
 
-    fn resolve_travel_code(&mut self) {
+    pub(crate) fn resolve_travel_code(&mut self) {
         self.travel_code = TravelCode::Safe;
 
         match self.atmosphere.code {
@@ -899,8 +899,8 @@ impl TryFrom<WorldRecord> for World {
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub struct WorldRecord {
-    pub subsector_name: String,
+pub(crate) struct WorldRecord {
+    pub(crate) subsector_name: String,
     // Summary
     name: String,
     location: String,

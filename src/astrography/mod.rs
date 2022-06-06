@@ -1,5 +1,5 @@
 pub(crate) mod table;
-pub mod world;
+pub(crate) mod world;
 
 use std::collections::BTreeMap;
 use std::error::Error;
@@ -14,7 +14,7 @@ use super::dice;
 use world::{World, WorldRecord};
 
 #[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
-pub struct Point {
+pub(crate) struct Point {
     pub x: u16,
     pub y: u16,
 }
@@ -80,18 +80,19 @@ impl Sub for &Translation {
 }
 
 #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
-pub struct Subsector {
-    name: String,
+pub(crate) struct Subsector {
+    pub(crate) name: String,
     pub(crate) map: BTreeMap<Point, World>,
 }
 
+#[allow(dead_code)]
 const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population,Notes";
 
 impl Subsector {
     pub const COLUMNS: usize = 8;
     pub const ROWS: usize = 10;
 
-    fn empty() -> Self {
+    pub(crate) fn empty() -> Self {
         Subsector {
             name: String::from("Subsector"),
             map: BTreeMap::new(),
@@ -155,6 +156,7 @@ impl Subsector {
         println!("{}\n", hex_grid);
     }
 
+    #[allow(dead_code)]
     pub fn to_csv(&self) -> String {
         let mut writer = csv::WriterBuilder::new()
             .has_headers(false)
@@ -171,6 +173,7 @@ impl Subsector {
         [String::from(CSV_HEADERS), table].join("\n")
     }
 
+    #[allow(dead_code)]
     pub fn from_csv(csv: &str) -> Result<Self, Box<dyn Error>> {
         let mut rows = csv.lines();
 

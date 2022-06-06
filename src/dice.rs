@@ -4,7 +4,7 @@ use rand::Rng;
 use std::cmp::PartialOrd;
 use std::ops::Add;
 
-pub fn roll<T, U>(range: U) -> T
+pub(crate) fn roll<T, U>(range: U) -> T
 where
     T: SampleUniform,
     U: SampleRange<T>,
@@ -13,7 +13,7 @@ where
     rng.gen_range(range)
 }
 
-pub fn roll_1d<T>(sides: T) -> T
+pub(crate) fn roll_1d<T>(sides: T) -> T
 where
     T: From<u8> + PartialOrd + SampleUniform,
 {
@@ -22,7 +22,7 @@ where
     rng.gen_range(one..=sides)
 }
 
-pub fn roll_2d<T>(sides: T) -> T
+pub(crate) fn roll_2d<T>(sides: T) -> T
 where
     T: Add<Output = T> + Copy + From<u8> + PartialOrd + SampleUniform,
 {
@@ -31,7 +31,7 @@ where
 }
 
 #[allow(dead_code)]
-pub fn roll_d66() -> isize {
+pub(crate) fn roll_d66() -> isize {
     10 * roll_1d(6) + roll_1d(6)
 }
 
