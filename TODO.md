@@ -19,6 +19,7 @@ TODOs completed in this way should probably should still have an issue created a
 - Finish adding displays for all `Subsector` fields
 - Implement world movement to the GUI using the `WorldLocUpdated` message
 - Add "save" and "revert" buttons to world data GUI to trigger saving world changes and redrawing SVG instead of clicking to a different grid point entirely
+- Implement whole world regeneration
 - Implement new world generation on empty hexes
 - Implement world deletion
 - Implement `Subsector` json saving and loading

@@ -98,6 +98,12 @@ pub(crate) enum StarportClass {
     X,
 }
 
+impl ToString for StarportClass {
+    fn to_string(&self) -> String {
+        format!("{:?}", self)
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub(crate) struct StarportRecord {
     pub(crate) code: u16,

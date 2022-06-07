@@ -477,7 +477,7 @@ impl World {
         }
     }
 
-    fn generate_starport(&mut self) {
+    pub(crate) fn generate_starport(&mut self) {
         let pop_mod: i32 = match self.population.code {
             8..=9 => 1,
             x if x >= 10 => 2,
@@ -492,7 +492,12 @@ impl World {
         let index = roll.clamp(lower, upper) as usize;
         self.starport = TABLES.starport_table[index].clone();
 
-        self.starport.berthing_cost *= dice::roll_1d(6);
+        self.generate_berthing_cost();
+    }
+
+    pub(crate) fn generate_berthing_cost(&mut self) {
+        let index = self.starport.code as usize;
+        self.starport.berthing_cost = dice::roll_1d(6) * TABLES.starport_table[index].berthing_cost;
     }
 
     pub(crate) fn generate_tech_level(&mut self) {

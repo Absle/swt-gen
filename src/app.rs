@@ -10,7 +10,9 @@ use egui_extras::RetainedImage;
 
 use crate::astrography::{Point, Subsector};
 
-use crate::astrography::table::{CulturalDiffRecord, GovRecord, WorldTagRecord, TABLES};
+use crate::astrography::table::{
+    CulturalDiffRecord, GovRecord, StarportClass, WorldTagRecord, TABLES,
+};
 
 use crate::astrography::world::{Faction, TravelCode, World};
 
@@ -32,6 +34,9 @@ enum Message {
     RegenWorldHydrographics,
     RegenWorldPopulation,
     RegenWorldTechLevel,
+    NewWorldStarportClassSelected,
+    RegenWorldStarport,
+    WorldBerthingCostsUpdated,
     NewWorldGovSelected {
         new_code: u16,
     },
@@ -58,7 +63,7 @@ enum Message {
 
 #[derive(PartialEq)]
 enum TabLabel {
-    PlanetarySurvey,
+    WorldSurvey,
     GovernmentLaw,
     Factions,
     CultureErrata,
@@ -69,7 +74,7 @@ impl ToString for TabLabel {
     fn to_string(&self) -> String {
         use TabLabel::*;
         match self {
-            PlanetarySurvey => "Planetary Survey".to_string(),
+            WorldSurvey => "World Survey".to_string(),
             GovernmentLaw => "Government & Law".to_string(),
             Factions => "Factions".to_string(),
             CultureErrata => "Culture & Errata".to_string(),
@@ -93,10 +98,12 @@ pub struct GeneratorApp {
     world_selected: bool,
     /// Selected `World`
     world: World,
-    /// `String` representation of the selected world's `Point` location
+    /// Buffer for `String` representation of the selected world's `Point` location
     location: String,
-    /// `String` representation of the selected world's diameter in km
+    /// Buffer for `String` representation of the selected world's diameter in km
     diameter: String,
+    /// Buffer for `String` representation of the selected world's starport berthing cost
+    berthing_cost: String,
     /// Index of selected `Faction`
     faction_idx: usize,
 }
@@ -112,6 +119,7 @@ impl GeneratorApp {
 
     const FIELD_SPACING: f32 = 15.0;
     const FIELD_SELECTION_WIDTH: f32 = 225.0;
+    const SHORT_SELECTION_WIDTH: f32 = 50.0;
 
     /** Queue a message to be handled at the beginning of the next frame. */
     fn message_next_frame(&mut self, message: Message) {
@@ -146,6 +154,7 @@ impl GeneratorApp {
                     self.world = world.clone();
                     self.location = self.world.location.to_string();
                     self.diameter = self.world.diameter.to_string();
+                    self.berthing_cost = self.world.starport.berthing_cost.to_string();
                 } else {
                     self.world_selected = false;
                 }
@@ -164,19 +173,20 @@ impl GeneratorApp {
                 todo!("Add ability to change world location.")
             }
 
+            WorldModelUpdated => self.world.resolve_trade_codes(),
+
+            RegenWorldSize => {
+                self.world.generate_size();
+                self.diameter = self.world.diameter.to_string();
+                self.message_next_frame(Message::WorldModelUpdated);
+            }
+
             WorldDiameterUpdated => {
                 if let Ok(diameter) = self.diameter.parse::<u32>() {
                     self.world.diameter = diameter;
                 } else {
                     self.diameter = self.world.diameter.to_string();
                 }
-            }
-
-            WorldModelUpdated => self.world.resolve_trade_codes(),
-
-            RegenWorldSize => {
-                self.world.generate_size();
-                self.message_next_frame(Message::WorldModelUpdated);
             }
 
             RegenWorldAtmosphere => {
@@ -202,6 +212,35 @@ impl GeneratorApp {
             RegenWorldTechLevel => {
                 self.world.generate_tech_level();
                 self.message_next_frame(Message::WorldModelUpdated);
+            }
+
+            NewWorldStarportClassSelected => {
+                let starport = TABLES
+                    .starport_table
+                    .iter()
+                    .find(|starport| starport.class == self.world.starport.class)
+                    .unwrap();
+
+                self.world.starport.code = starport.code;
+                self.world.generate_berthing_cost();
+                self.berthing_cost = self.world.starport.berthing_cost.to_string();
+                self.world.starport.fuel = starport.fuel.clone();
+                self.world.starport.facilities = starport.facilities.clone();
+                self.message_next_frame(Message::WorldModelUpdated);
+            }
+
+            RegenWorldStarport => {
+                self.world.generate_starport();
+                self.berthing_cost = self.world.starport.berthing_cost.to_string();
+                self.message_next_frame(Message::WorldModelUpdated);
+            }
+
+            WorldBerthingCostsUpdated => {
+                if let Ok(berthing_cost) = self.berthing_cost.parse::<u32>() {
+                    self.world.starport.berthing_cost = berthing_cost;
+                } else {
+                    self.berthing_cost = self.world.starport.berthing_cost.to_string();
+                }
             }
 
             NewWorldGovSelected { new_code } => {
@@ -400,7 +439,7 @@ impl GeneratorApp {
 
             use TabLabel::*;
             match self.tab {
-                PlanetarySurvey => self.planetary_survey_display(ui),
+                WorldSurvey => self.planetary_survey_display(ui),
                 GovernmentLaw => self.government_law_display(ui),
                 Factions => self.factions_display(ui),
                 CultureErrata => self.culture_errata_display(ui),
@@ -440,7 +479,10 @@ impl GeneratorApp {
 
                 // Location
                 // TODO hook a message into this
-                ui.add(TextEdit::singleline(&mut self.location).desired_width(50.0));
+                ui.add(
+                    TextEdit::singleline(&mut self.location)
+                        .desired_width(Self::SHORT_SELECTION_WIDTH),
+                );
 
                 // World profile
                 let profile = self.world.profile();
@@ -483,13 +525,7 @@ impl GeneratorApp {
     fn tab_labels(&mut self, ui: &mut Ui) {
         use TabLabel::*;
         ui.horizontal(|ui| {
-            for tab_label in [
-                PlanetarySurvey,
-                GovernmentLaw,
-                Factions,
-                CultureErrata,
-                Notes,
-            ] {
+            for tab_label in [WorldSurvey, GovernmentLaw, Factions, CultureErrata, Notes] {
                 let text = tab_label.to_string();
                 ui.selectable_value(&mut self.tab, tab_label, text);
             }
@@ -497,6 +533,29 @@ impl GeneratorApp {
     }
 
     fn planetary_survey_display(&mut self, ui: &mut Ui) {
+        ui.columns(2, |columns| {
+            self.planetary_data_display(&mut columns[0]);
+            self.starport_information_display(&mut columns[1]);
+        });
+    }
+
+    fn government_law_display(&mut self, ui: &mut Ui) {
+        ui.columns(2, |columns| {
+            self.government_display(&mut columns[0]);
+            self.law_level_display(&mut columns[1]);
+        });
+    }
+
+    fn culture_errata_display(&mut self, ui: &mut Ui) {
+        const NUM_COLUMNS: usize = World::NUM_TAGS + 1;
+        ui.columns(NUM_COLUMNS, |columns| {
+            self.culture_display(&mut columns[0]);
+
+            self.world_tags_display(&mut columns[1..]);
+        });
+    }
+
+    fn planetary_data_display(&mut self, ui: &mut Ui) {
         ui.heading("Planetary Data");
         ui.add_space(Self::LABEL_SPACING);
 
@@ -518,22 +577,6 @@ impl GeneratorApp {
         self.tech_level_display(ui);
     }
 
-    fn government_law_display(&mut self, ui: &mut Ui) {
-        ui.columns(2, |columns| {
-            self.government_display(&mut columns[0]);
-            self.law_level_display(&mut columns[1]);
-        });
-    }
-
-    fn culture_errata_display(&mut self, ui: &mut Ui) {
-        const NUM_COLUMNS: usize = World::NUM_TAGS + 1;
-        ui.columns(NUM_COLUMNS, |columns| {
-            self.culture_display(&mut columns[0]);
-
-            self.world_tags_display(&mut columns[1..]);
-        });
-    }
-
     fn size_display(&mut self, ui: &mut Ui) {
         Grid::new("world_size_grid")
             .spacing([Self::FIELD_SPACING, Self::LABEL_SPACING])
@@ -553,7 +596,7 @@ impl GeneratorApp {
                 // Size code
                 ComboBox::from_id_source("size_selection")
                     .selected_text(self.world.size.to_string())
-                    .width(45.0)
+                    .width(Self::SHORT_SELECTION_WIDTH)
                     .show_ui(ui, |ui| {
                         for size in World::SIZE_MIN..=World::SIZE_MAX {
                             if ui
@@ -567,7 +610,10 @@ impl GeneratorApp {
 
                 // Diameter
                 if ui
-                    .add(TextEdit::singleline(&mut self.diameter).desired_width(50.0))
+                    .add(
+                        TextEdit::singleline(&mut self.diameter)
+                            .desired_width(Self::SHORT_SELECTION_WIDTH),
+                    )
                     .lost_focus()
                 {
                     self.message_immediate(Message::WorldDiameterUpdated);
@@ -760,11 +806,12 @@ impl GeneratorApp {
                 .font(Self::LABEL_FONT)
                 .color(Self::LABEL_COLOR),
         );
+        ui.add_space(Self::LABEL_SPACING);
 
         ui.horizontal(|ui| {
             ComboBox::from_id_source("tech_level_selection")
                 .selected_text(self.world.tech_level.to_string())
-                .width(45.0)
+                .width(Self::SHORT_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for tech_level in World::TECH_MIN..=World::TECH_MAX {
                         if ui
@@ -787,6 +834,119 @@ impl GeneratorApp {
                 self.message_immediate(Message::RegenWorldTechLevel);
             }
         });
+    }
+
+    fn starport_information_display(&mut self, ui: &mut Ui) {
+        ui.heading("Starport Information");
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.label(
+            RichText::new("Class")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal(|ui| {
+            ComboBox::from_id_source("starport_class_selection")
+                .selected_text(self.world.starport.class.to_string())
+                .width(Self::SHORT_SELECTION_WIDTH)
+                .show_ui(ui, |ui| {
+                    use StarportClass::*;
+                    for starport_class in [A, B, C, D, E, X] {
+                        let text = starport_class.to_string();
+                        if ui
+                            .selectable_value(&mut self.world.starport.class, starport_class, text)
+                            .clicked()
+                        {
+                            self.message_immediate(Message::NewWorldStarportClassSelected);
+                        }
+                    }
+                });
+
+            if ui
+                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .clicked()
+            {
+                self.message_immediate(Message::RegenWorldStarport);
+            }
+        });
+        ui.add_space(Self::FIELD_SPACING);
+
+        Grid::new("starport_grid")
+            .spacing([Self::FIELD_SPACING, Self::LABEL_SPACING])
+            .min_col_width(Self::SHORT_SELECTION_WIDTH * 1.5)
+            .show(ui, |ui| {
+                ui.label(
+                    RichText::new("Berthing Costs")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.label(
+                    RichText::new("Fuel")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.label(
+                    RichText::new("Facilities")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.end_row();
+
+                if ui
+                    .add(
+                        TextEdit::singleline(&mut self.berthing_cost)
+                            .desired_width(Self::SHORT_SELECTION_WIDTH),
+                    )
+                    .lost_focus()
+                {
+                    self.message_immediate(Message::WorldBerthingCostsUpdated);
+                }
+
+                ui.label(&self.world.starport.fuel);
+                ui.label(&self.world.starport.facilities);
+            });
+        ui.add_space(Self::FIELD_SPACING);
+
+        Grid::new("bases_grid")
+            .spacing([Self::FIELD_SPACING, Self::LABEL_SPACING])
+            .show(ui, |ui| {
+                ui.label(
+                    RichText::new("Bases")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+                ui.end_row();
+
+                ui.checkbox(
+                    &mut self.world.has_naval_base,
+                    RichText::new("Naval")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+
+                ui.checkbox(
+                    &mut self.world.has_scout_base,
+                    RichText::new("Scout")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+
+                ui.checkbox(
+                    &mut self.world.has_research_base,
+                    RichText::new("Research")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+
+                ui.checkbox(
+                    &mut self.world.has_tas,
+                    RichText::new("TAS")
+                        .font(Self::LABEL_FONT)
+                        .color(Self::LABEL_COLOR),
+                );
+            });
     }
 
     fn government_display(&mut self, ui: &mut Ui) {
@@ -869,7 +1029,7 @@ impl GeneratorApp {
         ui.horizontal(|ui| {
             ComboBox::from_id_source("law_level_selection")
                 .selected_text(format!("{}", self.world.law_level.code))
-                .width(45.0)
+                .width(Self::SHORT_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
                     for law_level in TABLES.law_table.iter() {
                         if ui
@@ -1240,25 +1400,21 @@ impl Default for GeneratorApp {
         let subsector = Subsector::default();
         let subsector_svg = subsector.generate_svg();
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
-        let message_queue = VecDeque::new();
-        let selected_point = Point::default();
-        let selected_world = World::empty();
-        let world_loc = String::new();
-        let world_diameter = String::new();
 
         Self {
             subsector,
             subsector_svg,
             subsector_image,
-            message_queue,
+            message_queue: VecDeque::new(),
             point_selected: false,
             world_selected: false,
-            point: selected_point,
-            world: selected_world,
-            tab: TabLabel::PlanetarySurvey,
+            point: Point::default(),
+            world: World::empty(),
+            tab: TabLabel::WorldSurvey,
             faction_idx: 0,
-            location: world_loc,
-            diameter: world_diameter,
+            location: String::new(),
+            diameter: String::new(),
+            berthing_cost: String::new(),
         }
     }
 }
