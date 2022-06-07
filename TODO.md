@@ -16,7 +16,6 @@ TODOs completed in this way should probably should still have an issue created a
 
 ### App/GUI TODOs
 - Refactor older "description saving" messages to minimize cloning
-- Finish adding displays for all `Subsector` fields
 - Implement world movement to the GUI using the `WorldLocUpdated` message
 - Add "save" and "revert" buttons to world data GUI to trigger saving world changes and redrawing SVG instead of clicking to a different grid point entirely
 - Implement whole world regeneration
@@ -45,3 +44,6 @@ TODOs completed in this way should probably should still have an issue created a
 
 ### General Issues
 - ~~Make this TODO list~~
+
+### App/GUI TODOs
+- ~~Finish adding displays for all `Subsector` fields~~

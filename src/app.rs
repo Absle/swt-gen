@@ -443,7 +443,7 @@ impl GeneratorApp {
                 GovernmentLaw => self.government_law_display(ui),
                 Factions => self.factions_display(ui),
                 CultureErrata => self.culture_errata_display(ui),
-                Notes => (),
+                Notes => self.notes_display(ui),
             }
         });
     }
@@ -552,6 +552,16 @@ impl GeneratorApp {
             self.culture_display(&mut columns[0]);
 
             self.world_tags_display(&mut columns[1..]);
+        });
+    }
+
+    fn notes_display(&mut self, ui: &mut Ui) {
+        ScrollArea::vertical().show(ui, |ui| {
+            ui.add(
+                TextEdit::multiline(&mut self.world.notes)
+                    .desired_width(f32::INFINITY)
+                    .desired_rows(50),
+            );
         });
     }
 
