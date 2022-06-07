@@ -34,9 +34,13 @@ impl ToString for Point {
 impl TryFrom<&str> for Point {
     type Error = Box<dyn Error>;
     fn try_from(string: &str) -> Result<Self, Self::Error> {
+        let string = string.trim();
+
         // Handle old and new prefix respectively
         let string = string.strip_prefix("'").unwrap_or(&string);
         let string = string.strip_prefix("_").unwrap_or(&string);
+        let string = string.trim();
+
         let mut chars = string.chars();
 
         let mut x_str = String::new();
@@ -46,6 +50,11 @@ impl TryFrom<&str> for Point {
                 let c = chars.next().ok_or("World location string too short")?;
                 string.push(c);
             }
+        }
+
+        // After removing prefixes and process four characters, there should be nothing left
+        if !chars.next().is_none() {
+            return Err("World location string too long".into());
         }
 
         let x: u16 = x_str.parse()?;

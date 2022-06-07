@@ -3,8 +3,8 @@ use std::collections::VecDeque;
 use eframe::{App, Frame};
 
 use egui::{
-    vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label, Pos2,
-    Rect, RichText, ScrollArea, Sense, TextEdit, TextStyle, Ui, Vec2,
+    vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label, Layout,
+    Pos2, Rect, RichText, ScrollArea, Sense, TextEdit, TextStyle, Ui, Vec2, Window,
 };
 use egui_extras::RetainedImage;
 
@@ -17,15 +17,14 @@ use crate::astrography::table::{
 use crate::astrography::world::{Faction, TravelCode, World};
 
 /** Set of messages respresenting all non-trivial GUI events. */
+#[derive(Clone)]
 enum Message {
-    HexGridClicked {
-        new_point: Point,
-    },
+    HexGridClicked { new_point: Point },
     RedrawSubsectorImage,
     SaveWorld,
-    // TODO
-    #[allow(dead_code)]
     WorldLocUpdated,
+    ConfirmLocUpdate { location: Point },
+    CancelLocUpdate,
     WorldDiameterUpdated,
     WorldModelUpdated,
     RegenWorldSize,
@@ -34,31 +33,29 @@ enum Message {
     RegenWorldHydrographics,
     RegenWorldPopulation,
     RegenWorldTechLevel,
-    NewWorldStarportClassSelected,
+    NewStarportClassSelected,
     RegenWorldStarport,
     WorldBerthingCostsUpdated,
-    NewWorldGovSelected {
-        new_code: u16,
-    },
+    NewWorldGovSelected { new_code: u16 },
     RegenWorldGovernment,
     RegenWorldLawLevel,
     AddNewFaction,
     RemoveSelectedFaction,
-    NewFactionGovSelected {
-        new_code: u16,
-    },
+    NewFactionGovSelected { new_code: u16 },
     RegenSelectedFaction,
-    NewWorldCultureSelected {
-        new_code: u16,
-    },
+    NewWorldCultureSelected { new_code: u16 },
     RegenWorldCulture,
-    NewWorldTagSelected {
-        index: usize,
-        new_code: u16,
-    },
-    RegenWorldTag {
-        index: usize,
-    },
+    NewWorldTagSelected { index: usize, new_code: u16 },
+    RegenWorldTag { index: usize },
+}
+
+/** Configuration data for a confirmation popup. */
+#[derive(Clone)]
+struct ConfirmationConfig {
+    title: String,
+    text: String,
+    confirm_message: Message,
+    cancel_message: Message,
 }
 
 #[derive(PartialEq)]
@@ -88,6 +85,8 @@ pub struct GeneratorApp {
     subsector_svg: String,
     subsector_image: RetainedImage,
     message_queue: VecDeque<Message>,
+    /// Blocking confirmation dialog that pops up when not `None`
+    confirmation: Option<ConfirmationConfig>,
     /// Selected display `TabLabel`
     tab: TabLabel,
     /// Whether a `Point` on the hex grid is currently selected or not
@@ -110,6 +109,7 @@ pub struct GeneratorApp {
 
 impl GeneratorApp {
     const SUBSECTOR_IMAGE_MIN_SIZE: Vec2 = vec2(1584.0, 834.0);
+    const CONFIRMATION_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
 
     const LABEL_FONT: FontId = FontId::proportional(11.0);
     const LABEL_COLOR: Color32 = Color32::GRAY;
@@ -152,7 +152,7 @@ impl GeneratorApp {
                 if let Some(world) = world {
                     self.world_selected = true;
                     self.world = world.clone();
-                    self.location = self.world.location.to_string();
+                    self.location = self.point.to_string();
                     self.diameter = self.world.diameter.to_string();
                     self.berthing_cost = self.world.starport.berthing_cost.to_string();
                 } else {
@@ -160,7 +160,11 @@ impl GeneratorApp {
                 }
             }
 
-            RedrawSubsectorImage => self.redraw_subsector_image(),
+            RedrawSubsectorImage => {
+                self.subsector_svg = self.subsector.generate_svg();
+                self.subsector_image =
+                    generate_subsector_image(self.subsector.name(), &self.subsector_svg).unwrap();
+            }
 
             SaveWorld => {
                 self.subsector
@@ -168,9 +172,43 @@ impl GeneratorApp {
                     .insert(self.point.clone(), self.world.clone());
             }
 
-            // TODO
             WorldLocUpdated => {
-                todo!("Add ability to change world location.")
+                let location = Point::try_from(&self.location[..]);
+                if let Ok(location) = location {
+                    if location == self.point {
+                        return;
+                    }
+
+                    if let Some(world) = self.subsector.map.get(&location).clone() {
+                        self.confirmation = Some(ConfirmationConfig {
+                            title: "Destination Hex Occupied".to_string(),
+                            text: format!(
+                                "'{}' is already at {}.\nWould you like to overwrite it?",
+                                world.name,
+                                location.to_string(),
+                            ),
+                            confirm_message: Message::ConfirmLocUpdate { location },
+                            cancel_message: Message::CancelLocUpdate,
+                        })
+                    } else {
+                        self.message_immediate(Message::ConfirmLocUpdate { location })
+                    }
+                } else {
+                    self.location = self.point.to_string();
+                }
+            }
+
+            ConfirmLocUpdate { location } => {
+                self.location = location.to_string();
+                self.subsector.map.remove(&self.point);
+                self.world.location = location.clone();
+                self.point = location.clone();
+                self.subsector.map.insert(location, self.world.clone());
+                self.message_next_frame(Message::RedrawSubsectorImage);
+            }
+
+            CancelLocUpdate => {
+                self.location = self.point.to_string();
             }
 
             WorldModelUpdated => self.world.resolve_trade_codes(),
@@ -214,7 +252,7 @@ impl GeneratorApp {
                 self.message_next_frame(Message::WorldModelUpdated);
             }
 
-            NewWorldStarportClassSelected => {
+            NewStarportClassSelected => {
                 let starport = TABLES
                     .starport_table
                     .iter()
@@ -378,27 +416,18 @@ impl GeneratorApp {
         }
     }
 
-    /** Regenerate `subsector_svg` and `subsector_image` after a change to `subsector`.
-
-    "Redraw" is actually a misgnomer since it's redrawn every frame, but "regenerate" isn't as
-    descriptive.
-    */
-    fn redraw_subsector_image(&mut self) {
-        self.subsector_svg = self.subsector.generate_svg();
-        self.subsector_image =
-            generate_subsector_image(self.subsector.name(), &self.subsector_svg).unwrap();
-    }
-
     fn central_panel(&mut self, ctx: &Context) {
         CentralPanel::default().show(ctx, |ui| {
-            ui.horizontal_top(|ui| {
-                self.subsector_map_display(ctx, ui);
+            ui.add_enabled_ui(self.confirmation.is_none(), |ui| {
+                ui.horizontal_top(|ui| {
+                    self.subsector_map_display(ctx, ui);
 
-                ui.separator();
+                    ui.separator();
 
-                if self.point_selected && self.world_selected {
-                    self.world_data_display(ui);
-                }
+                    if self.point_selected && self.world_selected {
+                        self.world_data_display(ui);
+                    }
+                });
             });
         });
     }
@@ -478,11 +507,15 @@ impl GeneratorApp {
                 ui.end_row();
 
                 // Location
-                // TODO hook a message into this
-                ui.add(
-                    TextEdit::singleline(&mut self.location)
-                        .desired_width(Self::SHORT_SELECTION_WIDTH),
-                );
+                if ui
+                    .add(
+                        TextEdit::singleline(&mut self.location)
+                            .desired_width(Self::SHORT_SELECTION_WIDTH),
+                    )
+                    .clicked()
+                {
+                    self.message_immediate(Message::WorldLocUpdated);
+                }
 
                 // World profile
                 let profile = self.world.profile();
@@ -869,7 +902,7 @@ impl GeneratorApp {
                             .selectable_value(&mut self.world.starport.class, starport_class, text)
                             .clicked()
                         {
-                            self.message_immediate(Message::NewWorldStarportClassSelected);
+                            self.message_immediate(Message::NewStarportClassSelected);
                         }
                     }
                 });
@@ -1403,6 +1436,44 @@ impl GeneratorApp {
                 ));
             });
     }
+
+    fn confirmation_popup(&mut self, ctx: &Context) {
+        if let Some(config) = self.confirmation.clone() {
+            let ConfirmationConfig {
+                title,
+                text,
+                confirm_message,
+                cancel_message,
+            } = config;
+            Window::new(title.clone())
+                .title_bar(false)
+                .resizable(false)
+                .fixed_size(Self::CONFIRMATION_POPUP_SIZE)
+                .show(ctx, |ui| {
+                    ui.vertical_centered(|ui| {
+                        ui.heading(title);
+                        ui.separator();
+                        ui.add_space(Self::FIELD_SPACING / 2.0);
+                        ui.label(text);
+                    });
+                    ui.add_space(Self::FIELD_SPACING);
+
+                    ui.horizontal(|ui| {
+                        if ui.button("Confirm").clicked() {
+                            self.confirmation = None;
+                            self.message_next_frame(confirm_message);
+                        }
+
+                        ui.with_layout(Layout::right_to_left(), |ui| {
+                            if ui.button("Cancel").clicked() {
+                                self.confirmation = None;
+                                self.message_next_frame(cancel_message);
+                            }
+                        });
+                    });
+                });
+        }
+    }
 }
 
 impl Default for GeneratorApp {
@@ -1416,6 +1487,7 @@ impl Default for GeneratorApp {
             subsector_svg,
             subsector_image,
             message_queue: VecDeque::new(),
+            confirmation: None,
             point_selected: false,
             world_selected: false,
             point: Point::default(),
@@ -1433,6 +1505,7 @@ impl App for GeneratorApp {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         self.process_message_queue();
         self.central_panel(ctx);
+        self.confirmation_popup(ctx);
     }
 }
 
