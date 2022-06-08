@@ -121,18 +121,15 @@ impl Subsector {
             for y in 1..=Subsector::ROWS {
                 // Fifty-fifty chance with no modifiers
                 let roll = dice::roll_1d(6) + world_abundance_dm;
-                match roll {
-                    4..=6 => {
-                        let point = Point {
-                            x: x as u16,
-                            y: y as u16,
-                        };
+                if roll >= 4 {
+                    let point = Point {
+                        x: x as u16,
+                        y: y as u16,
+                    };
 
-                        let name = names.next().unwrap();
-                        let world = World::new(name, point.clone());
-                        subsector.map.insert(point, world);
-                    }
-                    _ => (),
+                    let name = names.next().unwrap();
+                    let world = World::new(name, point.clone());
+                    subsector.map.insert(point, world);
                 }
             }
         }
@@ -450,6 +447,14 @@ impl Subsector {
         }
 
         output_buffer.join("\n")
+    }
+
+    /** Add a randomized `World` at `point`. */
+    pub(crate) fn add_random_world(&mut self, point: Point) {
+        let mut names = random_names(Subsector::COLUMNS * Subsector::ROWS + 1).into_iter();
+        let name = names.next().unwrap();
+        let location = point.clone();
+        self.map.insert(point, World::new(name, location));
     }
 }
 

@@ -18,11 +18,11 @@ TODOs completed in this way should probably should still have an issue created a
 - Refactor older "description saving" messages to minimize cloning
 - Add "save" and "revert" buttons to world data GUI to trigger saving world changes and redrawing SVG instead of clicking to a different grid point entirely
 - Implement whole world regeneration
-- Implement new world generation on empty hexes
 - Implement world deletion
 - Implement `Subsector` json saving and loading
     - "Player-safe" versions of files would also be nice
-- Implement whole `Subsector` regenerating functionality (possibly only when `Subsector` isn't loaded from a file, or at least have "save changes?" dialog)
+- Implement `Subsector` renaming
+- Implement whole `Subsector` regenerating functionality with configurable `world_abundance_dm`
 - "Player-safe" version of the GUI, probably using different build targets
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
 - Add dark mode support... somehow
@@ -47,3 +47,4 @@ TODOs completed in this way should probably should still have an issue created a
 ### App/GUI TODOs
 - ~~Finish adding displays for all `Subsector` fields~~
 - ~~Implement world movement to the GUI using the `WorldLocUpdated` message~~
+- ~~Implement new world generation on empty hexes~~

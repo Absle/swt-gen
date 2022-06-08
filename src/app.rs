@@ -4,7 +4,7 @@ use eframe::{App, Frame};
 
 use egui::{
     vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label, Layout,
-    Pos2, Rect, RichText, ScrollArea, Sense, TextEdit, TextStyle, Ui, Vec2, Window,
+    Pos2, Rect, RichText, ScrollArea, Sense, Style, TextEdit, TextStyle, Ui, Vec2, Window,
 };
 use egui_extras::RetainedImage;
 
@@ -47,6 +47,7 @@ enum Message {
     RegenWorldCulture,
     NewWorldTagSelected { index: usize, new_code: u16 },
     RegenWorldTag { index: usize },
+    AddNewWorld,
 }
 
 /** Configuration data for a confirmation popup. */
@@ -114,6 +115,10 @@ impl GeneratorApp {
     const LABEL_FONT: FontId = FontId::proportional(11.0);
     const LABEL_COLOR: Color32 = Color32::GRAY;
     const LABEL_SPACING: f32 = 4.0;
+
+    #[allow(dead_code)]
+    /// Soft, nice blue color used by egui `SelectableValue` widgets.
+    const SELECTED_BLUE: Color32 = Color32::from_rgb(144, 209, 255);
 
     const BUTTON_FONT_SIZE: f32 = 16.0;
 
@@ -413,6 +418,13 @@ impl GeneratorApp {
                     world_tag.description = new_tag.description.clone();
                 }
             }
+
+            AddNewWorld => {
+                self.subsector.add_random_world(self.point.clone());
+                self.message_next_frame(Message::HexGridClicked {
+                    new_point: self.point.clone(),
+                });
+            }
         }
     }
 
@@ -426,6 +438,8 @@ impl GeneratorApp {
 
                     if self.point_selected && self.world_selected {
                         self.world_data_display(ui);
+                    } else if self.point_selected {
+                        self.new_world_dialog(ui);
                     }
                 });
             });
@@ -1435,6 +1449,19 @@ impl GeneratorApp {
                     &mut self.world.world_tags[index].description,
                 ));
             });
+    }
+
+    fn new_world_dialog(&mut self, ui: &mut Ui) {
+        ui.vertical_centered(|ui| {
+            let height = ui.available_height();
+            ui.add_space(height / 2.0);
+
+            let header_font = TextStyle::Heading.resolve(&Style::default());
+            let text = RichText::new("Add New World").font(header_font);
+            if ui.button(text).clicked() {
+                self.message_next_frame(Message::AddNewWorld);
+            }
+        });
     }
 
     fn confirmation_popup(&mut self, ctx: &Context) {

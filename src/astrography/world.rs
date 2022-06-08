@@ -245,6 +245,7 @@ impl World {
         format!("{:?}", self.travel_code)
     }
 
+    /** Create a randomized `World` named `name` at `location`. */
     pub fn new(name: String, location: Point) -> Self {
         let mut world = Self::empty();
         world.name = name;
