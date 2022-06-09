@@ -90,8 +90,8 @@ impl Sub for &Translation {
 
 #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct Subsector {
-    pub(crate) name: String,
-    pub(crate) map: BTreeMap<Point, World>,
+    name: String,
+    map: BTreeMap<Point, World>,
 }
 
 #[allow(dead_code)]
@@ -128,7 +128,7 @@ impl Subsector {
                     };
 
                     let name = names.next().unwrap();
-                    let world = World::new(name, point.clone());
+                    let world = World::new(name);
                     subsector.map.insert(point, world);
                 }
             }
@@ -168,9 +168,10 @@ impl Subsector {
             .has_headers(false)
             .from_writer(Vec::new());
 
-        for (_, world) in &self.map {
+        for (point, world) in &self.map {
             let mut record = WorldRecord::from(world.clone());
-            record.subsector_name = self.name.clone();
+            record.set_subsector_name(&self.name[..]);
+            record.set_location(&point);
             writer.serialize(record).unwrap();
         }
 
@@ -199,16 +200,23 @@ impl Subsector {
             let world_record: WorldRecord = result?;
 
             if name.is_empty() {
-                name = world_record.subsector_name.clone();
+                name = world_record.subsector_name().to_string();
             }
 
             let world_name = String::from(world_record.name());
+            let maybe_location = Point::try_from(world_record.location());
+            if let Err(err) = maybe_location {
+                return Err(format!("Error while parsing world '{}': {}", world_name, err).into());
+            }
+            let location = maybe_location.unwrap();
+
             let maybe_world = World::try_from(world_record);
-            if let Some(err) = maybe_world.as_ref().err() {
+            if let Err(err) = maybe_world {
                 return Err(format!("Error while parsing world '{}': {}", world_name, err).into());
             }
             let world = maybe_world.unwrap();
-            map.insert(world.location.clone(), world);
+
+            map.insert(location, world);
         }
 
         Ok(Self { name, map })
@@ -449,12 +457,48 @@ impl Subsector {
         output_buffer.join("\n")
     }
 
-    /** Add a randomized `World` at `point`. */
-    pub(crate) fn add_random_world(&mut self, point: Point) {
+    /** Returns a reference to the `World` at `point` or `None` if there isn't one. */
+    pub fn get_world(&self, point: &Point) -> Option<&World> {
+        self.map.get(point)
+    }
+
+    /** Inserts `world` at `point`, replacing any other `World` that was there previously.
+
+    Returns the `World` already at `point` if there was one, or `None` otherwise.
+    */
+    pub fn insert_world(&mut self, point: &Point, world: &mut World) -> Option<World> {
+        self.map.insert(point.clone(), world.clone())
+    }
+
+    /** Inserts a random `World` at `point`, replacing any other `World` that was there previously.
+
+    Returns the `World` already at `point` if there was one, or `None` otherwise.
+    */
+    pub fn insert_random_world(&mut self, point: &Point) -> Option<World> {
         let mut names = random_names(Subsector::COLUMNS * Subsector::ROWS + 1).into_iter();
         let name = names.next().unwrap();
-        let location = point.clone();
-        self.map.insert(point, World::new(name, location));
+        self.map.insert(point.clone(), World::new(name))
+    }
+
+    /** Removes any `World` at `point` and returns it if there was a `World` there.
+
+    Returns `None` otherwise.
+    */
+    pub fn remove_world(&mut self, point: &Point) -> Option<World> {
+        self.map.remove(point)
+    }
+
+    /** Moves any `World` at `source` to `destination`, replacing any other `World` that was there.
+
+    Returns `Some(())` if there was a world at `source` to move, `None` otherwise.
+    */
+    pub fn move_world(&mut self, source: &Point, destination: &Point) -> Option<()> {
+        if let Some(mut world) = self.remove_world(source) {
+            self.insert_world(destination, &mut world);
+            Some(())
+        } else {
+            None
+        }
     }
 }
 

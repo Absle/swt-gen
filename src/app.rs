@@ -153,7 +153,7 @@ impl GeneratorApp {
                 self.point_selected = true;
                 self.point = new_point;
                 self.faction_idx = 0;
-                let world = self.subsector.map.get(&self.point);
+                let world = self.subsector.get_world(&self.point);
                 if let Some(world) = world {
                     self.world_selected = true;
                     self.world = world.clone();
@@ -172,9 +172,7 @@ impl GeneratorApp {
             }
 
             SaveWorld => {
-                self.subsector
-                    .map
-                    .insert(self.point.clone(), self.world.clone());
+                self.subsector.insert_world(&self.point, &mut self.world);
             }
 
             WorldLocUpdated => {
@@ -184,7 +182,7 @@ impl GeneratorApp {
                         return;
                     }
 
-                    if let Some(world) = self.subsector.map.get(&location).clone() {
+                    if let Some(world) = self.subsector.get_world(&location).clone() {
                         self.confirmation = Some(ConfirmationConfig {
                             title: "Destination Hex Occupied".to_string(),
                             text: format!(
@@ -204,11 +202,9 @@ impl GeneratorApp {
             }
 
             ConfirmLocUpdate { location } => {
-                self.location = location.to_string();
-                self.subsector.map.remove(&self.point);
-                self.world.location = location.clone();
-                self.point = location.clone();
-                self.subsector.map.insert(location, self.world.clone());
+                self.subsector.move_world(&self.point, &location);
+                self.point = location;
+                self.location = self.point.to_string();
                 self.message_next_frame(Message::RedrawSubsectorImage);
             }
 
@@ -420,7 +416,7 @@ impl GeneratorApp {
             }
 
             AddNewWorld => {
-                self.subsector.add_random_world(self.point.clone());
+                self.subsector.insert_random_world(&self.point);
                 self.message_next_frame(Message::HexGridClicked {
                     new_point: self.point.clone(),
                 });

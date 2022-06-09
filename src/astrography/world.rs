@@ -168,7 +168,6 @@ impl TryFrom<&str> for TradeCode {
 #[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub(crate) struct World {
     pub(crate) name: String,
-    pub(crate) location: Point,
     pub(crate) has_gas_giant: bool,
     pub(crate) size: u16,
     pub(crate) diameter: u32,
@@ -246,10 +245,9 @@ impl World {
     }
 
     /** Create a randomized `World` named `name` at `location`. */
-    pub fn new(name: String, location: Point) -> Self {
+    pub fn new(name: String) -> Self {
         let mut world = Self::empty();
         world.name = name;
-        world.location = location;
 
         // Generation *must* happen in this order, many fields depend on the value
         // of other fields when making their rolls
@@ -276,7 +274,6 @@ impl World {
     pub(crate) fn empty() -> Self {
         World {
             name: String::from(""),
-            location: Point::default(),
             has_gas_giant: false,
             size: 0,
             diameter: 0,
@@ -729,14 +726,13 @@ impl World {
 
 impl Default for World {
     fn default() -> Self {
-        World::new("".to_string(), Point::default())
+        World::new("".to_string())
     }
 }
 
 impl PartialEq for World {
     fn eq(&self, other: &Self) -> bool {
         self.name == other.name
-            && self.location == other.location
             && self.has_gas_giant == other.has_gas_giant
             && self.size == other.size
             && self.diameter == other.diameter
@@ -874,7 +870,6 @@ impl TryFrom<WorldRecord> for World {
 
         let mut world = Self {
             name: record.name,
-            location: Point::try_from(&record.location[..])?,
             has_gas_giant: &record.gas_giant == "G",
             size: size as u16,
             diameter: record.diameter,
@@ -906,7 +901,7 @@ impl TryFrom<WorldRecord> for World {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub(crate) struct WorldRecord {
-    pub(crate) subsector_name: String,
+    subsector_name: String,
     // Summary
     name: String,
     location: String,
@@ -955,22 +950,42 @@ impl WorldRecord {
     pub fn name(&self) -> &str {
         &self.name[..]
     }
+
+    pub fn subsector_name(&self) -> &str {
+        &self.subsector_name[..]
+    }
+
+    pub fn location(&self) -> &str {
+        &self.location[..]
+    }
+
+    pub fn set_subsector_name(&mut self, subsector_name: &str) {
+        self.subsector_name = subsector_name.to_string();
+    }
+
+    pub fn set_location(&mut self, point: &Point) {
+        // The '_' prefix is to prevent any csv editor from treating the location string as a number
+        // and truncating the leading '0'
+        self.location = format!("_{}", point.to_string());
+    }
 }
 
 impl From<World> for WorldRecord {
     fn from(world: World) -> Self {
+        // This will be filled with a proper value by the containing subsector
         let subsector_name = String::new();
 
         // Summary
         let name = world.name.clone();
-        let location = format!("_{}", world.location.to_string());
+        // This will be filled with a proper value by the containing subsector
+        // The '_' prefix is to prevent any csv editor from treating the location string as a number
+        // and truncating the leading '0'
+        let location = "_0000".to_string();
         let profile = world.profile();
-
         let bases = world.base_str();
-
         let trade_codes = world.trade_code_str();
-
         let travel_code = world.travel_code_str();
+
         let gas_giant = match world.has_gas_giant {
             true => String::from("G"),
             false => String::new(),
@@ -1121,7 +1136,7 @@ pub fn histograms(n: usize) {
     let mut trade_code_hist = Histogram::new("Trade Codes");
 
     for _ in 0..n {
-        let world = World::new(String::from("0101"), Point { x: 0, y: 0 });
+        let world = World::new(String::from("0101"));
 
         gas_giant_hist.inc(world.has_gas_giant);
         size_hist.inc(world.size);
@@ -1166,7 +1181,7 @@ mod tests {
 
     #[test]
     fn world_record_csv_serde() {
-        let original = WorldRecord::from(World::new(String::from("Test"), Point { x: 0, y: 0 }));
+        let original = WorldRecord::from(World::new(String::from("Test")));
 
         let mut writer = csv::WriterBuilder::new()
             .has_headers(false)
