@@ -22,6 +22,12 @@ enum Message {
     HexGridClicked { new_point: Point },
     RedrawSubsectorImage,
     SaveWorld,
+    RegenSelectedWorld,
+    ConfirmRegenWorld,
+    CancelRegenWorld,
+    RemoveSelectedWorld,
+    ConfirmRemoveWorld,
+    CancelRemoveWorld,
     WorldLocUpdated,
     ConfirmLocUpdate { location: Point },
     CancelLocUpdate,
@@ -220,10 +226,62 @@ impl GeneratorApp {
                 self.subsector.insert_world(&self.point, &mut self.world);
             }
 
+            AddNewWorld => {
+                self.subsector.insert_random_world(&self.point);
+                self.message_immediate(Message::HexGridClicked {
+                    new_point: self.point.clone(),
+                });
+            }
+
+            RemoveSelectedWorld => {
+                let popup = ConfirmationPopup {
+                    title: "Removing World".to_string(),
+                    text: format!(
+                        "Are you sure you want to remove world '{}'?\nThis can not be undone.",
+                        self.world.name
+                    ),
+                    confirm_message: Message::ConfirmRemoveWorld,
+                    cancel_message: Message::CancelRemoveWorld,
+                };
+                self.add_confirmation_popup(popup);
+            }
+
+            ConfirmRemoveWorld => {
+                self.world_selected = false;
+                self.subsector.remove_world(&self.point);
+                self.message(Message::RedrawSubsectorImage);
+            }
+
+            CancelRemoveWorld => {}
+
+            RegenSelectedWorld => {
+                let popup = ConfirmationPopup {
+                    title: "Regenerating World".to_string(),
+                    text: format!(
+                        "Are you sure you want to regenerate world '{}'?\nThis can not be undone.",
+                        self.world.name
+                    ),
+                    confirm_message: Message::ConfirmRegenWorld,
+                    cancel_message: Message::CancelRegenWorld,
+                };
+                self.add_confirmation_popup(popup);
+            }
+
+            ConfirmRegenWorld => {
+                self.subsector.insert_random_world(&self.point);
+                self.world_selected = false;
+                self.message_immediate(Message::HexGridClicked {
+                    new_point: self.point.clone(),
+                });
+            }
+
+            CancelRegenWorld => {}
+
             WorldLocUpdated => {
                 let location = Point::try_from(&self.location[..]);
                 if let Ok(location) = location {
                     if location == self.point {
+                        self.location = self.point.to_string();
                         return;
                     }
 
@@ -251,6 +309,7 @@ impl GeneratorApp {
                 self.subsector.move_world(&self.point, &location);
                 self.point = location;
                 self.location = self.point.to_string();
+                self.message_immediate(Message::WorldModelUpdated);
                 self.message(Message::RedrawSubsectorImage);
             }
 
@@ -258,12 +317,14 @@ impl GeneratorApp {
                 self.location = self.point.to_string();
             }
 
-            WorldModelUpdated => self.world.resolve_trade_codes(),
+            WorldModelUpdated => {
+                self.world.resolve_trade_codes();
+            }
 
             RegenWorldSize => {
                 self.world.generate_size();
                 self.diameter = self.world.diameter.to_string();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             WorldDiameterUpdated => {
@@ -272,31 +333,32 @@ impl GeneratorApp {
                 } else {
                     self.diameter = self.world.diameter.to_string();
                 }
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldAtmosphere => {
                 self.world.generate_atmosphere();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldTemperature => {
                 self.world.generate_temperature();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldHydrographics => {
                 self.world.generate_hydrographics();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldPopulation => {
                 self.world.generate_population();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldTechLevel => {
                 self.world.generate_tech_level();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             NewStarportClassSelected => {
@@ -311,13 +373,13 @@ impl GeneratorApp {
                 self.berthing_cost = self.world.starport.berthing_cost.to_string();
                 self.world.starport.fuel = starport.fuel.clone();
                 self.world.starport.facilities = starport.facilities.clone();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldStarport => {
                 self.world.generate_starport();
                 self.berthing_cost = self.world.starport.berthing_cost.to_string();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             WorldBerthingCostsUpdated => {
@@ -326,6 +388,7 @@ impl GeneratorApp {
                 } else {
                     self.berthing_cost = self.world.starport.berthing_cost.to_string();
                 }
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             NewWorldGovSelected { new_code } => {
@@ -338,7 +401,7 @@ impl GeneratorApp {
                 }
 
                 self.world.government.code = new_code;
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldGovernment => {
@@ -356,18 +419,19 @@ impl GeneratorApp {
                     self.world.government.contraband = old_contraband;
                 }
 
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldLawLevel => {
                 self.world.generate_law_level();
-                self.message(Message::WorldModelUpdated);
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             AddNewFaction => {
                 self.world.factions.push(Faction::random());
                 // Select the newly generated faction
                 self.faction_idx = self.world.factions.len() - 1;
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RemoveSelectedFaction => {
@@ -381,6 +445,7 @@ impl GeneratorApp {
                 } else if *index >= factions.len() {
                     *index = factions.len() - 1;
                 }
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             NewFactionGovSelected { new_code } => {
@@ -394,6 +459,7 @@ impl GeneratorApp {
                 }
 
                 self.world.factions[fac_index].government.code = new_code;
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenSelectedFaction => {
@@ -409,6 +475,7 @@ impl GeneratorApp {
                         faction.government.description = old_description;
                     }
                 }
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             NewWorldCultureSelected { new_code } => {
@@ -421,6 +488,7 @@ impl GeneratorApp {
                 }
 
                 self.world.culture.code = new_code;
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldCulture => {
@@ -431,6 +499,7 @@ impl GeneratorApp {
                 if old_description != TABLES.culture_table[old_code].description {
                     self.world.culture.description = old_description;
                 }
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             NewWorldTagSelected { index, new_code } => {
@@ -445,6 +514,7 @@ impl GeneratorApp {
                         .description
                         .clone();
                 }
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RegenWorldTag { index } => {
@@ -459,13 +529,7 @@ impl GeneratorApp {
                 if world_tag.description == TABLES.world_tag_table[old_code].description {
                     world_tag.description = new_tag.description.clone();
                 }
-            }
-
-            AddNewWorld => {
-                self.subsector.insert_random_world(&self.point);
-                self.message(Message::HexGridClicked {
-                    new_point: self.point.clone(),
-                });
+                self.message_immediate(Message::WorldModelUpdated);
             }
         }
     }
@@ -554,7 +618,24 @@ impl GeneratorApp {
     }
 
     fn profile_display(&mut self, ui: &mut Ui) {
-        ui.add(TextEdit::singleline(&mut self.world.name).font(TextStyle::Heading));
+        ui.horizontal(|ui| {
+            ui.add(TextEdit::singleline(&mut self.world.name).font(TextStyle::Heading));
+            ui.with_layout(Layout::right_to_left(), |ui| {
+                ui.add_space(100.0);
+                let header_font = TextStyle::Heading.resolve(&Style::default());
+                if ui
+                    .button(RichText::new("❌").font(header_font.clone()))
+                    .clicked()
+                {
+                    self.message(Message::RemoveSelectedWorld);
+                }
+
+                if ui.button(RichText::new("🎲").font(header_font)).clicked() {
+                    self.message(Message::RegenSelectedWorld);
+                }
+            });
+        });
+
         Grid::new("world_profile_grid")
             .spacing([Self::FIELD_SPACING / 2.0, Self::LABEL_SPACING])
             .min_col_width(100.0)
