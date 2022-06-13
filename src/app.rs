@@ -62,7 +62,7 @@ struct ConfirmationPopup {
 impl ConfirmationPopup {
     /** Show this `ConfirmationPopup`.
 
-    Returns `Some(Message)` with the message to be processed when a button is selected, `None`
+    Returns `Some(Message)` with the `Message` to be processed when a button is selected, `None`
     otherwise.
     */
     fn show(&self, ctx: &Context) -> Option<Message> {
@@ -172,7 +172,7 @@ impl GeneratorApp {
     const SHORT_SELECTION_WIDTH: f32 = 50.0;
 
     /** Queue a message to be handled at the beginning of the next frame. */
-    fn message_next_frame(&mut self, message: Message) {
+    fn message(&mut self, message: Message) {
         self.message_queue.push_back(message);
     }
 
@@ -189,7 +189,7 @@ impl GeneratorApp {
         use Message::*;
         match message {
             HexGridClicked { new_point } => {
-                self.message_next_frame(Message::RedrawSubsectorImage);
+                self.message(Message::RedrawSubsectorImage);
 
                 if self.world_selected {
                     self.message_immediate(Message::SaveWorld);
@@ -251,7 +251,7 @@ impl GeneratorApp {
                 self.subsector.move_world(&self.point, &location);
                 self.point = location;
                 self.location = self.point.to_string();
-                self.message_next_frame(Message::RedrawSubsectorImage);
+                self.message(Message::RedrawSubsectorImage);
             }
 
             CancelLocUpdate => {
@@ -263,7 +263,7 @@ impl GeneratorApp {
             RegenWorldSize => {
                 self.world.generate_size();
                 self.diameter = self.world.diameter.to_string();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             WorldDiameterUpdated => {
@@ -276,27 +276,27 @@ impl GeneratorApp {
 
             RegenWorldAtmosphere => {
                 self.world.generate_atmosphere();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             RegenWorldTemperature => {
                 self.world.generate_temperature();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             RegenWorldHydrographics => {
                 self.world.generate_hydrographics();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             RegenWorldPopulation => {
                 self.world.generate_population();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             RegenWorldTechLevel => {
                 self.world.generate_tech_level();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             NewStarportClassSelected => {
@@ -311,13 +311,13 @@ impl GeneratorApp {
                 self.berthing_cost = self.world.starport.berthing_cost.to_string();
                 self.world.starport.fuel = starport.fuel.clone();
                 self.world.starport.facilities = starport.facilities.clone();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             RegenWorldStarport => {
                 self.world.generate_starport();
                 self.berthing_cost = self.world.starport.berthing_cost.to_string();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             WorldBerthingCostsUpdated => {
@@ -338,7 +338,7 @@ impl GeneratorApp {
                 }
 
                 self.world.government.code = new_code;
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             RegenWorldGovernment => {
@@ -356,12 +356,12 @@ impl GeneratorApp {
                     self.world.government.contraband = old_contraband;
                 }
 
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             RegenWorldLawLevel => {
                 self.world.generate_law_level();
-                self.message_next_frame(Message::WorldModelUpdated);
+                self.message(Message::WorldModelUpdated);
             }
 
             AddNewFaction => {
@@ -463,7 +463,7 @@ impl GeneratorApp {
 
             AddNewWorld => {
                 self.subsector.insert_random_world(&self.point);
-                self.message_next_frame(Message::HexGridClicked {
+                self.message(Message::HexGridClicked {
                     new_point: self.point.clone(),
                 });
             }
@@ -486,7 +486,7 @@ impl GeneratorApp {
 
         for (i, message) in responded {
             self.confirmation_popups.remove(i);
-            self.message_next_frame(message);
+            self.message(message);
         }
     }
 
@@ -590,7 +590,7 @@ impl GeneratorApp {
                     )
                     .clicked()
                 {
-                    self.message_immediate(Message::WorldLocUpdated);
+                    self.message(Message::WorldLocUpdated);
                 }
 
                 // World profile
@@ -722,7 +722,7 @@ impl GeneratorApp {
                                 .selectable_value(&mut self.world.size, size, size.to_string())
                                 .clicked()
                             {
-                                self.message_next_frame(Message::WorldModelUpdated);
+                                self.message(Message::WorldModelUpdated);
                             }
                         }
                     });
@@ -735,14 +735,14 @@ impl GeneratorApp {
                     )
                     .lost_focus()
                 {
-                    self.message_immediate(Message::WorldDiameterUpdated);
+                    self.message(Message::WorldDiameterUpdated);
                 }
 
                 if ui
                     .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                     .clicked()
                 {
-                    self.message_immediate(Message::RegenWorldSize);
+                    self.message(Message::RegenWorldSize);
                 }
             });
     }
@@ -776,7 +776,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_next_frame(Message::WorldModelUpdated);
+                            self.message(Message::WorldModelUpdated);
                         }
                     }
                 });
@@ -785,7 +785,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldAtmosphere);
+                self.message(Message::RegenWorldAtmosphere);
             }
         });
     }
@@ -819,7 +819,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_next_frame(Message::WorldModelUpdated);
+                            self.message(Message::WorldModelUpdated);
                         }
                     }
                 });
@@ -828,7 +828,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldTemperature);
+                self.message(Message::RegenWorldTemperature);
             }
         });
     }
@@ -862,7 +862,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_next_frame(Message::WorldModelUpdated);
+                            self.message(Message::WorldModelUpdated);
                         }
                     }
                 });
@@ -871,7 +871,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldHydrographics);
+                self.message(Message::RegenWorldHydrographics);
             }
         });
     }
@@ -905,7 +905,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_next_frame(Message::WorldModelUpdated);
+                            self.message(Message::WorldModelUpdated);
                         }
                     }
                 });
@@ -914,7 +914,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldPopulation);
+                self.message(Message::RegenWorldPopulation);
             }
         });
     }
@@ -941,7 +941,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_next_frame(Message::WorldModelUpdated);
+                            self.message(Message::WorldModelUpdated);
                         }
                     }
                 });
@@ -950,7 +950,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldTechLevel);
+                self.message(Message::RegenWorldTechLevel);
             }
         });
     }
@@ -978,7 +978,7 @@ impl GeneratorApp {
                             .selectable_value(&mut self.world.starport.class, starport_class, text)
                             .clicked()
                         {
-                            self.message_immediate(Message::NewStarportClassSelected);
+                            self.message(Message::NewStarportClassSelected);
                         }
                     }
                 });
@@ -987,7 +987,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldStarport);
+                self.message(Message::RegenWorldStarport);
             }
         });
         ui.add_space(Self::FIELD_SPACING);
@@ -1020,7 +1020,7 @@ impl GeneratorApp {
                     )
                     .lost_focus()
                 {
-                    self.message_immediate(Message::WorldBerthingCostsUpdated);
+                    self.message(Message::WorldBerthingCostsUpdated);
                 }
 
                 ui.label(&self.world.starport.fuel);
@@ -1096,9 +1096,7 @@ impl GeneratorApp {
                             .on_hover_text(&gov.description)
                             .clicked()
                         {
-                            self.message_immediate(Message::NewWorldGovSelected {
-                                new_code: gov.code,
-                            });
+                            self.message(Message::NewWorldGovSelected { new_code: gov.code });
                         }
                     }
                 });
@@ -1107,7 +1105,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldGovernment);
+                self.message(Message::RegenWorldGovernment);
             }
         });
 
@@ -1159,7 +1157,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_next_frame(Message::WorldModelUpdated);
+                            self.message(Message::WorldModelUpdated);
                         }
                     }
                 });
@@ -1168,7 +1166,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldLawLevel);
+                self.message(Message::RegenWorldLawLevel);
             }
         });
 
@@ -1217,7 +1215,7 @@ impl GeneratorApp {
                             ui.selectable_value(&mut self.faction_idx, index, &faction.name);
                         }
                         if ui.button("+").clicked() {
-                            self.message_immediate(Message::AddNewFaction)
+                            self.message(Message::AddNewFaction)
                         }
                     });
             });
@@ -1233,7 +1231,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_immediate(Message::RegenSelectedFaction);
+                            self.message(Message::RegenSelectedFaction);
                         }
 
                         if ui
@@ -1244,7 +1242,7 @@ impl GeneratorApp {
                             .on_hover_text_at_pointer("Double click to delete this faction")
                             .double_clicked()
                         {
-                            self.message_next_frame(Message::RemoveSelectedFaction);
+                            self.message(Message::RemoveSelectedFaction);
                         }
                     });
 
@@ -1313,7 +1311,7 @@ impl GeneratorApp {
                                     .on_hover_text(&gov.description)
                                     .clicked()
                                 {
-                                    self.message_immediate(Message::NewFactionGovSelected {
+                                    self.message(Message::NewFactionGovSelected {
                                         new_code: gov.code,
                                     });
                                 }
@@ -1365,7 +1363,7 @@ impl GeneratorApp {
                             .on_hover_text(&item.description)
                             .clicked()
                         {
-                            self.message_immediate(Message::NewWorldCultureSelected {
+                            self.message(Message::NewWorldCultureSelected {
                                 new_code: item.code,
                             });
                         }
@@ -1376,7 +1374,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldCulture);
+                self.message(Message::RegenWorldCulture);
             }
         });
         ui.add_space(Self::LABEL_SPACING * 1.5);
@@ -1429,7 +1427,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_immediate(Message::NewWorldTagSelected {
+                            self.message(Message::NewWorldTagSelected {
                                 index,
                                 new_code: item.code,
                             })
@@ -1441,7 +1439,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldTag { index });
+                self.message(Message::RegenWorldTag { index });
             }
         });
         columns[index].add_space(Self::LABEL_SPACING * 1.5);
@@ -1480,7 +1478,7 @@ impl GeneratorApp {
                             )
                             .clicked()
                         {
-                            self.message_immediate(Message::NewWorldTagSelected {
+                            self.message(Message::NewWorldTagSelected {
                                 index,
                                 new_code: item.code,
                             })
@@ -1492,7 +1490,7 @@ impl GeneratorApp {
                 .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
                 .clicked()
             {
-                self.message_immediate(Message::RegenWorldTag { index });
+                self.message(Message::RegenWorldTag { index });
             }
         });
         columns[index].add_space(Self::LABEL_SPACING * 1.5);
@@ -1521,7 +1519,7 @@ impl GeneratorApp {
             let header_font = TextStyle::Heading.resolve(&Style::default());
             let text = RichText::new("Add New World").font(header_font);
             if ui.button(text).clicked() {
-                self.message_next_frame(Message::AddNewWorld);
+                self.message(Message::AddNewWorld);
             }
         });
     }
