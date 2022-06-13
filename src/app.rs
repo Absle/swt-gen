@@ -50,13 +50,59 @@ enum Message {
     AddNewWorld,
 }
 
-/** Configuration data for a confirmation popup. */
+/** Confirmation popup window. */
 #[derive(Clone)]
-struct ConfirmationConfig {
+struct ConfirmationPopup {
     title: String,
     text: String,
     confirm_message: Message,
     cancel_message: Message,
+}
+
+impl ConfirmationPopup {
+    /** Show this `ConfirmationPopup`.
+
+    Returns `Some(Message)` with the message to be processed when a button is selected, `None`
+    otherwise.
+    */
+    fn show(&self, ctx: &Context) -> Option<Message> {
+        const CONFIRMATION_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
+        let ConfirmationPopup {
+            title,
+            text,
+            confirm_message,
+            cancel_message,
+        } = self;
+
+        let mut result = None;
+
+        Window::new(title.clone())
+            .title_bar(false)
+            .resizable(false)
+            .fixed_size(CONFIRMATION_POPUP_SIZE)
+            .show(ctx, |ui| {
+                ui.vertical_centered(|ui| {
+                    ui.heading(title);
+                    ui.separator();
+                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
+                    ui.label(text.clone());
+                });
+                ui.add_space(GeneratorApp::FIELD_SPACING);
+
+                ui.horizontal(|ui| {
+                    if ui.button("Confirm").clicked() {
+                        result = Some(confirm_message.clone())
+                    }
+
+                    ui.with_layout(Layout::right_to_left(), |ui| {
+                        if ui.button("Cancel").clicked() {
+                            result = Some(cancel_message.clone())
+                        }
+                    });
+                });
+            });
+        result
+    }
 }
 
 #[derive(PartialEq)]
@@ -86,8 +132,8 @@ pub struct GeneratorApp {
     subsector_svg: String,
     subsector_image: RetainedImage,
     message_queue: VecDeque<Message>,
-    /// Blocking confirmation dialog that pops up when not `None`
-    confirmation: Option<ConfirmationConfig>,
+    /// List of blocking confirmation popups
+    confirmation_popups: Vec<ConfirmationPopup>,
     /// Selected display `TabLabel`
     tab: TabLabel,
     /// Whether a `Point` on the hex grid is currently selected or not
@@ -110,7 +156,6 @@ pub struct GeneratorApp {
 
 impl GeneratorApp {
     const SUBSECTOR_IMAGE_MIN_SIZE: Vec2 = vec2(1584.0, 834.0);
-    const CONFIRMATION_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
 
     const LABEL_FONT: FontId = FontId::proportional(11.0);
     const LABEL_COLOR: Color32 = Color32::GRAY;
@@ -183,7 +228,7 @@ impl GeneratorApp {
                     }
 
                     if let Some(world) = self.subsector.get_world(&location).clone() {
-                        self.confirmation = Some(ConfirmationConfig {
+                        let popup = ConfirmationPopup {
                             title: "Destination Hex Occupied".to_string(),
                             text: format!(
                                 "'{}' is already at {}.\nWould you like to overwrite it?",
@@ -192,7 +237,8 @@ impl GeneratorApp {
                             ),
                             confirm_message: Message::ConfirmLocUpdate { location },
                             cancel_message: Message::CancelLocUpdate,
-                        })
+                        };
+                        self.add_confirmation_popup(popup);
                     } else {
                         self.message_immediate(Message::ConfirmLocUpdate { location })
                     }
@@ -424,9 +470,29 @@ impl GeneratorApp {
         }
     }
 
+    /** Add a `ConfirmationPopup` to the queue to be shown and awaiting response. */
+    fn add_confirmation_popup(&mut self, popup: ConfirmationPopup) {
+        self.confirmation_popups.push(popup);
+    }
+
+    /** Display all `ConfirmationPopup`'s in the queue and process any messages they return. */
+    fn show_confirmation_popups(&mut self, ctx: &Context) {
+        let mut responded = Vec::new();
+        for (i, popup) in self.confirmation_popups.iter().enumerate() {
+            if let Some(message) = popup.show(ctx) {
+                responded.push((i, message));
+            }
+        }
+
+        for (i, message) in responded {
+            self.confirmation_popups.remove(i);
+            self.message_next_frame(message);
+        }
+    }
+
     fn central_panel(&mut self, ctx: &Context) {
         CentralPanel::default().show(ctx, |ui| {
-            ui.add_enabled_ui(self.confirmation.is_none(), |ui| {
+            ui.add_enabled_ui(self.confirmation_popups.is_empty(), |ui| {
                 ui.horizontal_top(|ui| {
                     self.subsector_map_display(ctx, ui);
 
@@ -1459,44 +1525,6 @@ impl GeneratorApp {
             }
         });
     }
-
-    fn confirmation_popup(&mut self, ctx: &Context) {
-        if let Some(config) = self.confirmation.clone() {
-            let ConfirmationConfig {
-                title,
-                text,
-                confirm_message,
-                cancel_message,
-            } = config;
-            Window::new(title.clone())
-                .title_bar(false)
-                .resizable(false)
-                .fixed_size(Self::CONFIRMATION_POPUP_SIZE)
-                .show(ctx, |ui| {
-                    ui.vertical_centered(|ui| {
-                        ui.heading(title);
-                        ui.separator();
-                        ui.add_space(Self::FIELD_SPACING / 2.0);
-                        ui.label(text);
-                    });
-                    ui.add_space(Self::FIELD_SPACING);
-
-                    ui.horizontal(|ui| {
-                        if ui.button("Confirm").clicked() {
-                            self.confirmation = None;
-                            self.message_next_frame(confirm_message);
-                        }
-
-                        ui.with_layout(Layout::right_to_left(), |ui| {
-                            if ui.button("Cancel").clicked() {
-                                self.confirmation = None;
-                                self.message_next_frame(cancel_message);
-                            }
-                        });
-                    });
-                });
-        }
-    }
 }
 
 impl Default for GeneratorApp {
@@ -1510,7 +1538,7 @@ impl Default for GeneratorApp {
             subsector_svg,
             subsector_image,
             message_queue: VecDeque::new(),
-            confirmation: None,
+            confirmation_popups: Vec::new(),
             point_selected: false,
             world_selected: false,
             point: Point::default(),
@@ -1528,7 +1556,7 @@ impl App for GeneratorApp {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         self.process_message_queue();
         self.central_panel(ctx);
-        self.confirmation_popup(ctx);
+        self.show_confirmation_popups(ctx);
     }
 }
 
