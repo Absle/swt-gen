@@ -10,6 +10,8 @@ use egui::{
 
 use egui_extras::RetainedImage;
 
+use native_dialog::FileDialog;
+
 use crate::astrography::{Point, Subsector};
 
 use crate::astrography::table::{
@@ -27,6 +29,8 @@ enum Message {
     RegenSubsector,
     ConfirmRegenSubsector { world_abundance_dm: i16 },
     CancelRegenSubsector,
+    ImportJson,
+    ExportJson,
     HexGridClicked { new_point: Point },
     RedrawSubsectorImage,
     SaveWorld,
@@ -349,6 +353,26 @@ impl GeneratorApp {
             }
 
             CancelRegenSubsector => {}
+
+            ImportJson => {
+                todo!("Implment JSON importing");
+            }
+
+            ExportJson => {
+                self.message_immediate(Message::SaveWorld);
+
+                let path = FileDialog::new()
+                    .set_location("~/Documents")
+                    .set_filename(&format!("{}.json", self.subsector.name())[..])
+                    .add_filter("JSON Files", &["json"])
+                    .show_save_single_file()
+                    .unwrap();
+
+                if let Some(path) = path {
+                    let json = self.subsector.to_json();
+                    let _ = std::fs::write(path, json).unwrap();
+                }
+            }
 
             HexGridClicked { new_point } => {
                 self.message(Message::RedrawSubsectorImage);
@@ -734,13 +758,15 @@ impl GeneratorApp {
 
                     ui.menu_button("Import", |ui| {
                         if ui.button("Import from JSON...").clicked() {
-                            todo!("Implement JSON importing");
+                            self.message(Message::ImportJson);
+                            ui.close_menu();
                         }
                     });
 
                     ui.menu_button("Export", |ui| {
                         if ui.button("Export to JSON...").clicked() {
-                            todo!("Implement JSON exporting");
+                            self.message(Message::ExportJson);
+                            ui.close_menu();
                         }
                     });
                 });

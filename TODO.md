@@ -18,7 +18,7 @@ TODOs completed in this way should probably should still have an issue created a
 ### App/GUI TODOs
 - Refactor older "description saving" `Message`s to minimize cloning
 - Add "save" and "revert" buttons to world data GUI to trigger saving world changes and redrawing SVG instead of clicking to a different grid point entirely
-- Implement `Subsector` json saving and loading
+- Implement `Subsector` json deserialization
     - "Player-safe" versions of files would also be nice
 - "Player-safe" version of the GUI, probably using different build targets
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
@@ -50,3 +50,4 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Implement world deletion~~
 - ~~Implement `Subsector` renaming~~
 - ~~Implement whole `Subsector` regenerating functionality with configurable `world_abundance_dm`~~
+- ~~Implement `Subsector` json serialization~~
