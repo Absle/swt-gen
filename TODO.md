@@ -16,15 +16,13 @@ TODOs completed in this way should probably should still have an issue created a
 - Remove redundant serialization and deserializing code once GUI is in a good state
 
 ### App/GUI TODOs
-- Refactor older "description saving" messages to minimize cloning
+- Refactor older "description saving" `Message`s to minimize cloning
 - Add "save" and "revert" buttons to world data GUI to trigger saving world changes and redrawing SVG instead of clicking to a different grid point entirely
 - Implement `Subsector` json saving and loading
     - "Player-safe" versions of files would also be nice
-- Implement whole `Subsector` regenerating functionality with configurable `world_abundance_dm`
 - "Player-safe" version of the GUI, probably using different build targets
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
 - Add dark mode support... somehow
-- Add Markdown syntax support in the notes area of the app
 
 ### Backened/Astrography TODOs
 - Add a background color to the subsector grid svg template, rather than just transparent and unreadable on renderers with a dark background
@@ -37,6 +35,7 @@ TODOs completed in this way should probably should still have an issue created a
 - Create a web-app version
 - Create a demo website using the web-app
 - Create an Obsidian plugin; this is ***only worth doing if*** making the web-app takes you 95% of the way towards to displaying the GUI in an Electron application like Obsidian
+- Add Markdown syntax support in the notes area of the app
 
 ## Completed TODOs
 
@@ -50,3 +49,4 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Implement whole world regeneration~~
 - ~~Implement world deletion~~
 - ~~Implement `Subsector` renaming~~
+- ~~Implement whole `Subsector` regenerating functionality with configurable `world_abundance_dm`~~

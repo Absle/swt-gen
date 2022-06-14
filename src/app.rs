@@ -4,8 +4,8 @@ use eframe::{App, Frame};
 
 use egui::{
     menu, vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label,
-    Layout, Pos2, Rect, RichText, ScrollArea, Sense, Style, TextEdit, TextStyle, TopBottomPanel,
-    Ui, Vec2, Window,
+    Layout, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style, TextEdit, TextStyle,
+    TopBottomPanel, Ui, Vec2, Window,
 };
 use egui_extras::RetainedImage;
 
@@ -23,6 +23,9 @@ enum Message {
     RenameSubsector,
     ConfirmRenameSubsector { new_name: String },
     CancelRenameSubsector,
+    RegenSubsector,
+    ConfirmRegenSubsector { world_abundance_dm: i16 },
+    CancelRegenSubsector,
     HexGridClicked { new_point: Point },
     RedrawSubsectorImage,
     SaveWorld,
@@ -167,6 +170,63 @@ impl Popup for SubsectorRenamePopup {
     }
 }
 
+struct SubsectorRegenPopup {
+    world_abundance_dm: i16,
+}
+
+impl Default for SubsectorRegenPopup {
+    fn default() -> Self {
+        Self {
+            world_abundance_dm: 0,
+        }
+    }
+}
+
+impl Popup for SubsectorRegenPopup {
+    fn show(&mut self, ctx: &Context) -> Option<Message> {
+        let mut result = None;
+
+        let title = "Regenerate Subsector";
+
+        Window::new(title.clone())
+            .title_bar(false)
+            .resizable(false)
+            .fixed_size(DEFAULT_POPUP_SIZE)
+            .show(ctx, |ui| {
+                ui.vertical_centered(|ui| {
+                    ui.heading(title);
+                    ui.separator();
+                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
+
+                    ui.label(
+                        RichText::new("World Abundance Modifier")
+                            .font(GeneratorApp::LABEL_FONT)
+                            .color(GeneratorApp::LABEL_COLOR),
+                    );
+                    ui.add_space(GeneratorApp::LABEL_SPACING);
+                    let slider = Slider::new(&mut self.world_abundance_dm, -2..=2);
+                    ui.add(slider);
+                });
+                ui.add_space(GeneratorApp::FIELD_SPACING);
+
+                ui.horizontal(|ui| {
+                    if ui.button("Confirm").clicked() {
+                        result = Some(Message::ConfirmRegenSubsector {
+                            world_abundance_dm: self.world_abundance_dm,
+                        })
+                    }
+
+                    ui.with_layout(Layout::right_to_left(), |ui| {
+                        if ui.button("Cancel").clicked() {
+                            result = Some(Message::CancelRegenSubsector)
+                        }
+                    });
+                });
+            });
+        result
+    }
+}
+
 #[derive(PartialEq)]
 enum TabLabel {
     WorldSurvey,
@@ -264,6 +324,30 @@ impl GeneratorApp {
             }
 
             CancelRenameSubsector => {}
+
+            RegenSubsector => {
+                let popup = SubsectorRegenPopup::default();
+                self.add_popup(popup);
+            }
+
+            ConfirmRegenSubsector { world_abundance_dm } => {
+                self.subsector = Subsector::new(world_abundance_dm);
+                self.message_queue.clear();
+                self.popup_queue.clear();
+                self.point_selected = false;
+                self.world_selected = false;
+                self.point = Point::default();
+                self.world = World::empty();
+                self.tab = TabLabel::WorldSurvey;
+                self.faction_idx = 0;
+                self.location = String::new();
+                self.diameter = String::new();
+                self.berthing_cost = String::new();
+
+                self.message_immediate(Message::RedrawSubsectorImage);
+            }
+
+            CancelRegenSubsector => {}
 
             HexGridClicked { new_point } => {
                 self.message(Message::RedrawSubsectorImage);
@@ -620,7 +704,9 @@ impl GeneratorApp {
         }
 
         for (i, message) in responded {
-            self.popup_queue.remove(i);
+            if self.popup_queue.get(i).is_some() {
+                self.popup_queue.remove(i);
+            }
             self.message(message);
         }
     }
@@ -636,6 +722,12 @@ impl GeneratorApp {
                     ui.menu_button("Subsector", |ui| {
                         if ui.button("Rename...").clicked() {
                             self.message(Message::RenameSubsector);
+                            ui.close_menu();
+                        }
+
+                        if ui.button("Regenerate...").clicked() {
+                            self.message(Message::RegenSubsector);
+                            ui.close_menu();
                         }
                     });
                 });
