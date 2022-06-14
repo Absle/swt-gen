@@ -88,7 +88,7 @@ impl Sub for &Translation {
     }
 }
 
-#[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct Subsector {
     name: String,
     map: BTreeMap<Point, World>,
@@ -224,6 +224,19 @@ impl Subsector {
         }
 
         Ok(Self { name, map })
+    }
+
+    #[allow(dead_code)]
+    pub fn to_json(&self) -> String {
+        let jsonable = JsonableSubsector::from(self.clone());
+        serde_json::to_string(&jsonable).unwrap()
+    }
+
+    #[allow(dead_code)]
+    pub fn from_json(json: &str) -> Result<Self, Box<dyn Error>> {
+        let jsonable: JsonableSubsector = serde_json::from_str(json)?;
+        let subsector = Self::try_from(jsonable)?;
+        Ok(subsector)
     }
 
     pub fn generate_svg(&self) -> String {
@@ -512,6 +525,49 @@ impl Default for Subsector {
     }
 }
 
+impl TryFrom<JsonableSubsector> for Subsector {
+    type Error = Box<dyn Error>;
+    fn try_from(jsonable: JsonableSubsector) -> Result<Self, Self::Error> {
+        let JsonableSubsector { name, map } = jsonable;
+        let mut point_map: BTreeMap<Point, World> = BTreeMap::new();
+        for (point_str, world) in map {
+            let point = Point::try_from(&point_str[..])?;
+            point_map.insert(point, world);
+        }
+
+        Ok(Self {
+            name,
+            map: point_map,
+        })
+    }
+}
+
+/** Representation of a `Subsector` that can be easily serialized to JSON.
+
+Specifically, `serde_json` requires all maps use `String` keys, so to accomodate this we create this
+representation using the result of `Point::to_string` as the key for `Subsector::map`.
+*/
+#[derive(Debug, Deserialize, Serialize)]
+struct JsonableSubsector {
+    name: String,
+    map: BTreeMap<String, World>,
+}
+
+impl From<Subsector> for JsonableSubsector {
+    fn from(subsector: Subsector) -> Self {
+        let Subsector { name, map } = subsector;
+        let mut json_map: BTreeMap<String, World> = BTreeMap::new();
+        for (point, world) in map {
+            json_map.insert(point.to_string(), world);
+        }
+
+        Self {
+            name,
+            map: json_map,
+        }
+    }
+}
+
 fn random_names(count: usize) -> Vec<String> {
     let vowels = vec![
         vec![
@@ -589,13 +645,35 @@ mod tests {
     fn subsector_creation() {
         const ATTEMPTS: usize = 100;
         for _ in 0..ATTEMPTS {
-            Subsector::new(0);
+            Subsector::default();
+        }
+    }
+
+    #[test]
+    fn subsector_csv_serde() {
+        const ATTEMPTS: usize = 100;
+        for _ in 0..ATTEMPTS {
+            let subsector = Subsector::default();
+            let csv = subsector.to_csv();
+            let deserialized = Subsector::from_csv(&csv[..]).unwrap();
+            assert_eq!(deserialized, subsector);
+        }
+    }
+
+    #[test]
+    fn subsector_json_serde() {
+        const ATTEMPTS: usize = 100;
+        for _ in 0..ATTEMPTS {
+            let subsector = Subsector::default();
+            let json = subsector.to_json();
+            let deserialized = Subsector::from_json(&json[..]).unwrap();
+            assert_eq!(deserialized, subsector);
         }
     }
 
     #[test]
     fn subsector_yaml_serde() {
-        let subsector = Subsector::new(0);
+        let subsector = Subsector::default();
         let yaml = serde_yaml::to_string(&subsector).unwrap();
 
         let de_subsector: Subsector = serde_yaml::from_str(&yaml).unwrap();
@@ -603,21 +681,10 @@ mod tests {
     }
 
     #[test]
-    fn subsector_csv_serde() {
-        const ATTEMPTS: usize = 100;
-        for _ in 0..ATTEMPTS {
-            let subsector = Subsector::new(0);
-            let csv = subsector.to_csv();
-            let deserialized = Subsector::from_csv(&csv[..]);
-            assert_eq!(deserialized.unwrap(), subsector);
-        }
-    }
-
-    #[test]
     fn subsector_svg() {
         const ATTEMPTS: usize = 10;
         for _ in 0..ATTEMPTS {
-            let subsector = Subsector::new(0);
+            let subsector = Subsector::default();
             let _svg = subsector.generate_svg();
         }
     }

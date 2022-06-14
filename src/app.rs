@@ -7,6 +7,7 @@ use egui::{
     Layout, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style, TextEdit, TextStyle,
     TopBottomPanel, Ui, Vec2, Window,
 };
+
 use egui_extras::RetainedImage;
 
 use crate::astrography::{Point, Subsector};
@@ -728,6 +729,18 @@ impl GeneratorApp {
                         if ui.button("Regenerate...").clicked() {
                             self.message(Message::RegenSubsector);
                             ui.close_menu();
+                        }
+                    });
+
+                    ui.menu_button("Import", |ui| {
+                        if ui.button("Import from JSON...").clicked() {
+                            todo!("Implement JSON importing");
+                        }
+                    });
+
+                    ui.menu_button("Export", |ui| {
+                        if ui.button("Export to JSON...").clicked() {
+                            todo!("Implement JSON exporting");
                         }
                     });
                 });
