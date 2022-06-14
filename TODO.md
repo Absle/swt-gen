@@ -25,6 +25,7 @@ TODOs completed in this way should probably should still have an issue created a
 - "Player-safe" version of the GUI, probably using different build targets
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
 - Add dark mode support... somehow
+- Add Markdown syntax support in the notes area of the app
 
 ### Backened/Astrography TODOs
 - Add a background color to the subsector grid svg template, rather than just transparent and unreadable on renderers with a dark background

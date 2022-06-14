@@ -177,6 +177,9 @@ impl GeneratorApp {
     const FIELD_SELECTION_WIDTH: f32 = 225.0;
     const SHORT_SELECTION_WIDTH: f32 = 50.0;
 
+    const DICE_EMOJI: &'static str = "🎲";
+    const X_EMOJI: &'static str = "❌";
+
     /** Queue a message to be handled at the beginning of the next frame. */
     fn message(&mut self, message: Message) {
         self.message_queue.push_back(message);
@@ -554,6 +557,13 @@ impl GeneratorApp {
         }
     }
 
+    /** Handles displaying the overall central panel of the app.
+
+    Shows the map of the `Subsector` on the left half of the panel and any information of the
+    selected `Point` and/or `World` on the right half.
+    If there is no `World` at the selected `Point`, it shows a button to add a new world at there.
+    If there is a `World` there, displays the data associated with that `World`.
+    */
     fn central_panel(&mut self, ctx: &Context) {
         CentralPanel::default().show(ctx, |ui| {
             ui.add_enabled_ui(self.confirmation_popups.is_empty(), |ui| {
@@ -572,6 +582,7 @@ impl GeneratorApp {
         });
     }
 
+    /** Displays the `Subsector` map and handles any clicks or `Point` selections on it. */
     fn subsector_map_display(&mut self, ctx: &Context, ui: &mut Ui) {
         let max_size = ui.available_size();
         ui.set_min_size(Self::SUBSECTOR_IMAGE_MIN_SIZE);
@@ -597,6 +608,12 @@ impl GeneratorApp {
         }
     }
 
+    /** Displays information and fields associated with the selected `Point` and/or `World`.
+
+    Contains and handles most of the data viewing and editing aspects of the app.
+    Shows a summarizing `World` "profile" at the top and several, more detailed, selectable tabs
+    beneath.
+    */
     fn world_data_display(&mut self, ui: &mut Ui) {
         ui.vertical(|ui| {
             self.profile_display(ui);
@@ -608,7 +625,7 @@ impl GeneratorApp {
 
             use TabLabel::*;
             match self.tab {
-                WorldSurvey => self.planetary_survey_display(ui),
+                WorldSurvey => self.world_survey_display(ui),
                 GovernmentLaw => self.government_law_display(ui),
                 Factions => self.factions_display(ui),
                 CultureErrata => self.culture_errata_display(ui),
@@ -617,6 +634,12 @@ impl GeneratorApp {
         });
     }
 
+    /** Displays a summarizing "profile" of the selected world.
+
+    This profile shows the name, location, Universal World Profile (UWP), trade codes, travel code,
+    and gas giant presence of the selected `World`. Also handles the `World` regeneration and
+    removal buttons at the top right of the `world_data_display`.
+    */
     fn profile_display(&mut self, ui: &mut Ui) {
         ui.horizontal(|ui| {
             ui.add(TextEdit::singleline(&mut self.world.name).font(TextStyle::Heading));
@@ -624,13 +647,16 @@ impl GeneratorApp {
                 ui.add_space(100.0);
                 let header_font = TextStyle::Heading.resolve(&Style::default());
                 if ui
-                    .button(RichText::new("❌").font(header_font.clone()))
+                    .button(RichText::new(Self::X_EMOJI).font(header_font.clone()))
                     .clicked()
                 {
                     self.message(Message::RemoveSelectedWorld);
                 }
 
-                if ui.button(RichText::new("🎲").font(header_font)).clicked() {
+                if ui
+                    .button(RichText::new(Self::DICE_EMOJI).font(header_font))
+                    .clicked()
+                {
                     self.message(Message::RegenSelectedWorld);
                 }
             });
@@ -712,6 +738,7 @@ impl GeneratorApp {
             });
     }
 
+    /** Displays a row of selectable "tabs" of data for the user to look through. */
     fn tab_labels(&mut self, ui: &mut Ui) {
         use TabLabel::*;
         ui.horizontal(|ui| {
@@ -722,13 +749,15 @@ impl GeneratorApp {
         });
     }
 
-    fn planetary_survey_display(&mut self, ui: &mut Ui) {
+    /** Tab displaying `World` survey data such as info about the planetology and the starport. */
+    fn world_survey_display(&mut self, ui: &mut Ui) {
         ui.columns(2, |columns| {
             self.planetary_data_display(&mut columns[0]);
             self.starport_information_display(&mut columns[1]);
         });
     }
 
+    /** Tab displaying information about the government and law level of the `World`. */
     fn government_law_display(&mut self, ui: &mut Ui) {
         ui.columns(2, |columns| {
             self.government_display(&mut columns[0]);
@@ -736,6 +765,10 @@ impl GeneratorApp {
         });
     }
 
+    /** Tab displaying information about the culture and world tags of the `World`.
+
+    This tab should be cut from any "player-safe" version of the app.
+    */
     fn culture_errata_display(&mut self, ui: &mut Ui) {
         const NUM_COLUMNS: usize = World::NUM_TAGS + 1;
         ui.columns(NUM_COLUMNS, |columns| {
@@ -745,6 +778,7 @@ impl GeneratorApp {
         });
     }
 
+    /** Tab displaying a large text area for writing notes about the `World`. */
     fn notes_display(&mut self, ui: &mut Ui) {
         ScrollArea::vertical().show(ui, |ui| {
             ui.add(
@@ -752,6 +786,161 @@ impl GeneratorApp {
                     .desired_width(f32::INFINITY)
                     .desired_rows(50),
             );
+        });
+    }
+
+    /** Tab displaying the non-government factions that exist on this `World`. */
+    fn factions_display(&mut self, ui: &mut Ui) {
+        ui.label(
+            RichText::new("Factions")
+                .font(Self::LABEL_FONT)
+                .color(Self::LABEL_COLOR),
+        );
+        ui.add_space(Self::LABEL_SPACING);
+
+        ui.horizontal_top(|ui| {
+            // Column of selectable labels, one for each faction.
+            // This updates the selected `faction_idx` to control which is displayed to the right.
+            ui.vertical(|ui| {
+                ui.set_width(150.0);
+                ScrollArea::vertical()
+                    .id_source("faction_selection")
+                    .show(ui, |ui| {
+                        for (index, faction) in self.world.factions.iter().enumerate() {
+                            ui.selectable_value(&mut self.faction_idx, index, &faction.name);
+                        }
+                        if ui.button("+").clicked() {
+                            self.message(Message::AddNewFaction)
+                        }
+                    });
+            });
+
+            // Can't use an if-let here because that would require borrowing `self` and prevent
+            // calling any methods.
+            if self.world.factions.get(self.faction_idx).is_some() {
+                // Display data about the selection faction in a column
+                ui.vertical(|ui| {
+                    ui.set_width(Self::FIELD_SELECTION_WIDTH * 2.5);
+
+                    // Regenerate and remove faction buttons
+                    ui.horizontal(|ui| {
+                        // Regenerate faction button
+                        if ui
+                            .button(
+                                RichText::new(Self::DICE_EMOJI)
+                                    .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                            )
+                            .clicked()
+                        {
+                            self.message(Message::RegenSelectedFaction);
+                        }
+
+                        // Remove faction button
+                        if ui
+                            .button(
+                                RichText::new(Self::X_EMOJI)
+                                    .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                            )
+                            .on_hover_text_at_pointer("Double click to delete this faction")
+                            .double_clicked()
+                        {
+                            self.message(Message::RemoveSelectedFaction);
+                        }
+                    });
+
+                    // Faction name
+                    ui.add(
+                        TextEdit::singleline(&mut self.world.factions[self.faction_idx].name)
+                            .desired_width(Self::FIELD_SELECTION_WIDTH),
+                    );
+                    ui.add_space(Self::LABEL_SPACING * 1.5);
+
+                    ui.label(
+                        RichText::new("Relative Strength")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    ui.add_space(Self::LABEL_SPACING);
+
+                    // Faction strength dropdown
+                    let strength_code = self.world.factions[self.faction_idx].code as usize;
+                    ComboBox::from_id_source("faction_strength_selection")
+                        .selected_text(format!(
+                            "{}: {}",
+                            strength_code, TABLES.faction_table[strength_code].strength
+                        ))
+                        .width(Self::FIELD_SELECTION_WIDTH)
+                        .show_ui(ui, |ui| {
+                            for faction in TABLES.faction_table.iter() {
+                                let Faction { code, strength, .. } =
+                                    &mut self.world.factions[self.faction_idx];
+
+                                if ui
+                                    .selectable_value(
+                                        strength,
+                                        faction.strength.clone(),
+                                        format!("{}: {}", faction.code, faction.strength),
+                                    )
+                                    .clicked()
+                                {
+                                    *code = faction.code;
+                                }
+                            }
+                        });
+                    ui.add_space(Self::LABEL_SPACING * 1.5);
+
+                    ui.label(
+                        RichText::new("Leadership")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    ui.add_space(Self::LABEL_SPACING);
+
+                    // Faction government/leadership dropdown
+                    let gov_code = self.world.factions[self.faction_idx].government.code as usize;
+                    ComboBox::from_id_source("faction_government_selection")
+                        .selected_text(format!("{}: {}", gov_code, TABLES.gov_table[gov_code].kind))
+                        .width(Self::FIELD_SELECTION_WIDTH)
+                        .show_ui(ui, |ui| {
+                            for gov in TABLES.gov_table.iter() {
+                                let GovRecord {
+                                    kind: fac_gov_kind, ..
+                                } = &mut self.world.factions[self.faction_idx].government;
+
+                                if ui
+                                    .selectable_value(
+                                        fac_gov_kind,
+                                        gov.kind.clone(),
+                                        format!("{}: {}", gov.code, gov.kind),
+                                    )
+                                    .on_hover_text(&gov.description)
+                                    .clicked()
+                                {
+                                    self.message(Message::NewFactionGovSelected {
+                                        new_code: gov.code,
+                                    });
+                                }
+                            }
+                        });
+                    ui.add_space(Self::LABEL_SPACING * 1.5);
+
+                    ui.label(
+                        RichText::new("Description")
+                            .font(Self::LABEL_FONT)
+                            .color(Self::LABEL_COLOR),
+                    );
+                    ui.add_space(Self::LABEL_SPACING);
+
+                    // Description/notes on the faction and its leadership
+                    ScrollArea::vertical()
+                        .id_source("faction_description")
+                        .show(ui, |ui| {
+                            let GovRecord { description, .. } =
+                                &mut self.world.factions[self.faction_idx].government;
+                            ui.add(TextEdit::multiline(description).desired_width(f32::INFINITY))
+                        });
+                });
+            }
         });
     }
 
@@ -820,7 +1009,10 @@ impl GeneratorApp {
                 }
 
                 if ui
-                    .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                    .button(
+                        RichText::new(Self::DICE_EMOJI)
+                            .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                    )
                     .clicked()
                 {
                     self.message(Message::RegenWorldSize);
@@ -863,7 +1055,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldAtmosphere);
@@ -906,7 +1101,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldTemperature);
@@ -949,7 +1147,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldHydrographics);
@@ -992,7 +1193,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldPopulation);
@@ -1028,7 +1232,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldTechLevel);
@@ -1065,7 +1272,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldStarport);
@@ -1183,7 +1393,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldGovernment);
@@ -1244,7 +1457,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldLawLevel);
@@ -1276,147 +1492,6 @@ impl GeneratorApp {
                     ui.end_row();
                 }
             });
-    }
-
-    fn factions_display(&mut self, ui: &mut Ui) {
-        ui.label(
-            RichText::new("Factions")
-                .font(Self::LABEL_FONT)
-                .color(Self::LABEL_COLOR),
-        );
-        ui.add_space(Self::LABEL_SPACING);
-
-        ui.horizontal_top(|ui| {
-            ui.vertical(|ui| {
-                ui.set_width(150.0);
-                ScrollArea::vertical()
-                    .id_source("faction_selection")
-                    .show(ui, |ui| {
-                        for (index, faction) in self.world.factions.iter().enumerate() {
-                            ui.selectable_value(&mut self.faction_idx, index, &faction.name);
-                        }
-                        if ui.button("+").clicked() {
-                            self.message(Message::AddNewFaction)
-                        }
-                    });
-            });
-
-            if self.world.factions.get(self.faction_idx).is_some() {
-                ui.vertical(|ui| {
-                    ui.set_width(Self::FIELD_SELECTION_WIDTH * 2.5);
-                    ui.horizontal(|ui| {
-                        if ui
-                            .button(
-                                RichText::new("🎲")
-                                    .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
-                            )
-                            .clicked()
-                        {
-                            self.message(Message::RegenSelectedFaction);
-                        }
-
-                        if ui
-                            .button(
-                                RichText::new("❌")
-                                    .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
-                            )
-                            .on_hover_text_at_pointer("Double click to delete this faction")
-                            .double_clicked()
-                        {
-                            self.message(Message::RemoveSelectedFaction);
-                        }
-                    });
-
-                    ui.add(
-                        TextEdit::singleline(&mut self.world.factions[self.faction_idx].name)
-                            .desired_width(Self::FIELD_SELECTION_WIDTH),
-                    );
-                    ui.add_space(Self::LABEL_SPACING * 1.5);
-
-                    ui.label(
-                        RichText::new("Strength")
-                            .font(Self::LABEL_FONT)
-                            .color(Self::LABEL_COLOR),
-                    );
-                    ui.add_space(Self::LABEL_SPACING);
-
-                    let strength_code = self.world.factions[self.faction_idx].code as usize;
-                    ComboBox::from_id_source("faction_strength_selection")
-                        .selected_text(format!(
-                            "{}: {}",
-                            strength_code, TABLES.faction_table[strength_code].strength
-                        ))
-                        .width(Self::FIELD_SELECTION_WIDTH)
-                        .show_ui(ui, |ui| {
-                            for faction in TABLES.faction_table.iter() {
-                                let Faction { code, strength, .. } =
-                                    &mut self.world.factions[self.faction_idx];
-
-                                if ui
-                                    .selectable_value(
-                                        strength,
-                                        faction.strength.clone(),
-                                        format!("{}: {}", faction.code, faction.strength),
-                                    )
-                                    .clicked()
-                                {
-                                    *code = faction.code;
-                                }
-                            }
-                        });
-                    ui.add_space(Self::LABEL_SPACING * 1.5);
-
-                    ui.label(
-                        RichText::new("Leadership")
-                            .font(Self::LABEL_FONT)
-                            .color(Self::LABEL_COLOR),
-                    );
-                    ui.add_space(Self::LABEL_SPACING);
-
-                    let gov_code = self.world.factions[self.faction_idx].government.code as usize;
-                    ComboBox::from_id_source("faction_government_selection")
-                        .selected_text(format!("{}: {}", gov_code, TABLES.gov_table[gov_code].kind))
-                        .width(Self::FIELD_SELECTION_WIDTH)
-                        .show_ui(ui, |ui| {
-                            for gov in TABLES.gov_table.iter() {
-                                let GovRecord {
-                                    kind: fac_gov_kind, ..
-                                } = &mut self.world.factions[self.faction_idx].government;
-
-                                if ui
-                                    .selectable_value(
-                                        fac_gov_kind,
-                                        gov.kind.clone(),
-                                        format!("{}: {}", gov.code, gov.kind),
-                                    )
-                                    .on_hover_text(&gov.description)
-                                    .clicked()
-                                {
-                                    self.message(Message::NewFactionGovSelected {
-                                        new_code: gov.code,
-                                    });
-                                }
-                            }
-                        });
-                    ui.add_space(Self::LABEL_SPACING * 1.5);
-
-                    ui.label(
-                        RichText::new("Description")
-                            .font(Self::LABEL_FONT)
-                            .color(Self::LABEL_COLOR),
-                    );
-                    ui.add_space(Self::LABEL_SPACING);
-
-                    ScrollArea::vertical()
-                        .id_source("faction_description")
-                        .show(ui, |ui| {
-                            let GovRecord { description, .. } =
-                                &mut self.world.factions[self.faction_idx].government;
-                            ui.add(TextEdit::multiline(description).desired_width(f32::INFINITY))
-                        });
-                });
-            }
-        });
     }
 
     fn culture_display(&mut self, ui: &mut Ui) {
@@ -1452,7 +1527,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldCulture);
@@ -1517,7 +1595,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldTag { index });
@@ -1568,7 +1649,10 @@ impl GeneratorApp {
                 });
 
             if ui
-                .button(RichText::new("🎲").font(FontId::proportional(Self::BUTTON_FONT_SIZE)))
+                .button(
+                    RichText::new(Self::DICE_EMOJI)
+                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                )
                 .clicked()
             {
                 self.message(Message::RegenWorldTag { index });
