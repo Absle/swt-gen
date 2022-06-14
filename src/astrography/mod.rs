@@ -112,6 +112,10 @@ impl Subsector {
         &self.name[..]
     }
 
+    pub fn set_name(&mut self, new_name: String) {
+        self.name = new_name;
+    }
+
     pub fn new(world_abundance_dm: i16) -> Self {
         let mut subsector = Self::empty();
         let mut names = random_names(Subsector::COLUMNS * Subsector::ROWS + 1).into_iter();

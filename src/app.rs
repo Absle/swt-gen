@@ -3,8 +3,9 @@ use std::collections::VecDeque;
 use eframe::{App, Frame};
 
 use egui::{
-    vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label, Layout,
-    Pos2, Rect, RichText, ScrollArea, Sense, Style, TextEdit, TextStyle, Ui, Vec2, Window,
+    menu, vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label,
+    Layout, Pos2, Rect, RichText, ScrollArea, Sense, Style, TextEdit, TextStyle, TopBottomPanel,
+    Ui, Vec2, Window,
 };
 use egui_extras::RetainedImage;
 
@@ -19,6 +20,9 @@ use crate::astrography::world::{Faction, TravelCode, World};
 /** Set of messages respresenting all non-trivial GUI events. */
 #[derive(Clone)]
 enum Message {
+    RenameSubsector,
+    ConfirmRenameSubsector { new_name: String },
+    CancelRenameSubsector,
     HexGridClicked { new_point: Point },
     RedrawSubsectorImage,
     SaveWorld,
@@ -56,7 +60,16 @@ enum Message {
     AddNewWorld,
 }
 
-/** Confirmation popup window. */
+const DEFAULT_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
+trait Popup {
+    /** Show this `Popup`.
+
+    Returns `Some(Message)` with the `Message` to be processed when the `Popup` is satisfied, `None`
+    otherwise.
+    */
+    fn show(&mut self, ctx: &Context) -> Option<Message>;
+}
+
 #[derive(Clone)]
 struct ConfirmationPopup {
     title: String,
@@ -65,14 +78,8 @@ struct ConfirmationPopup {
     cancel_message: Message,
 }
 
-impl ConfirmationPopup {
-    /** Show this `ConfirmationPopup`.
-
-    Returns `Some(Message)` with the `Message` to be processed when a button is selected, `None`
-    otherwise.
-    */
-    fn show(&self, ctx: &Context) -> Option<Message> {
-        const CONFIRMATION_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
+impl Popup for ConfirmationPopup {
+    fn show(&mut self, ctx: &Context) -> Option<Message> {
         let ConfirmationPopup {
             title,
             text,
@@ -85,7 +92,7 @@ impl ConfirmationPopup {
         Window::new(title.clone())
             .title_bar(false)
             .resizable(false)
-            .fixed_size(CONFIRMATION_POPUP_SIZE)
+            .fixed_size(DEFAULT_POPUP_SIZE)
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
                     ui.heading(title);
@@ -103,6 +110,55 @@ impl ConfirmationPopup {
                     ui.with_layout(Layout::right_to_left(), |ui| {
                         if ui.button("Cancel").clicked() {
                             result = Some(cancel_message.clone())
+                        }
+                    });
+                });
+            });
+        result
+    }
+}
+
+struct SubsectorRenamePopup {
+    name: String,
+}
+
+impl SubsectorRenamePopup {
+    fn new(initial_name: &str) -> Self {
+        Self {
+            name: initial_name.to_string(),
+        }
+    }
+}
+
+impl Popup for SubsectorRenamePopup {
+    fn show(&mut self, ctx: &Context) -> Option<Message> {
+        let mut result = None;
+
+        let title = "Rename Subsector";
+
+        Window::new(title.clone())
+            .title_bar(false)
+            .resizable(false)
+            .fixed_size(DEFAULT_POPUP_SIZE)
+            .show(ctx, |ui| {
+                ui.vertical_centered(|ui| {
+                    ui.heading(title);
+                    ui.separator();
+                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
+                    ui.text_edit_singleline(&mut self.name);
+                });
+                ui.add_space(GeneratorApp::FIELD_SPACING);
+
+                ui.horizontal(|ui| {
+                    if ui.button("Confirm").clicked() {
+                        result = Some(Message::ConfirmRenameSubsector {
+                            new_name: self.name.clone(),
+                        })
+                    }
+
+                    ui.with_layout(Layout::right_to_left(), |ui| {
+                        if ui.button("Cancel").clicked() {
+                            result = Some(Message::CancelRenameSubsector)
                         }
                     });
                 });
@@ -139,7 +195,7 @@ pub struct GeneratorApp {
     subsector_image: RetainedImage,
     message_queue: VecDeque<Message>,
     /// List of blocking confirmation popups
-    confirmation_popups: Vec<ConfirmationPopup>,
+    popup_queue: Vec<Box<dyn Popup>>,
     /// Selected display `TabLabel`
     tab: TabLabel,
     /// Whether a `Point` on the hex grid is currently selected or not
@@ -197,6 +253,18 @@ impl GeneratorApp {
     fn message_immediate(&mut self, message: Message) {
         use Message::*;
         match message {
+            RenameSubsector => {
+                let popup = SubsectorRenamePopup::new(self.subsector.name());
+                self.add_popup(popup);
+            }
+
+            ConfirmRenameSubsector { new_name } => {
+                self.subsector.set_name(new_name);
+                self.message_immediate(Message::RedrawSubsectorImage);
+            }
+
+            CancelRenameSubsector => {}
+
             HexGridClicked { new_point } => {
                 self.message(Message::RedrawSubsectorImage);
 
@@ -246,7 +314,7 @@ impl GeneratorApp {
                     confirm_message: Message::ConfirmRemoveWorld,
                     cancel_message: Message::CancelRemoveWorld,
                 };
-                self.add_confirmation_popup(popup);
+                self.add_popup(popup);
             }
 
             ConfirmRemoveWorld => {
@@ -267,7 +335,7 @@ impl GeneratorApp {
                     confirm_message: Message::ConfirmRegenWorld,
                     cancel_message: Message::CancelRegenWorld,
                 };
-                self.add_confirmation_popup(popup);
+                self.add_popup(popup);
             }
 
             ConfirmRegenWorld => {
@@ -299,7 +367,7 @@ impl GeneratorApp {
                             confirm_message: Message::ConfirmLocUpdate { location },
                             cancel_message: Message::CancelLocUpdate,
                         };
-                        self.add_confirmation_popup(popup);
+                        self.add_popup(popup);
                     } else {
                         self.message_immediate(Message::ConfirmLocUpdate { location })
                     }
@@ -538,23 +606,41 @@ impl GeneratorApp {
     }
 
     /** Add a `ConfirmationPopup` to the queue to be shown and awaiting response. */
-    fn add_confirmation_popup(&mut self, popup: ConfirmationPopup) {
-        self.confirmation_popups.push(popup);
+    fn add_popup<T: 'static + Popup>(&mut self, popup: T) {
+        self.popup_queue.push(Box::new(popup));
     }
 
     /** Display all `ConfirmationPopup`'s in the queue and process any messages they return. */
-    fn show_confirmation_popups(&mut self, ctx: &Context) {
+    fn show_popups(&mut self, ctx: &Context) {
         let mut responded = Vec::new();
-        for (i, popup) in self.confirmation_popups.iter().enumerate() {
+        for (i, popup) in self.popup_queue.iter_mut().enumerate() {
             if let Some(message) = popup.show(ctx) {
                 responded.push((i, message));
             }
         }
 
         for (i, message) in responded {
-            self.confirmation_popups.remove(i);
+            self.popup_queue.remove(i);
             self.message(message);
         }
+    }
+
+    /** Displays the top panel of the app.
+
+    Currently just a menu bar.
+    */
+    fn top_panel(&mut self, ctx: &Context) {
+        TopBottomPanel::top("top_panel").show(ctx, |ui| {
+            ui.add_enabled_ui(self.popup_queue.is_empty(), |ui| {
+                menu::bar(ui, |ui| {
+                    ui.menu_button("Subsector", |ui| {
+                        if ui.button("Rename...").clicked() {
+                            self.message(Message::RenameSubsector);
+                        }
+                    });
+                });
+            });
+        });
     }
 
     /** Handles displaying the overall central panel of the app.
@@ -566,7 +652,7 @@ impl GeneratorApp {
     */
     fn central_panel(&mut self, ctx: &Context) {
         CentralPanel::default().show(ctx, |ui| {
-            ui.add_enabled_ui(self.confirmation_popups.is_empty(), |ui| {
+            ui.add_enabled_ui(self.popup_queue.is_empty(), |ui| {
                 ui.horizontal_top(|ui| {
                     self.subsector_map_display(ctx, ui);
 
@@ -1701,7 +1787,7 @@ impl Default for GeneratorApp {
             subsector_svg,
             subsector_image,
             message_queue: VecDeque::new(),
-            confirmation_popups: Vec::new(),
+            popup_queue: Vec::new(),
             point_selected: false,
             world_selected: false,
             point: Point::default(),
@@ -1718,8 +1804,9 @@ impl Default for GeneratorApp {
 impl App for GeneratorApp {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         self.process_message_queue();
+        self.top_panel(ctx);
         self.central_panel(ctx);
-        self.show_confirmation_popups(ctx);
+        self.show_popups(ctx);
     }
 }
 
