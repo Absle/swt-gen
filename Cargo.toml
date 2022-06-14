@@ -12,7 +12,6 @@ rand = "0.8"
 roxmltree = "0.14"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.81"
-serde_yaml = "0.8"
 
 # GUI dependencies
 egui = "0.18.1"

@@ -672,15 +672,6 @@ mod tests {
     }
 
     #[test]
-    fn subsector_yaml_serde() {
-        let subsector = Subsector::default();
-        let yaml = serde_yaml::to_string(&subsector).unwrap();
-
-        let de_subsector: Subsector = serde_yaml::from_str(&yaml).unwrap();
-        assert_eq!(de_subsector, subsector);
-    }
-
-    #[test]
     fn subsector_svg() {
         const ATTEMPTS: usize = 10;
         for _ in 0..ATTEMPTS {
