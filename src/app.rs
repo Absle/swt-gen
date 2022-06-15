@@ -10,7 +10,7 @@ use egui::{
 
 use egui_extras::RetainedImage;
 
-use native_dialog::FileDialog;
+use native_dialog::{FileDialog, MessageDialog, MessageType};
 
 use crate::astrography::{Point, Subsector};
 
@@ -255,6 +255,7 @@ impl ToString for TabLabel {
 }
 
 pub struct GeneratorApp {
+    save_location: String,
     subsector: Subsector,
     subsector_svg: String,
     subsector_image: RetainedImage,
@@ -361,16 +362,25 @@ impl GeneratorApp {
             ExportJson => {
                 self.message_immediate(Message::SaveWorld);
 
-                let path = FileDialog::new()
-                    .set_location("~/Documents")
-                    .set_filename(&format!("{}.json", self.subsector.name())[..])
-                    .add_filter("JSON Files", &["json"])
-                    .show_save_single_file()
-                    .unwrap();
+                let result = save_file(
+                    &self.save_location,
+                    &format!("{}_Subsector.json", self.subsector.name()),
+                    "JSON File",
+                    &["json"],
+                    self.subsector.to_json(),
+                );
 
-                if let Some(path) = path {
-                    let json = self.subsector.to_json();
-                    let _ = std::fs::write(path, json).unwrap();
+                match result {
+                    Ok(Some(save_location)) => self.save_location = save_location,
+                    Ok(None) => (),
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Save JSON")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                    }
                 }
             }
 
@@ -1914,6 +1924,7 @@ impl Default for GeneratorApp {
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
 
         Self {
+            save_location: "~".to_string(),
             subsector,
             subsector_svg,
             subsector_image,
@@ -2077,4 +2088,47 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
     } else {
         None
     }
+}
+
+/** Open a `FileDialog` and save `contents` to the selected file.
+
+## Arguments
+- `location`: Directory to which the `FileDialog` initially opens
+- `filename`: Filename to be pre-filled into the `FileDialog`
+- `description`: Description of the file type to be filtered
+- `extensions`: Array of file extensions to filter
+- `contents`: Contents of the file to write to the file system
+
+## Returns
+- `Err` if there was a error while trying to save the file
+- `Ok(String)` with the selected directory if it was able to save successfully
+- `Ok(None)` if there was no error but no directory was selected
+*/
+fn save_file<P, C>(
+    location: &P,
+    filename: &str,
+    description: &str,
+    extensions: &[&str],
+    contents: C,
+) -> Result<Option<String>, Box<dyn std::error::Error>>
+where
+    P: AsRef<std::path::Path>,
+    C: AsRef<[u8]>,
+{
+    let path = FileDialog::new()
+        .set_location(location)
+        .set_filename(filename)
+        .add_filter(description, extensions)
+        .show_save_single_file()?;
+
+    let save_location;
+    if let Some(path) = path {
+        let directory = path.parent().unwrap();
+        save_location = Some(directory.to_str().unwrap().to_string());
+        std::fs::write(path, contents)?;
+    } else {
+        save_location = None;
+    }
+
+    Ok(save_location)
 }

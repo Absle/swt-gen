@@ -229,7 +229,7 @@ impl Subsector {
     #[allow(dead_code)]
     pub fn to_json(&self) -> String {
         let jsonable = JsonableSubsector::from(self.clone());
-        serde_json::to_string(&jsonable).unwrap()
+        serde_json::to_string_pretty(&jsonable).unwrap()
     }
 
     #[allow(dead_code)]
