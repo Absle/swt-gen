@@ -233,7 +233,7 @@ impl Subsector {
     }
 
     #[allow(dead_code)]
-    pub fn from_json(json: &str) -> Result<Self, Box<dyn Error>> {
+    pub fn try_from_json(json: &str) -> Result<Self, Box<dyn Error>> {
         let jsonable: JsonableSubsector = serde_json::from_str(json)?;
         let subsector = Self::try_from(jsonable)?;
         Ok(subsector)
@@ -666,7 +666,7 @@ mod tests {
         for _ in 0..ATTEMPTS {
             let subsector = Subsector::default();
             let json = subsector.to_json();
-            let deserialized = Subsector::from_json(&json[..]).unwrap();
+            let deserialized = Subsector::try_from_json(&json[..]).unwrap();
             assert_eq!(deserialized, subsector);
         }
     }

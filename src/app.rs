@@ -30,6 +30,8 @@ enum Message {
     ConfirmRegenSubsector { world_abundance_dm: i16 },
     CancelRegenSubsector,
     ImportJson,
+    ConfirmImportJson { subsector: Subsector },
+    CancelImportJson,
     ExportJson,
     HexGridClicked { new_point: Point },
     RedrawSubsectorImage,
@@ -255,7 +257,7 @@ impl ToString for TabLabel {
 }
 
 pub struct GeneratorApp {
-    save_location: String,
+    last_used_directory: String,
     subsector: Subsector,
     subsector_svg: String,
     subsector_image: RetainedImage,
@@ -356,22 +358,79 @@ impl GeneratorApp {
             CancelRegenSubsector => {}
 
             ImportJson => {
-                todo!("Implment JSON importing");
+                let result = load_file_to_string(&self.last_used_directory, "JSON", &["json"]);
+
+                let json = match result {
+                    Ok(Some((directory, json))) => {
+                        self.last_used_directory = directory;
+                        json
+                    }
+                    Ok(None) => return,
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Read JSON")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                        return;
+                    }
+                };
+
+                let subsector = match Subsector::try_from_json(&json) {
+                    Ok(subsector) => subsector,
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Create Subsector from JSON")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                        return;
+                    }
+                };
+
+                let popup = ConfirmationPopup {
+                    title: "Loading Subsector".to_string(),
+                    text: "Are you sure you want overwrite the currently loaded subsector?\nThis can not be undone.".to_string(),
+                    confirm_message: Message::ConfirmImportJson { subsector },
+                    cancel_message: Message::CancelImportJson
+                };
+                self.add_popup(popup);
             }
+
+            ConfirmImportJson { subsector } => {
+                self.subsector = subsector;
+                self.message_queue.clear();
+                self.popup_queue.clear();
+                self.point_selected = false;
+                self.world_selected = false;
+                self.point = Point::default();
+                self.world = World::empty();
+                self.tab = TabLabel::WorldSurvey;
+                self.faction_idx = 0;
+                self.location = String::new();
+                self.diameter = String::new();
+                self.berthing_cost = String::new();
+
+                self.message_immediate(Message::RedrawSubsectorImage);
+            }
+
+            CancelImportJson => {}
 
             ExportJson => {
                 self.message_immediate(Message::SaveWorld);
 
                 let result = save_file(
-                    &self.save_location,
+                    &self.last_used_directory,
                     &format!("{}_Subsector.json", self.subsector.name()),
-                    "JSON File",
+                    "JSON",
                     &["json"],
                     self.subsector.to_json(),
                 );
 
                 match result {
-                    Ok(Some(save_location)) => self.save_location = save_location,
+                    Ok(Some(directory)) => self.last_used_directory = directory,
                     Ok(None) => (),
                     Err(err) => {
                         MessageDialog::new()
@@ -1924,7 +1983,7 @@ impl Default for GeneratorApp {
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
 
         Self {
-            save_location: "~".to_string(),
+            last_used_directory: "~".to_string(),
             subsector,
             subsector_svg,
             subsector_image,
@@ -2090,7 +2149,7 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
     }
 }
 
-/** Open a `FileDialog` and save `contents` to the selected file.
+/** Open a `FileDialog` and try to save `contents` to the described file.
 
 ## Arguments
 - `location`: Directory to which the `FileDialog` initially opens
@@ -2101,7 +2160,7 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
 
 ## Returns
 - `Err` if there was a error while trying to save the file
-- `Ok(String)` with the selected directory if it was able to save successfully
+- `Ok(save_directory)` with the selected directory if it was able to save successfully
 - `Ok(None)` if there was no error but no directory was selected
 */
 fn save_file<P, C>(
@@ -2121,14 +2180,49 @@ where
         .add_filter(description, extensions)
         .show_save_single_file()?;
 
-    let save_location;
-    if let Some(path) = path {
-        let directory = path.parent().unwrap();
-        save_location = Some(directory.to_str().unwrap().to_string());
-        std::fs::write(path, contents)?;
-    } else {
-        save_location = None;
-    }
+    let save_directory = match path {
+        Some(path) => {
+            let directory = path.parent().unwrap().to_str().unwrap().to_string();
+            std::fs::write(path, contents)?;
+            Some(directory)
+        }
 
-    Ok(save_location)
+        None => None,
+    };
+
+    Ok(save_directory)
+}
+
+/** Open a `FileDialog` and try to read in the described file.
+
+## Arguments
+- `location`: Directory to which the `FileDialog` initially opens
+- `description`: Description of the file type to be filtered
+- `extensions`: Array of file extensions to filter
+
+## Returns
+- `Err` if there was a error while trying to read the file
+- `Ok((open_directory, contents))` with the selected directory if it was able to save successfully
+- `Ok(None)` if there was no error but no file was selected
+*/
+fn load_file_to_string<P: AsRef<std::path::Path>>(
+    location: &P,
+    description: &str,
+    extensions: &[&str],
+) -> Result<Option<(String, String)>, Box<dyn std::error::Error>> {
+    let path = FileDialog::new()
+        .set_location(location)
+        .add_filter(description, extensions)
+        .show_open_single_file()?;
+
+    let option = match path {
+        Some(path) => {
+            let directory = path.parent().unwrap().to_str().unwrap().to_string();
+            let contents = std::fs::read_to_string(path)?;
+            Some((directory, contents))
+        }
+        None => None,
+    };
+
+    Ok(option)
 }
