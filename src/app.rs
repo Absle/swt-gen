@@ -1967,6 +1967,7 @@ impl GeneratorApp {
             let height = ui.available_height();
             ui.add_space(height / 2.0);
 
+            ui.heading(self.point.to_string());
             let header_font = TextStyle::Heading.resolve(&Style::default());
             let text = RichText::new("Add New World").font(header_font);
             if ui.button(text).clicked() {
