@@ -3,8 +3,8 @@ use std::collections::VecDeque;
 use eframe::{App, Frame};
 
 use egui::{
-    menu, vec2, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image, Label,
-    Layout, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style, TextEdit, TextStyle,
+    menu, vec2, Align, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image,
+    Label, Layout, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style, TextEdit, TextStyle,
     TopBottomPanel, Ui, Vec2, Window,
 };
 
@@ -903,7 +903,6 @@ impl GeneratorApp {
     fn world_data_display(&mut self, ui: &mut Ui) {
         ui.vertical(|ui| {
             self.profile_display(ui);
-
             ui.add_space(Self::FIELD_SPACING);
 
             self.tab_labels(ui);
@@ -917,6 +916,8 @@ impl GeneratorApp {
                 CultureErrata => self.culture_errata_display(ui),
                 Notes => self.notes_display(ui),
             }
+
+            self.save_revert_buttons(ui);
         });
     }
 
@@ -930,7 +931,7 @@ impl GeneratorApp {
         ui.horizontal(|ui| {
             ui.add(TextEdit::singleline(&mut self.world.name).font(TextStyle::Heading));
             ui.with_layout(Layout::right_to_left(), |ui| {
-                ui.add_space(100.0);
+                ui.add_space(12.5);
                 let header_font = TextStyle::Heading.resolve(&Style::default());
                 if ui
                     .button(RichText::new(Self::X_EMOJI).font(header_font.clone()))
@@ -1066,13 +1067,16 @@ impl GeneratorApp {
 
     /** Tab displaying a large text area for writing notes about the `World`. */
     fn notes_display(&mut self, ui: &mut Ui) {
-        ScrollArea::vertical().show(ui, |ui| {
-            ui.add(
-                TextEdit::multiline(&mut self.world.notes)
-                    .desired_width(f32::INFINITY)
-                    .desired_rows(50),
-            );
-        });
+        ScrollArea::vertical()
+            .id_source("world_notes")
+            .max_height(ui.available_height() * 0.9)
+            .show(ui, |ui| {
+                ui.add(
+                    TextEdit::multiline(&mut self.world.notes)
+                        .desired_width(f32::INFINITY)
+                        .desired_rows(50),
+                );
+            });
     }
 
     /** Tab displaying the non-government factions that exist on this `World`. */
@@ -1220,6 +1224,7 @@ impl GeneratorApp {
                     // Description/notes on the faction and its leadership
                     ScrollArea::vertical()
                         .id_source("faction_description")
+                        .max_height(ui.available_height() * 0.9)
                         .show(ui, |ui| {
                             let GovRecord { description, .. } =
                                 &mut self.world.factions[self.faction_idx].government;
@@ -1714,9 +1719,12 @@ impl GeneratorApp {
         );
         ui.add_space(Self::LABEL_SPACING);
 
-        ScrollArea::vertical().show(ui, |ui| {
-            ui.add(TextEdit::multiline(&mut self.world.government.description));
-        });
+        ScrollArea::vertical()
+            .id_source("government_description")
+            .max_height(ui.available_height() * 0.9)
+            .show(ui, |ui| {
+                ui.add(TextEdit::multiline(&mut self.world.government.description));
+            });
     }
 
     fn law_level_display(&mut self, ui: &mut Ui) {
@@ -1833,6 +1841,7 @@ impl GeneratorApp {
 
         ScrollArea::vertical()
             .id_source("culture_description")
+            .max_height(ui.available_height() * 0.9)
             .show(ui, |ui| {
                 ui.add(TextEdit::multiline(&mut self.world.culture.description));
             });
@@ -1901,6 +1910,7 @@ impl GeneratorApp {
 
         ScrollArea::vertical()
             .id_source(format!("world_tag_{}_description", index))
+            .max_height(columns[index].available_height() * 0.9)
             .show(&mut columns[index], |ui| {
                 ui.add(TextEdit::multiline(
                     &mut self.world.world_tags[index].description,
@@ -1955,11 +1965,32 @@ impl GeneratorApp {
 
         ScrollArea::vertical()
             .id_source(format!("world_tag_{}_description", index))
+            .max_height(columns[index].available_height() * 0.9)
             .show(&mut columns[index], |ui| {
                 ui.add(TextEdit::multiline(
                     &mut self.world.world_tags[index].description,
                 ));
             });
+    }
+
+    fn save_revert_buttons(&mut self, ui: &mut Ui) {
+        ui.with_layout(Layout::bottom_up(Align::Max), |ui| {
+            ui.add_space(12.5);
+            ui.horizontal(|ui| {
+                ui.add_space(12.5);
+
+                let header_font = TextStyle::Heading.resolve(&Style::default());
+                if ui
+                    .button(RichText::new("Save").font(header_font.clone()))
+                    .clicked()
+                {}
+                if ui
+                    .button(RichText::new("Revert").font(header_font))
+                    .clicked()
+                {}
+            });
+            ui.separator();
+        });
     }
 
     fn new_world_dialog(&mut self, ui: &mut Ui) {

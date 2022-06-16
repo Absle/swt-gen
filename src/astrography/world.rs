@@ -753,6 +753,7 @@ impl PartialEq for World {
             && self.has_tas == other.has_tas
             && self.travel_code == other.travel_code
             && self.trade_codes == other.trade_codes
+            && self.notes == other.notes
     }
 }
 
