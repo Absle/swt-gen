@@ -3,9 +3,9 @@ use std::collections::VecDeque;
 use eframe::{App, Frame};
 
 use egui::{
-    menu, vec2, Align, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid, Image,
-    Label, Layout, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style, TextEdit, TextStyle,
-    TopBottomPanel, Ui, Vec2, Window,
+    menu, vec2, Align, Button, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid,
+    Image, Label, Layout, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style, TextEdit,
+    TextStyle, TopBottomPanel, Ui, Vec2, Window,
 };
 
 use egui_extras::RetainedImage;
@@ -34,8 +34,11 @@ enum Message {
     CancelImportJson,
     ExportJson,
     HexGridClicked { new_point: Point },
+    ConfirmHexGridClicked { new_point: Point },
+    CancelHexGridClicked,
     RedrawSubsectorImage,
-    SaveWorld,
+    ApplyWorldChanges,
+    RevertWorldChanges,
     RegenSelectedWorld,
     ConfirmRegenWorld,
     CancelRegenWorld,
@@ -272,6 +275,7 @@ pub struct GeneratorApp {
     point: Point,
     /// Whether a `World` is at the selected `Point` or not
     world_selected: bool,
+    world_edited: bool,
     /// Selected `World`
     world: World,
     /// Buffer for `String` representation of the selected world's `Point` location
@@ -301,8 +305,9 @@ impl GeneratorApp {
     const FIELD_SELECTION_WIDTH: f32 = 225.0;
     const SHORT_SELECTION_WIDTH: f32 = 50.0;
 
-    const DICE_EMOJI: &'static str = "🎲";
-    const X_EMOJI: &'static str = "❌";
+    const DICE_ICON: &'static str = "🎲";
+    const X_ICON: &'static str = "❌";
+    const SAVE_ICON: &'static str = "💾";
 
     /** Queue a message to be handled at the beginning of the next frame. */
     fn message(&mut self, message: Message) {
@@ -328,7 +333,7 @@ impl GeneratorApp {
 
             ConfirmRenameSubsector { new_name } => {
                 self.subsector.set_name(new_name);
-                self.message_immediate(Message::RedrawSubsectorImage);
+                self.message(Message::RedrawSubsectorImage);
             }
 
             CancelRenameSubsector => {}
@@ -352,7 +357,7 @@ impl GeneratorApp {
                 self.diameter = String::new();
                 self.berthing_cost = String::new();
 
-                self.message_immediate(Message::RedrawSubsectorImage);
+                self.message(Message::RedrawSubsectorImage);
             }
 
             CancelRegenSubsector => {}
@@ -413,13 +418,13 @@ impl GeneratorApp {
                 self.diameter = String::new();
                 self.berthing_cost = String::new();
 
-                self.message_immediate(Message::RedrawSubsectorImage);
+                self.message(Message::RedrawSubsectorImage);
             }
 
             CancelImportJson => {}
 
             ExportJson => {
-                self.message_immediate(Message::SaveWorld);
+                self.message_immediate(Message::ApplyWorldChanges);
 
                 let result = save_file(
                     &self.last_used_directory,
@@ -444,12 +449,22 @@ impl GeneratorApp {
             }
 
             HexGridClicked { new_point } => {
-                self.message(Message::RedrawSubsectorImage);
-
-                if self.world_selected {
-                    self.message_immediate(Message::SaveWorld);
+                if self.world_edited {
+                    let popup = ConfirmationPopup {
+                        title: "Unsaved World Changes".to_string(),
+                        text: format!(
+                            "The world '{}' has unsaved changes, are sure you want to change world?\nAll changes will be lost.",
+                            self.world.name),
+                        confirm_message: Message::ConfirmHexGridClicked { new_point },
+                        cancel_message: Message:: CancelHexGridClicked,
+                    };
+                    self.add_popup(popup);
+                } else {
+                    self.message_immediate(Message::ConfirmHexGridClicked { new_point });
                 }
+            }
 
+            ConfirmHexGridClicked { new_point } => {
                 self.point_selected = true;
                 self.point = new_point;
                 self.faction_idx = 0;
@@ -465,21 +480,31 @@ impl GeneratorApp {
                 }
             }
 
+            CancelHexGridClicked => {}
+
             RedrawSubsectorImage => {
                 self.subsector_svg = self.subsector.generate_svg();
                 self.subsector_image =
                     generate_subsector_image(self.subsector.name(), &self.subsector_svg).unwrap();
             }
 
-            SaveWorld => {
+            ApplyWorldChanges => {
                 self.subsector.insert_world(&self.point, &mut self.world);
+                self.message(Message::RedrawSubsectorImage);
+            }
+
+            RevertWorldChanges => {
+                if let Some(world) = self.subsector.get_world(&self.point) {
+                    self.world = world.clone();
+                }
             }
 
             AddNewWorld => {
                 self.subsector.insert_random_world(&self.point);
-                self.message_immediate(Message::HexGridClicked {
+                self.message_immediate(Message::ConfirmHexGridClicked {
                     new_point: self.point.clone(),
                 });
+                self.message(Message::RedrawSubsectorImage);
             }
 
             RemoveSelectedWorld => {
@@ -519,9 +544,10 @@ impl GeneratorApp {
             ConfirmRegenWorld => {
                 self.subsector.insert_random_world(&self.point);
                 self.world_selected = false;
-                self.message_immediate(Message::HexGridClicked {
+                self.message_immediate(Message::ConfirmHexGridClicked {
                     new_point: self.point.clone(),
                 });
+                self.message(Message::RedrawSubsectorImage);
             }
 
             CancelRegenWorld => {}
@@ -917,7 +943,7 @@ impl GeneratorApp {
                 Notes => self.notes_display(ui),
             }
 
-            self.save_revert_buttons(ui);
+            self.apply_revert_buttons(ui);
         });
     }
 
@@ -934,14 +960,14 @@ impl GeneratorApp {
                 ui.add_space(12.5);
                 let header_font = TextStyle::Heading.resolve(&Style::default());
                 if ui
-                    .button(RichText::new(Self::X_EMOJI).font(header_font.clone()))
+                    .button(RichText::new(Self::X_ICON).font(header_font.clone()))
                     .clicked()
                 {
                     self.message(Message::RemoveSelectedWorld);
                 }
 
                 if ui
-                    .button(RichText::new(Self::DICE_EMOJI).font(header_font))
+                    .button(RichText::new(Self::DICE_ICON).font(header_font))
                     .clicked()
                 {
                     self.message(Message::RegenSelectedWorld);
@@ -1117,7 +1143,7 @@ impl GeneratorApp {
                         // Regenerate faction button
                         if ui
                             .button(
-                                RichText::new(Self::DICE_EMOJI)
+                                RichText::new(Self::DICE_ICON)
                                     .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                             )
                             .clicked()
@@ -1128,7 +1154,7 @@ impl GeneratorApp {
                         // Remove faction button
                         if ui
                             .button(
-                                RichText::new(Self::X_EMOJI)
+                                RichText::new(Self::X_ICON)
                                     .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                             )
                             .on_hover_text_at_pointer("Double click to delete this faction")
@@ -1301,7 +1327,7 @@ impl GeneratorApp {
 
                 if ui
                     .button(
-                        RichText::new(Self::DICE_EMOJI)
+                        RichText::new(Self::DICE_ICON)
                             .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                     )
                     .clicked()
@@ -1347,7 +1373,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1393,7 +1419,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1439,7 +1465,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1485,7 +1511,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1524,7 +1550,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1564,7 +1590,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1685,7 +1711,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1752,7 +1778,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1822,7 +1848,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1891,7 +1917,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1946,7 +1972,7 @@ impl GeneratorApp {
 
             if ui
                 .button(
-                    RichText::new(Self::DICE_EMOJI)
+                    RichText::new(Self::DICE_ICON)
                         .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                 )
                 .clicked()
@@ -1973,21 +1999,26 @@ impl GeneratorApp {
             });
     }
 
-    fn save_revert_buttons(&mut self, ui: &mut Ui) {
+    fn apply_revert_buttons(&mut self, ui: &mut Ui) {
         ui.with_layout(Layout::bottom_up(Align::Max), |ui| {
             ui.add_space(12.5);
             ui.horizontal(|ui| {
                 ui.add_space(12.5);
 
                 let header_font = TextStyle::Heading.resolve(&Style::default());
-                if ui
-                    .button(RichText::new("Save").font(header_font.clone()))
-                    .clicked()
-                {}
-                if ui
-                    .button(RichText::new("Revert").font(header_font))
-                    .clicked()
-                {}
+                let apply_button = Button::new(
+                    RichText::new(Self::SAVE_ICON.to_string() + " Apply").font(header_font.clone()),
+                );
+                let revert_button = Button::new(
+                    RichText::new(Self::X_ICON.to_string() + " Revert").font(header_font),
+                );
+
+                if ui.add_enabled(self.world_edited, apply_button).clicked() {
+                    self.message(Message::ApplyWorldChanges);
+                }
+                if ui.add_enabled(self.world_edited, revert_button).clicked() {
+                    self.message(Message::RevertWorldChanges)
+                }
             });
             ui.separator();
         });
@@ -2023,6 +2054,7 @@ impl Default for GeneratorApp {
             popup_queue: Vec::new(),
             point_selected: false,
             world_selected: false,
+            world_edited: false,
             point: Point::default(),
             world: World::empty(),
             tab: TabLabel::WorldSurvey,
@@ -2036,6 +2068,11 @@ impl Default for GeneratorApp {
 
 impl App for GeneratorApp {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+        self.world_edited = match self.subsector.get_world(&self.point) {
+            Some(stored_world) => self.world != *stored_world,
+            None => false,
+        };
+
         self.process_message_queue();
         self.top_panel(ctx);
         self.central_panel(ctx);

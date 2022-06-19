@@ -17,8 +17,7 @@ TODOs completed in this way should probably should still have an issue created a
 
 ### App/GUI TODOs
 - Refactor older "description saving" `Message`s to minimize cloning
-- Add "save" and "revert" buttons to world data GUI to trigger saving world changes and redrawing SVG instead of clicking to a different grid point entirely
-- Implment "player-safe" version of json serialization
+- Implement "player-safe" version of json serialization
 - "Player-safe" version of the GUI, probably using different build targets
 - Maybe change up menus to more conventional "File > Save/Load" and "Edit > Regenerate/Rename Subsector"
 - Add some margins to the notes editing tab for better reading
@@ -53,3 +52,4 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Implement whole `Subsector` regenerating functionality with configurable `world_abundance_dm`~~
 - ~~Implement `Subsector` json serialization~~
 - ~~Implement `Subsector` json deserialization~~
+- ~~Add "apply" and "revert" buttons to world data GUI to trigger saving world changes and redrawing SVG instead of clicking to a different grid point entirely~~
