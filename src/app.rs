@@ -23,54 +23,55 @@ use crate::astrography::world::{Faction, TravelCode, World};
 /** Set of messages respresenting all non-trivial GUI events. */
 #[derive(Clone)]
 enum Message {
-    RenameSubsector,
-    ConfirmRenameSubsector { new_name: String },
-    CancelRenameSubsector,
-    RegenSubsector,
-    ConfirmRegenSubsector { world_abundance_dm: i16 },
-    CancelRegenSubsector,
-    ImportJson,
-    ConfirmImportJson { subsector: Subsector },
+    AddNewFaction,
+    AddNewWorld,
+    ApplyWorldChanges,
+    CancelHexGridClicked,
     CancelImportJson,
+    CancelLocUpdate,
+    CancelRegenSubsector,
+    CancelRegenWorld,
+    CancelRemoveWorld,
+    CancelRenameSubsector,
+    ConfirmHexGridClicked { new_point: Point },
+    ConfirmImportJson { subsector: Subsector },
+    ConfirmLocUpdate { location: Point },
+    ConfirmRegenSubsector { world_abundance_dm: i16 },
+    ConfirmRegenWorld,
+    ConfirmRemoveWorld,
+    ConfirmRenameSubsector { new_name: String },
     ExportJson,
     HexGridClicked { new_point: Point },
-    ConfirmHexGridClicked { new_point: Point },
-    CancelHexGridClicked,
-    RedrawSubsectorImage,
-    ApplyWorldChanges,
-    RevertWorldChanges,
-    RegenSelectedWorld,
-    ConfirmRegenWorld,
-    CancelRegenWorld,
-    RemoveSelectedWorld,
-    ConfirmRemoveWorld,
-    CancelRemoveWorld,
-    WorldLocUpdated,
-    ConfirmLocUpdate { location: Point },
-    CancelLocUpdate,
-    WorldDiameterUpdated,
-    WorldModelUpdated,
-    RegenWorldSize,
-    RegenWorldAtmosphere,
-    RegenWorldTemperature,
-    RegenWorldHydrographics,
-    RegenWorldPopulation,
-    RegenWorldTechLevel,
-    NewStarportClassSelected,
-    RegenWorldStarport,
-    WorldBerthingCostsUpdated,
-    NewWorldGovSelected { new_code: u16 },
-    RegenWorldGovernment,
-    RegenWorldLawLevel,
-    AddNewFaction,
-    RemoveSelectedFaction,
+    ImportJson,
     NewFactionGovSelected { new_code: u16 },
-    RegenSelectedFaction,
+    NewStarportClassSelected,
     NewWorldCultureSelected { new_code: u16 },
-    RegenWorldCulture,
+    NewWorldGovSelected { new_code: u16 },
     NewWorldTagSelected { index: usize, new_code: u16 },
+    RedrawSubsectorImage,
+    RegenSelectedFaction,
+    RegenSelectedWorld,
+    RegenSubsector,
+    RegenWorldAtmosphere,
+    RegenWorldCulture,
+    RegenWorldGovernment,
+    RegenWorldHydrographics,
+    RegenWorldLawLevel,
+    RegenWorldPopulation,
+    RegenWorldSize,
+    RegenWorldStarport,
     RegenWorldTag { index: usize },
-    AddNewWorld,
+    RegenWorldTechLevel,
+    RegenWorldTemperature,
+    RemoveSelectedFaction,
+    RemoveSelectedWorld,
+    RenameSubsector,
+    RevertWorldChanges,
+    SubsectorModelUpdated,
+    WorldBerthingCostsUpdated,
+    WorldDiameterUpdated,
+    WorldLocUpdated,
+    WorldModelUpdated,
 }
 
 const DEFAULT_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
@@ -262,7 +263,7 @@ impl ToString for TabLabel {
 pub struct GeneratorApp {
     last_used_directory: String,
     subsector: Subsector,
-    subsector_svg: String,
+    subsector_edited: bool,
     subsector_image: RetainedImage,
     message_queue: VecDeque<Message>,
     /// List of blocking confirmation popups
@@ -326,41 +327,141 @@ impl GeneratorApp {
     fn message_immediate(&mut self, message: Message) {
         use Message::*;
         match message {
-            RenameSubsector => {
-                let popup = SubsectorRenamePopup::new(self.subsector.name());
-                self.add_popup(popup);
+            AddNewFaction => {
+                self.world.factions.push(Faction::random());
+                // Select the newly generated faction
+                self.faction_idx = self.world.factions.len() - 1;
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            AddNewWorld => {
+                self.subsector.insert_random_world(&self.point);
+                self.message_immediate(Message::ConfirmHexGridClicked {
+                    new_point: self.point.clone(),
+                });
+                self.message(Message::SubsectorModelUpdated);
+            }
+
+            ApplyWorldChanges => {
+                self.subsector.insert_world(&self.point, &mut self.world);
+                self.message(Message::SubsectorModelUpdated);
+            }
+
+            CancelHexGridClicked => {}
+            CancelImportJson => {}
+
+            CancelLocUpdate => {
+                self.location = self.point.to_string();
+            }
+
+            CancelRegenSubsector => {}
+            CancelRegenWorld => {}
+            CancelRemoveWorld => {}
+            CancelRenameSubsector => {}
+
+            ConfirmHexGridClicked { new_point } => {
+                self.point_selected = true;
+                self.point = new_point;
+                self.faction_idx = 0;
+                let world = self.subsector.get_world(&self.point);
+                if let Some(world) = world {
+                    self.world_selected = true;
+                    self.world = world.clone();
+                    self.location = self.point.to_string();
+                    self.diameter = self.world.diameter.to_string();
+                    self.berthing_cost = self.world.starport.berthing_cost.to_string();
+                } else {
+                    self.world_selected = false;
+                }
+            }
+
+            ConfirmImportJson { subsector } => {
+                *self = Self {
+                    subsector,
+                    ..Self::default()
+                };
+                self.message(Message::RedrawSubsectorImage);
+            }
+
+            ConfirmLocUpdate { location } => {
+                self.subsector.move_world(&self.point, &location);
+                self.point = location;
+                self.location = self.point.to_string();
+                self.message_immediate(Message::WorldModelUpdated);
+                self.message(Message::SubsectorModelUpdated);
+            }
+
+            ConfirmRegenSubsector { world_abundance_dm } => {
+                *self = Self {
+                    subsector: Subsector::new(world_abundance_dm),
+                    ..Self::default()
+                };
+                self.message(Message::RedrawSubsectorImage);
+            }
+
+            ConfirmRegenWorld => {
+                self.subsector.insert_random_world(&self.point);
+                self.world_selected = false;
+                self.message_immediate(Message::ConfirmHexGridClicked {
+                    new_point: self.point.clone(),
+                });
+                self.message(Message::SubsectorModelUpdated);
+            }
+
+            ConfirmRemoveWorld => {
+                self.world_selected = false;
+                self.subsector.remove_world(&self.point);
+                self.message(Message::SubsectorModelUpdated);
             }
 
             ConfirmRenameSubsector { new_name } => {
                 self.subsector.set_name(new_name);
-                self.message(Message::RedrawSubsectorImage);
+                self.message(Message::SubsectorModelUpdated);
             }
 
-            CancelRenameSubsector => {}
+            ExportJson => {
+                self.message_immediate(Message::ApplyWorldChanges);
 
-            RegenSubsector => {
-                let popup = SubsectorRegenPopup::default();
-                self.add_popup(popup);
+                let result = save_file(
+                    &self.last_used_directory,
+                    &format!("{}_Subsector.json", self.subsector.name()),
+                    "JSON",
+                    &["json"],
+                    self.subsector.to_json(),
+                );
+
+                match result {
+                    Ok(Some(directory)) => {
+                        self.last_used_directory = directory;
+                        self.subsector_edited = false;
+                    }
+                    Ok(None) => (),
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Save JSON")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                    }
+                }
             }
 
-            ConfirmRegenSubsector { world_abundance_dm } => {
-                self.subsector = Subsector::new(world_abundance_dm);
-                self.message_queue.clear();
-                self.popup_queue.clear();
-                self.point_selected = false;
-                self.world_selected = false;
-                self.point = Point::default();
-                self.world = World::empty();
-                self.tab = TabLabel::WorldSurvey;
-                self.faction_idx = 0;
-                self.location = String::new();
-                self.diameter = String::new();
-                self.berthing_cost = String::new();
-
-                self.message(Message::RedrawSubsectorImage);
+            HexGridClicked { new_point } => {
+                if self.world_edited {
+                    let popup = ConfirmationPopup {
+                        title: "Unsaved World Changes".to_string(),
+                        text: format!(
+                            "The world '{}' has unsaved changes, are sure you want to change world?\nAll changes will be lost.",
+                            self.world.name),
+                        confirm_message: Message::ConfirmHexGridClicked { new_point },
+                        cancel_message: Message:: CancelHexGridClicked,
+                    };
+                    self.add_popup(popup);
+                } else {
+                    self.message_immediate(Message::ConfirmHexGridClicked { new_point });
+                }
             }
-
-            CancelRegenSubsector => {}
 
             ImportJson => {
                 let result = load_file_to_string(&self.last_used_directory, "JSON", &["json"]);
@@ -404,107 +505,214 @@ impl GeneratorApp {
                 self.add_popup(popup);
             }
 
-            ConfirmImportJson { subsector } => {
-                self.subsector = subsector;
-                self.message_queue.clear();
-                self.popup_queue.clear();
-                self.point_selected = false;
-                self.world_selected = false;
-                self.point = Point::default();
-                self.world = World::empty();
-                self.tab = TabLabel::WorldSurvey;
-                self.faction_idx = 0;
-                self.location = String::new();
-                self.diameter = String::new();
-                self.berthing_cost = String::new();
+            NewFactionGovSelected { new_code } => {
+                let fac_index = self.faction_idx;
+                let old_code = self.world.factions[fac_index].government.code as usize;
+                let old_description = &mut self.world.factions[fac_index].government.description;
 
-                self.message(Message::RedrawSubsectorImage);
-            }
-
-            CancelImportJson => {}
-
-            ExportJson => {
-                self.message_immediate(Message::ApplyWorldChanges);
-
-                let result = save_file(
-                    &self.last_used_directory,
-                    &format!("{}_Subsector.json", self.subsector.name()),
-                    "JSON",
-                    &["json"],
-                    self.subsector.to_json(),
-                );
-
-                match result {
-                    Ok(Some(directory)) => self.last_used_directory = directory,
-                    Ok(None) => (),
-                    Err(err) => {
-                        MessageDialog::new()
-                            .set_type(MessageType::Error)
-                            .set_title("Error: Failed to Save JSON")
-                            .set_text(&format!("{}", err)[..])
-                            .show_alert()
-                            .unwrap();
-                    }
+                // Replace existing description iff the user hasn't changed it from the default
+                if *old_description == TABLES.gov_table[old_code].description {
+                    *old_description = TABLES.gov_table[new_code as usize].description.clone();
                 }
+
+                self.world.factions[fac_index].government.code = new_code;
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
-            HexGridClicked { new_point } => {
-                if self.world_edited {
-                    let popup = ConfirmationPopup {
-                        title: "Unsaved World Changes".to_string(),
-                        text: format!(
-                            "The world '{}' has unsaved changes, are sure you want to change world?\nAll changes will be lost.",
-                            self.world.name),
-                        confirm_message: Message::ConfirmHexGridClicked { new_point },
-                        cancel_message: Message:: CancelHexGridClicked,
-                    };
-                    self.add_popup(popup);
-                } else {
-                    self.message_immediate(Message::ConfirmHexGridClicked { new_point });
+            NewStarportClassSelected => {
+                let starport = TABLES
+                    .starport_table
+                    .iter()
+                    .find(|starport| starport.class == self.world.starport.class)
+                    .unwrap();
+
+                self.world.starport.code = starport.code;
+                self.world.generate_berthing_cost();
+                self.berthing_cost = self.world.starport.berthing_cost.to_string();
+                self.world.starport.fuel = starport.fuel.clone();
+                self.world.starport.facilities = starport.facilities.clone();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            NewWorldCultureSelected { new_code } => {
+                let old_code = self.world.culture.code as usize;
+                let old_description = &mut self.world.culture.description;
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if *old_description == TABLES.culture_table[old_code].description {
+                    *old_description = TABLES.culture_table[new_code as usize].description.clone();
                 }
+
+                self.world.culture.code = new_code;
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
-            ConfirmHexGridClicked { new_point } => {
-                self.point_selected = true;
-                self.point = new_point;
-                self.faction_idx = 0;
-                let world = self.subsector.get_world(&self.point);
-                if let Some(world) = world {
-                    self.world_selected = true;
-                    self.world = world.clone();
-                    self.location = self.point.to_string();
-                    self.diameter = self.world.diameter.to_string();
-                    self.berthing_cost = self.world.starport.berthing_cost.to_string();
-                } else {
-                    self.world_selected = false;
+            NewWorldGovSelected { new_code } => {
+                let old_code = self.world.government.code as usize;
+                let old_description = &mut self.world.government.description;
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if *old_description == TABLES.gov_table[old_code].description {
+                    *old_description = TABLES.gov_table[new_code as usize].description.clone();
                 }
+
+                self.world.government.code = new_code;
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
-            CancelHexGridClicked => {}
+            NewWorldTagSelected { index, new_code } => {
+                let world_tag = &mut self.world.world_tags[index];
+                let old_code = world_tag.code as usize;
+
+                world_tag.code = new_code;
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if world_tag.description == TABLES.world_tag_table[old_code].description {
+                    world_tag.description = TABLES.world_tag_table[new_code as usize]
+                        .description
+                        .clone();
+                }
+                self.message_immediate(Message::WorldModelUpdated);
+            }
 
             RedrawSubsectorImage => {
-                self.subsector_svg = self.subsector.generate_svg();
+                let subsector_svg = self.subsector.generate_svg();
                 self.subsector_image =
-                    generate_subsector_image(self.subsector.name(), &self.subsector_svg).unwrap();
+                    generate_subsector_image(self.subsector.name(), &subsector_svg).unwrap();
             }
 
-            ApplyWorldChanges => {
-                self.subsector.insert_world(&self.point, &mut self.world);
-                self.message(Message::RedrawSubsectorImage);
-            }
+            RegenSelectedFaction => {
+                let index = self.faction_idx;
+                if let Some(faction) = self.world.factions.get_mut(index) {
+                    let old_code = faction.government.code as usize;
+                    let name = faction.name.clone();
+                    let old_description = faction.government.description.clone();
+                    *faction = Faction::random();
 
-            RevertWorldChanges => {
-                if let Some(world) = self.subsector.get_world(&self.point) {
-                    self.world = world.clone();
+                    faction.name = name;
+                    if old_description != TABLES.gov_table[old_code].description {
+                        faction.government.description = old_description;
+                    }
                 }
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
-            AddNewWorld => {
-                self.subsector.insert_random_world(&self.point);
-                self.message_immediate(Message::ConfirmHexGridClicked {
-                    new_point: self.point.clone(),
-                });
-                self.message(Message::RedrawSubsectorImage);
+            RegenSelectedWorld => {
+                let popup = ConfirmationPopup {
+                    title: "Regenerating World".to_string(),
+                    text: format!(
+                        "Are you sure you want to regenerate world '{}'?\nThis can not be undone.",
+                        self.world.name
+                    ),
+                    confirm_message: Message::ConfirmRegenWorld,
+                    cancel_message: Message::CancelRegenWorld,
+                };
+                self.add_popup(popup);
+            }
+
+            RegenSubsector => {
+                let popup = SubsectorRegenPopup::default();
+                self.add_popup(popup);
+            }
+
+            RegenWorldAtmosphere => {
+                self.world.generate_atmosphere();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldCulture => {
+                let old_code = self.world.culture.code as usize;
+                let old_description = self.world.culture.description.clone();
+                self.world.generate_culture();
+
+                if old_description != TABLES.culture_table[old_code].description {
+                    self.world.culture.description = old_description;
+                }
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldGovernment => {
+                let old_code = self.world.government.code as usize;
+                let old_description = self.world.government.description.clone();
+                let old_contraband = self.world.government.contraband.clone();
+                self.world.generate_government();
+
+                // If description or contraband have been changed from the default, keep them;
+                // otherwise, allow them to be overwritten by the new government's default
+                if old_description != TABLES.gov_table[old_code].description {
+                    self.world.government.description = old_description;
+                }
+                if old_contraband != TABLES.gov_table[old_code].contraband {
+                    self.world.government.contraband = old_contraband;
+                }
+
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldHydrographics => {
+                self.world.generate_hydrographics();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldLawLevel => {
+                self.world.generate_law_level();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldPopulation => {
+                self.world.generate_population();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldSize => {
+                self.world.generate_size();
+                self.diameter = self.world.diameter.to_string();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldStarport => {
+                self.world.generate_starport();
+                self.berthing_cost = self.world.starport.berthing_cost.to_string();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldTag { index } => {
+                let world_tag = &mut self.world.world_tags[index];
+                let old_code = world_tag.code as usize;
+
+                let new_tag = WorldTagRecord::random();
+                world_tag.code = new_tag.code;
+                world_tag.tag = new_tag.tag.clone();
+
+                // Replace existing description iff the user hasn't changed it from the default
+                if world_tag.description == TABLES.world_tag_table[old_code].description {
+                    world_tag.description = new_tag.description.clone();
+                }
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldTechLevel => {
+                self.world.generate_tech_level();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RegenWorldTemperature => {
+                self.world.generate_temperature();
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            RemoveSelectedFaction => {
+                let index = &mut self.faction_idx;
+                let factions = &mut self.world.factions;
+
+                factions.remove(*index);
+
+                if factions.len() == 0 {
+                    *index = 0;
+                } else if *index >= factions.len() {
+                    *index = factions.len() - 1;
+                }
+                self.message_immediate(Message::WorldModelUpdated);
             }
 
             RemoveSelectedWorld => {
@@ -520,37 +728,39 @@ impl GeneratorApp {
                 self.add_popup(popup);
             }
 
-            ConfirmRemoveWorld => {
-                self.world_selected = false;
-                self.subsector.remove_world(&self.point);
-                self.message(Message::RedrawSubsectorImage);
-            }
-
-            CancelRemoveWorld => {}
-
-            RegenSelectedWorld => {
-                let popup = ConfirmationPopup {
-                    title: "Regenerating World".to_string(),
-                    text: format!(
-                        "Are you sure you want to regenerate world '{}'?\nThis can not be undone.",
-                        self.world.name
-                    ),
-                    confirm_message: Message::ConfirmRegenWorld,
-                    cancel_message: Message::CancelRegenWorld,
-                };
+            RenameSubsector => {
+                let popup = SubsectorRenamePopup::new(self.subsector.name());
                 self.add_popup(popup);
             }
 
-            ConfirmRegenWorld => {
-                self.subsector.insert_random_world(&self.point);
-                self.world_selected = false;
-                self.message_immediate(Message::ConfirmHexGridClicked {
-                    new_point: self.point.clone(),
-                });
-                self.message(Message::RedrawSubsectorImage);
+            RevertWorldChanges => {
+                if let Some(world) = self.subsector.get_world(&self.point) {
+                    self.world = world.clone();
+                }
             }
 
-            CancelRegenWorld => {}
+            SubsectorModelUpdated => {
+                self.subsector_edited = true;
+                self.message_immediate(Message::RedrawSubsectorImage);
+            }
+
+            WorldBerthingCostsUpdated => {
+                if let Ok(berthing_cost) = self.berthing_cost.parse::<u32>() {
+                    self.world.starport.berthing_cost = berthing_cost;
+                } else {
+                    self.berthing_cost = self.world.starport.berthing_cost.to_string();
+                }
+                self.message_immediate(Message::WorldModelUpdated);
+            }
+
+            WorldDiameterUpdated => {
+                if let Ok(diameter) = self.diameter.parse::<u32>() {
+                    self.world.diameter = diameter;
+                } else {
+                    self.diameter = self.world.diameter.to_string();
+                }
+                self.message_immediate(Message::WorldModelUpdated);
+            }
 
             WorldLocUpdated => {
                 let location = Point::try_from(&self.location[..]);
@@ -580,231 +790,8 @@ impl GeneratorApp {
                 }
             }
 
-            ConfirmLocUpdate { location } => {
-                self.subsector.move_world(&self.point, &location);
-                self.point = location;
-                self.location = self.point.to_string();
-                self.message_immediate(Message::WorldModelUpdated);
-                self.message(Message::RedrawSubsectorImage);
-            }
-
-            CancelLocUpdate => {
-                self.location = self.point.to_string();
-            }
-
             WorldModelUpdated => {
                 self.world.resolve_trade_codes();
-            }
-
-            RegenWorldSize => {
-                self.world.generate_size();
-                self.diameter = self.world.diameter.to_string();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            WorldDiameterUpdated => {
-                if let Ok(diameter) = self.diameter.parse::<u32>() {
-                    self.world.diameter = diameter;
-                } else {
-                    self.diameter = self.world.diameter.to_string();
-                }
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldAtmosphere => {
-                self.world.generate_atmosphere();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldTemperature => {
-                self.world.generate_temperature();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldHydrographics => {
-                self.world.generate_hydrographics();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldPopulation => {
-                self.world.generate_population();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldTechLevel => {
-                self.world.generate_tech_level();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            NewStarportClassSelected => {
-                let starport = TABLES
-                    .starport_table
-                    .iter()
-                    .find(|starport| starport.class == self.world.starport.class)
-                    .unwrap();
-
-                self.world.starport.code = starport.code;
-                self.world.generate_berthing_cost();
-                self.berthing_cost = self.world.starport.berthing_cost.to_string();
-                self.world.starport.fuel = starport.fuel.clone();
-                self.world.starport.facilities = starport.facilities.clone();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldStarport => {
-                self.world.generate_starport();
-                self.berthing_cost = self.world.starport.berthing_cost.to_string();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            WorldBerthingCostsUpdated => {
-                if let Ok(berthing_cost) = self.berthing_cost.parse::<u32>() {
-                    self.world.starport.berthing_cost = berthing_cost;
-                } else {
-                    self.berthing_cost = self.world.starport.berthing_cost.to_string();
-                }
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            NewWorldGovSelected { new_code } => {
-                let old_code = self.world.government.code as usize;
-                let old_description = &mut self.world.government.description;
-
-                // Replace existing description iff the user hasn't changed it from the default
-                if *old_description == TABLES.gov_table[old_code].description {
-                    *old_description = TABLES.gov_table[new_code as usize].description.clone();
-                }
-
-                self.world.government.code = new_code;
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldGovernment => {
-                let old_code = self.world.government.code as usize;
-                let old_description = self.world.government.description.clone();
-                let old_contraband = self.world.government.contraband.clone();
-                self.world.generate_government();
-
-                // If description or contraband have been changed from the default, keep them;
-                // otherwise, allow them to be overwritten by the new government's default
-                if old_description != TABLES.gov_table[old_code].description {
-                    self.world.government.description = old_description;
-                }
-                if old_contraband != TABLES.gov_table[old_code].contraband {
-                    self.world.government.contraband = old_contraband;
-                }
-
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldLawLevel => {
-                self.world.generate_law_level();
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            AddNewFaction => {
-                self.world.factions.push(Faction::random());
-                // Select the newly generated faction
-                self.faction_idx = self.world.factions.len() - 1;
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RemoveSelectedFaction => {
-                let index = &mut self.faction_idx;
-                let factions = &mut self.world.factions;
-
-                factions.remove(*index);
-
-                if factions.len() == 0 {
-                    *index = 0;
-                } else if *index >= factions.len() {
-                    *index = factions.len() - 1;
-                }
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            NewFactionGovSelected { new_code } => {
-                let fac_index = self.faction_idx;
-                let old_code = self.world.factions[fac_index].government.code as usize;
-                let old_description = &mut self.world.factions[fac_index].government.description;
-
-                // Replace existing description iff the user hasn't changed it from the default
-                if *old_description == TABLES.gov_table[old_code].description {
-                    *old_description = TABLES.gov_table[new_code as usize].description.clone();
-                }
-
-                self.world.factions[fac_index].government.code = new_code;
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenSelectedFaction => {
-                let index = self.faction_idx;
-                if let Some(faction) = self.world.factions.get_mut(index) {
-                    let old_code = faction.government.code as usize;
-                    let name = faction.name.clone();
-                    let old_description = faction.government.description.clone();
-                    *faction = Faction::random();
-
-                    faction.name = name;
-                    if old_description != TABLES.gov_table[old_code].description {
-                        faction.government.description = old_description;
-                    }
-                }
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            NewWorldCultureSelected { new_code } => {
-                let old_code = self.world.culture.code as usize;
-                let old_description = &mut self.world.culture.description;
-
-                // Replace existing description iff the user hasn't changed it from the default
-                if *old_description == TABLES.culture_table[old_code].description {
-                    *old_description = TABLES.culture_table[new_code as usize].description.clone();
-                }
-
-                self.world.culture.code = new_code;
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldCulture => {
-                let old_code = self.world.culture.code as usize;
-                let old_description = self.world.culture.description.clone();
-                self.world.generate_culture();
-
-                if old_description != TABLES.culture_table[old_code].description {
-                    self.world.culture.description = old_description;
-                }
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            NewWorldTagSelected { index, new_code } => {
-                let world_tag = &mut self.world.world_tags[index];
-                let old_code = world_tag.code as usize;
-
-                world_tag.code = new_code;
-
-                // Replace existing description iff the user hasn't changed it from the default
-                if world_tag.description == TABLES.world_tag_table[old_code].description {
-                    world_tag.description = TABLES.world_tag_table[new_code as usize]
-                        .description
-                        .clone();
-                }
-                self.message_immediate(Message::WorldModelUpdated);
-            }
-
-            RegenWorldTag { index } => {
-                let world_tag = &mut self.world.world_tags[index];
-                let old_code = world_tag.code as usize;
-
-                let new_tag = WorldTagRecord::random();
-                world_tag.code = new_tag.code;
-                world_tag.tag = new_tag.tag.clone();
-
-                // Replace existing description iff the user hasn't changed it from the default
-                if world_tag.description == TABLES.world_tag_table[old_code].description {
-                    world_tag.description = new_tag.description.clone();
-                }
-                self.message_immediate(Message::WorldModelUpdated);
             }
         }
     }
@@ -2048,7 +2035,7 @@ impl Default for GeneratorApp {
         Self {
             last_used_directory: "~".to_string(),
             subsector,
-            subsector_svg,
+            subsector_edited: false,
             subsector_image,
             message_queue: VecDeque::new(),
             popup_queue: Vec::new(),
@@ -2230,7 +2217,8 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
 ## Returns
 - `Err` if there was a error while trying to save the file
 - `Ok(save_directory)` with the selected directory if it was able to save successfully
-- `Ok(None)` if there was no error but no directory was selected
+- `Ok(None)` if there was no error but no directory was selected and no save occurred; usually means
+the "Cancel" button was selected
 */
 fn save_file<P, C>(
     location: &P,
