@@ -63,6 +63,7 @@ impl TryFrom<&str> for Point {
     }
 }
 
+#[derive(Clone)]
 struct Translation {
     x: f64,
     y: f64,
@@ -347,10 +348,15 @@ impl Subsector {
         ));
 
         for (point, world) in &self.map {
+            let marker_translation = match marker_coordinates.get(point) {
+                Some(translation) => translation.clone(),
+                None => continue,
+            };
+
             // Add gas giant symbol
             if world.has_gas_giant {
                 let offset = Translation { x: 0.0, y: -6.0 };
-                let translation = &(&marker_coordinates[point] - &gas_giant_trans) + &offset;
+                let translation = &(&marker_translation - &gas_giant_trans) + &offset;
                 output_buffer.push(format!(
                     "<use \
                     x=\"0\" \
@@ -381,8 +387,8 @@ impl Subsector {
                 style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
                 x=\"{translate_x}\" \
                 y=\"{translate_y}\">{name}</tspan></text>",
-                translate_x = marker_coordinates[point].x,
-                translate_y = marker_coordinates[point].y,
+                translate_x = marker_translation.x,
+                translate_y = marker_translation.y,
                 point_str = format!("{:02}{:02}", point.x, point.y),
                 name = world.name
             ));
@@ -395,7 +401,7 @@ impl Subsector {
 
             // Add dry/wet world symbol below and to the left of center
             let offset = Translation { x: -5.0, y: 4.0 };
-            let translation = &(&marker_coordinates[point] - world_trans) + &offset;
+            let translation = &(&marker_translation - world_trans) + &offset;
             output_buffer.push(format!(
                 "<use \
                 x=\"0\" \
@@ -413,7 +419,7 @@ impl Subsector {
 
             // Add `StarportClass-TL` text to hex
             let offset = Translation { x: 5.0, y: 5.0 };
-            let translation = &marker_coordinates[point] + &offset;
+            let translation = &marker_translation + &offset;
             output_buffer.push(format!(
                 "<text \
                 xml:space=\"preserve\" \
@@ -436,7 +442,7 @@ impl Subsector {
 
             // Add world profile code at bottom of hex
             let offset = Translation { x: 0.0, y: 10.0 };
-            let translation = &marker_coordinates[point] + &offset;
+            let translation = &marker_translation + &offset;
             output_buffer.push(format!(
                 "<text \
                 xml:space=\"preserve\" \
@@ -481,10 +487,23 @@ impl Subsector {
 
     /** Inserts `world` at `point`, replacing any other `World` that was there previously.
 
-    Returns the `World` already at `point` if there was one, or `None` otherwise.
+    Will only insert a `World` if `point` is within the bounds set by `Subsector::COLUMNS` and
+    `Subsector::ROWS`.
+
+    ## Returns
+    - `Some(world)` with the `World` that was already at `point` if there was one
+    - `None` if there was no `World` at `point`, or if `point` was out of bounds
     */
     pub fn insert_world(&mut self, point: &Point, world: &mut World) -> Option<World> {
-        self.map.insert(point.clone(), world.clone())
+        if point.x > 0
+            && point.x as usize <= Self::COLUMNS
+            && point.y > 0
+            && point.y as usize <= Self::ROWS
+        {
+            self.map.insert(point.clone(), world.clone())
+        } else {
+            None
+        }
     }
 
     /** Inserts a random `World` at `point`, replacing any other `World` that was there previously.
