@@ -1,4 +1,5 @@
 use std::collections::VecDeque;
+use std::path::{Path, PathBuf};
 
 use eframe::{App, Frame};
 
@@ -33,21 +34,21 @@ enum Message {
     CancelRegenWorld,
     CancelRemoveWorld,
     CancelRenameSubsector,
+    ConfigureRegenSubsector,
     ConfirmHexGridClicked { new_point: Point },
-    ConfirmImportJson { subsector: Subsector },
+    ConfirmImportJson { path: PathBuf, subsector: Subsector },
     ConfirmLocUpdate { location: Point },
     ConfirmRegenSubsector { world_abundance_dm: i16 },
     ConfirmRegenWorld,
     ConfirmRemoveWorld,
     ConfirmRenameSubsector { new_name: String },
-    ExportJson,
     HexGridClicked { new_point: Point },
-    ImportJson,
     NewFactionGovSelected { new_code: u16 },
     NewStarportClassSelected,
     NewWorldCultureSelected { new_code: u16 },
     NewWorldGovSelected { new_code: u16 },
     NewWorldTagSelected { index: usize, new_code: u16 },
+    OpenFile,
     RedrawSubsectorImage,
     RegenSelectedFaction,
     RegenSelectedWorld,
@@ -67,6 +68,8 @@ enum Message {
     RemoveSelectedWorld,
     RenameSubsector,
     RevertWorldChanges,
+    Save,
+    SaveAs,
     SubsectorModelUpdated,
     WorldBerthingCostsUpdated,
     WorldDiameterUpdated,
@@ -90,6 +93,18 @@ struct ConfirmationPopup {
     text: String,
     confirm_message: Message,
     cancel_message: Message,
+}
+
+impl ConfirmationPopup {
+    fn unsaved_changes(confirm_message: Message, cancel_message: Message) -> Self {
+        Self {
+            title: "Unsaved Subsector Changes".to_string(),
+            text: "Any unsaved changes will be lost.\nAre you sure you'd like to continue?"
+                .to_string(),
+            confirm_message,
+            cancel_message,
+        }
+    }
 }
 
 impl Popup for ConfirmationPopup {
@@ -261,7 +276,8 @@ impl ToString for TabLabel {
 }
 
 pub struct GeneratorApp {
-    last_used_directory: String,
+    directory: String,
+    filename: String,
     subsector: Subsector,
     subsector_edited: bool,
     subsector_image: RetainedImage,
@@ -310,6 +326,10 @@ impl GeneratorApp {
     const X_ICON: &'static str = "❌";
     const SAVE_ICON: &'static str = "💾";
 
+    fn unsaved_changes(&self) -> bool {
+        self.subsector_edited || self.world_edited
+    }
+
     /** Queue a message to be handled at the beginning of the next frame. */
     fn message(&mut self, message: Message) {
         self.message_queue.push_back(message);
@@ -343,8 +363,10 @@ impl GeneratorApp {
             }
 
             ApplyWorldChanges => {
-                self.subsector.insert_world(&self.point, &mut self.world);
-                self.message(Message::SubsectorModelUpdated);
+                if self.world_selected {
+                    self.subsector.insert_world(&self.point, &mut self.world);
+                    self.message_immediate(Message::SubsectorModelUpdated);
+                }
             }
 
             CancelHexGridClicked => {}
@@ -358,6 +380,11 @@ impl GeneratorApp {
             CancelRegenWorld => {}
             CancelRemoveWorld => {}
             CancelRenameSubsector => {}
+
+            ConfigureRegenSubsector => {
+                let popup = SubsectorRegenPopup::default();
+                self.add_popup(popup);
+            }
 
             ConfirmHexGridClicked { new_point } => {
                 self.point_selected = true;
@@ -375,9 +402,13 @@ impl GeneratorApp {
                 }
             }
 
-            ConfirmImportJson { subsector } => {
+            ConfirmImportJson { path, subsector } => {
+                let directory = path.parent().unwrap().to_str().unwrap().to_string();
+                let filename = path.file_name().unwrap().to_str().unwrap().to_string();
                 *self = Self {
                     subsector,
+                    directory,
+                    filename,
                     ..Self::default()
                 };
                 self.message(Message::RedrawSubsectorImage);
@@ -392,8 +423,10 @@ impl GeneratorApp {
             }
 
             ConfirmRegenSubsector { world_abundance_dm } => {
+                let directory = self.directory.clone();
                 *self = Self {
                     subsector: Subsector::new(world_abundance_dm),
+                    directory,
                     ..Self::default()
                 };
                 self.message(Message::RedrawSubsectorImage);
@@ -419,40 +452,13 @@ impl GeneratorApp {
                 self.message(Message::SubsectorModelUpdated);
             }
 
-            ExportJson => {
-                self.message_immediate(Message::ApplyWorldChanges);
-
-                let result = save_file(
-                    &self.last_used_directory,
-                    &format!("{}_Subsector.json", self.subsector.name()),
-                    "JSON",
-                    &["json"],
-                    self.subsector.to_json(),
-                );
-
-                match result {
-                    Ok(Some(directory)) => {
-                        self.last_used_directory = directory;
-                        self.subsector_edited = false;
-                    }
-                    Ok(None) => (),
-                    Err(err) => {
-                        MessageDialog::new()
-                            .set_type(MessageType::Error)
-                            .set_title("Error: Failed to Save JSON")
-                            .set_text(&format!("{}", err)[..])
-                            .show_alert()
-                            .unwrap();
-                    }
-                }
-            }
-
             HexGridClicked { new_point } => {
                 if self.world_edited {
                     let popup = ConfirmationPopup {
                         title: "Unsaved World Changes".to_string(),
                         text: format!(
-                            "The world '{}' has unsaved changes, are sure you want to change world?\nAll changes will be lost.",
+                            "The world '{}' has unsaved changes, are sure you want to change world?\n\
+                            All changes will be lost.",
                             self.world.name),
                         confirm_message: Message::ConfirmHexGridClicked { new_point },
                         cancel_message: Message:: CancelHexGridClicked,
@@ -461,48 +467,6 @@ impl GeneratorApp {
                 } else {
                     self.message_immediate(Message::ConfirmHexGridClicked { new_point });
                 }
-            }
-
-            ImportJson => {
-                let result = load_file_to_string(&self.last_used_directory, "JSON", &["json"]);
-
-                let json = match result {
-                    Ok(Some((directory, json))) => {
-                        self.last_used_directory = directory;
-                        json
-                    }
-                    Ok(None) => return,
-                    Err(err) => {
-                        MessageDialog::new()
-                            .set_type(MessageType::Error)
-                            .set_title("Error: Failed to Read JSON")
-                            .set_text(&format!("{}", err)[..])
-                            .show_alert()
-                            .unwrap();
-                        return;
-                    }
-                };
-
-                let subsector = match Subsector::try_from_json(&json) {
-                    Ok(subsector) => subsector,
-                    Err(err) => {
-                        MessageDialog::new()
-                            .set_type(MessageType::Error)
-                            .set_title("Error: Failed to Create Subsector from JSON")
-                            .set_text(&format!("{}", err)[..])
-                            .show_alert()
-                            .unwrap();
-                        return;
-                    }
-                };
-
-                let popup = ConfirmationPopup {
-                    title: "Loading Subsector".to_string(),
-                    text: "Are you sure you want overwrite the currently loaded subsector?\nThis can not be undone.".to_string(),
-                    confirm_message: Message::ConfirmImportJson { subsector },
-                    cancel_message: Message::CancelImportJson
-                };
-                self.add_popup(popup);
             }
 
             NewFactionGovSelected { new_code } => {
@@ -575,6 +539,47 @@ impl GeneratorApp {
                 self.message_immediate(Message::WorldModelUpdated);
             }
 
+            OpenFile => {
+                let result = load_file_to_string(&self.directory, "JSON", &["json"]);
+
+                let (path, json) = match result {
+                    Ok(Some((path, json))) => (path, json),
+                    Ok(None) => return,
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Read JSON")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                        return;
+                    }
+                };
+
+                let subsector = match Subsector::try_from_json(&json) {
+                    Ok(subsector) => subsector,
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Load Subsector from JSON")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                        return;
+                    }
+                };
+
+                if self.unsaved_changes() {
+                    let popup = ConfirmationPopup::unsaved_changes(
+                        Message::ConfirmImportJson { path, subsector },
+                        Message::CancelImportJson,
+                    );
+                    self.add_popup(popup);
+                } else {
+                    self.message(Message::ConfirmImportJson { path, subsector });
+                }
+            }
+
             RedrawSubsectorImage => {
                 let subsector_svg = self.subsector.generate_svg();
                 self.subsector_image =
@@ -611,8 +616,15 @@ impl GeneratorApp {
             }
 
             RegenSubsector => {
-                let popup = SubsectorRegenPopup::default();
-                self.add_popup(popup);
+                if self.unsaved_changes() {
+                    let popup = ConfirmationPopup::unsaved_changes(
+                        Message::ConfigureRegenSubsector,
+                        Message::CancelRegenSubsector,
+                    );
+                    self.add_popup(popup);
+                } else {
+                    self.message(Message::ConfigureRegenSubsector);
+                }
             }
 
             RegenWorldAtmosphere => {
@@ -739,9 +751,68 @@ impl GeneratorApp {
                 }
             }
 
+            Save => {
+                let directory: &Path = self.directory.as_ref();
+                let filename: &Path = self.filename.as_ref();
+                let path = directory.join(filename);
+
+                if self.filename.is_empty() || !path.exists() {
+                    self.message_immediate(Message::SaveAs);
+                } else {
+                    let result =
+                        save_file(&self.directory, &self.filename, self.subsector.to_json());
+                    match result {
+                        Ok(()) => (),
+                        Err(err) => {
+                            MessageDialog::new()
+                                .set_type(MessageType::Error)
+                                .set_title("Error: Failed to Save JSON")
+                                .set_text(&format!("{}", err)[..])
+                                .show_alert()
+                                .unwrap();
+                        }
+                    }
+                }
+            }
+
+            SaveAs => {
+                let default_filename = format!("{}_Subsector.json", self.subsector.name());
+                let filename = if !self.filename.is_empty() {
+                    &self.filename
+                } else {
+                    &default_filename
+                };
+
+                let result = save_file_dialog(
+                    &self.directory,
+                    filename,
+                    "JSON",
+                    &["json"],
+                    self.subsector.to_json(),
+                );
+
+                match result {
+                    Ok(Some(path)) => {
+                        self.message_immediate(Message::ApplyWorldChanges);
+                        self.directory = path.parent().unwrap().to_str().unwrap().to_string();
+                        self.filename = path.file_name().unwrap().to_str().unwrap().to_string();
+                        self.subsector_edited = false;
+                    }
+                    Ok(None) => (),
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Save JSON")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                    }
+                }
+            }
+
             SubsectorModelUpdated => {
                 self.subsector_edited = true;
-                self.message_immediate(Message::RedrawSubsectorImage);
+                self.message(Message::RedrawSubsectorImage);
             }
 
             WorldBerthingCostsUpdated => {
@@ -826,29 +897,42 @@ impl GeneratorApp {
         TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.add_enabled_ui(self.popup_queue.is_empty(), |ui| {
                 menu::bar(ui, |ui| {
-                    ui.menu_button("Subsector", |ui| {
-                        if ui.button("Rename...").clicked() {
-                            self.message(Message::RenameSubsector);
+                    ui.menu_button("File", |ui| {
+                        if ui.button("New Subsector").clicked() {
                             ui.close_menu();
-                        }
-
-                        if ui.button("Regenerate...").clicked() {
                             self.message(Message::RegenSubsector);
-                            ui.close_menu();
                         }
+
+                        if ui.button("Open File...").clicked() {
+                            ui.close_menu();
+                            self.message(Message::OpenFile);
+                        }
+
+                        // TODO
+                        if ui.button("Save").clicked() {
+                            ui.close_menu();
+                            self.message(Message::Save);
+                        }
+
+                        if ui.button("Save As...").clicked() {
+                            ui.close_menu();
+                            self.message(Message::SaveAs);
+                        }
+
+                        ui.separator();
+
+                        // TODO
+                        ui.menu_button("Subsector Map", |ui| {
+                            if ui.button("Export as SVG...").clicked() {
+                                ui.close_menu();
+                            }
+                        });
                     });
 
-                    ui.menu_button("Import", |ui| {
-                        if ui.button("Import from JSON...").clicked() {
-                            self.message(Message::ImportJson);
+                    ui.menu_button("Edit", |ui| {
+                        if ui.button("Rename Subsector...").clicked() {
                             ui.close_menu();
-                        }
-                    });
-
-                    ui.menu_button("Export", |ui| {
-                        if ui.button("Export to JSON...").clicked() {
-                            self.message(Message::ExportJson);
-                            ui.close_menu();
+                            self.message(Message::RenameSubsector);
                         }
                     });
                 });
@@ -2033,7 +2117,8 @@ impl Default for GeneratorApp {
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
 
         Self {
-            last_used_directory: "~".to_string(),
+            directory: "~".to_string(),
+            filename: String::new(),
             subsector,
             subsector_edited: false,
             subsector_image,
@@ -2205,81 +2290,102 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
     }
 }
 
-/** Open a `FileDialog` and try to save `contents` to the described file.
+/** Save `contents` directly to the file described by `directory` and `filename` *without* a dialog.
+
+## Returns
+- `Err` if there was an error while trying to write to the file
+- `Ok(()) if the file was successfully written to
+*/
+fn save_file<P, C>(
+    directory: &P,
+    filename: &P,
+    contents: C,
+) -> Result<(), Box<dyn std::error::Error>>
+where
+    P: AsRef<Path>,
+    C: AsRef<[u8]>,
+{
+    let directory: &Path = directory.as_ref();
+    let filename: &Path = filename.as_ref();
+    let path = directory.join(filename);
+    std::fs::write(path, contents)?;
+    Ok(())
+}
+
+/** Open a `FileDialog` and save `contents` to the selected file.
 
 ## Arguments
-- `location`: Directory to which the `FileDialog` initially opens
+- `directory`: Directory to which the `FileDialog` initially opens
 - `filename`: Filename to be pre-filled into the `FileDialog`
 - `description`: Description of the file type to be filtered
 - `extensions`: Array of file extensions to filter
 - `contents`: Contents of the file to write to the file system
 
 ## Returns
-- `Err` if there was a error while trying to save the file
-- `Ok(save_directory)` with the selected directory if it was able to save successfully
+- `Err` if there was an error while trying to save the file
+- `Ok(save_file)` with the path to the selected file if it was able to save successfully
 - `Ok(None)` if there was no error but no directory was selected and no save occurred; usually means
-the "Cancel" button was selected
+  the "Cancel" button was selected
 */
-fn save_file<P, C>(
-    location: &P,
+fn save_file_dialog<P, C>(
+    directory: &P,
     filename: &str,
     description: &str,
     extensions: &[&str],
     contents: C,
-) -> Result<Option<String>, Box<dyn std::error::Error>>
+) -> Result<Option<PathBuf>, Box<dyn std::error::Error>>
 where
-    P: AsRef<std::path::Path>,
+    P: AsRef<Path>,
     C: AsRef<[u8]>,
 {
     let path = FileDialog::new()
-        .set_location(location)
+        .set_location(directory)
         .set_filename(filename)
         .add_filter(description, extensions)
         .show_save_single_file()?;
 
-    let save_directory = match path {
+    let save_path = match path {
         Some(path) => {
-            let directory = path.parent().unwrap().to_str().unwrap().to_string();
-            std::fs::write(path, contents)?;
-            Some(directory)
+            std::fs::write(path.clone(), contents)?;
+            Some(path)
         }
 
         None => None,
     };
 
-    Ok(save_directory)
+    Ok(save_path)
 }
 
-/** Open a `FileDialog` and try to read in the described file.
+/** Open a `FileDialog` and read in the selected file.
 
 ## Arguments
-- `location`: Directory to which the `FileDialog` initially opens
+- `directory`: Directory to which the `FileDialog` initially opens
 - `description`: Description of the file type to be filtered
 - `extensions`: Array of file extensions to filter
 
 ## Returns
-- `Err` if there was a error while trying to read the file
-- `Ok((open_directory, contents))` with the selected directory if it was able to save successfully
-- `Ok(None)` if there was no error but no file was selected
+- `Err` if there was an error while trying to read the file
+- `Ok((loaded_path, contents))` with the path to the loaded file if it was able to save successfully
+- `Ok(None)` if there was no error but no file was selected and no contents were loaded; usually
+  means the "Cancel" button was selected
 */
-fn load_file_to_string<P: AsRef<std::path::Path>>(
-    location: &P,
+fn load_file_to_string<P: AsRef<Path>>(
+    directory: &P,
     description: &str,
     extensions: &[&str],
-) -> Result<Option<(String, String)>, Box<dyn std::error::Error>> {
+) -> Result<Option<(PathBuf, String)>, Box<dyn std::error::Error>> {
     let path = FileDialog::new()
-        .set_location(location)
+        .set_location(directory)
         .add_filter(description, extensions)
         .show_open_single_file()?;
 
-    let option = match path {
+    let loaded_file = match path {
         Some(path) => {
-            let directory = path.parent().unwrap().to_str().unwrap().to_string();
-            let contents = std::fs::read_to_string(path)?;
-            Some((directory, contents))
+            let contents = std::fs::read_to_string(path.clone())?;
+            Some((path, contents))
         }
         None => None,
     };
 
-    Ok(option)
+    Ok(loaded_file)
 }
