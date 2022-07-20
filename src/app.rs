@@ -752,6 +752,9 @@ impl GeneratorApp {
             }
 
             Save => {
+                // Make sure any unapplied changes the selected world are also saved
+                self.message_immediate(Message::ApplyWorldChanges);
+
                 let directory: &Path = self.directory.as_ref();
                 let filename: &Path = self.filename.as_ref();
                 let path = directory.join(filename);
@@ -762,7 +765,9 @@ impl GeneratorApp {
                     let result =
                         save_file(&self.directory, &self.filename, self.subsector.to_json());
                     match result {
-                        Ok(()) => (),
+                        Ok(()) => {
+                            self.subsector_edited = false;
+                        }
                         Err(err) => {
                             MessageDialog::new()
                                 .set_type(MessageType::Error)
@@ -776,6 +781,9 @@ impl GeneratorApp {
             }
 
             SaveAs => {
+                // Make sure any unapplied changes the selected world are also saved
+                self.message_immediate(Message::ApplyWorldChanges);
+
                 let default_filename = format!("{}_Subsector.json", self.subsector.name());
                 let filename = if !self.filename.is_empty() {
                     &self.filename
@@ -793,7 +801,6 @@ impl GeneratorApp {
 
                 match result {
                     Ok(Some(path)) => {
-                        self.message_immediate(Message::ApplyWorldChanges);
                         self.directory = path.parent().unwrap().to_str().unwrap().to_string();
                         self.filename = path.file_name().unwrap().to_str().unwrap().to_string();
                         self.subsector_edited = false;
