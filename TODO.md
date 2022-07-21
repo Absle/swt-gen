@@ -16,17 +16,17 @@ TODOs completed in this way should probably should still have an issue created a
 - Remove redundant serialization and deserializing code once GUI is in a good state
 
 ### App/GUI TODOs
-- Add hotkeys for "Save", "Open", etc.
 - Add subsector map exporting
+- "Player-safe" version of the GUI, probably using different build targets
+    - Implement "player-safe" version of json serialization
 - Add "unsaved changes, are you sure you want to close?" popup of some kind
 - Consider changing all "unsaved changes" popups to use a native dialog
 - Refactor older "description saving" `Message`s to minimize cloning
-- Implement "player-safe" version of json serialization
-- "Player-safe" version of the GUI, probably using different build targets
 - Add some margins to the notes editing tab for better reading
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
 - Find some way to get `Popup`s to appear in the middle of the screen, rather than the top right corner initially
 - Add dark mode support... somehow
+- Implement a framework to more structurally link `Message`s with their hotkeys
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
@@ -60,3 +60,4 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Add "apply" and "revert" buttons to world data GUI to trigger saving world changes and redrawing SVG instead of clicking to a different grid point entirely~~
 - ~~Maybe change up menus to more conventional "File > Save/Load" and "Edit > Regenerate/Rename Subsector"~~
     - ~~Distinguish between "Save" and "Save As..."~~
+- ~~Add hotkeys for "Save", "Open", etc.~~

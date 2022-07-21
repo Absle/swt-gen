@@ -5,8 +5,8 @@ use eframe::{App, Frame};
 
 use egui::{
     menu, vec2, Align, Button, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid,
-    Image, Label, Layout, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style, TextEdit,
-    TextStyle, TopBottomPanel, Ui, Vec2, Window,
+    Image, Key, Label, Layout, Modifiers, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style,
+    TextEdit, TextStyle, TopBottomPanel, Ui, Vec2, Window,
 };
 
 use egui_extras::RetainedImage;
@@ -48,7 +48,7 @@ enum Message {
     NewWorldCultureSelected { new_code: u16 },
     NewWorldGovSelected { new_code: u16 },
     NewWorldTagSelected { index: usize, new_code: u16 },
-    OpenFile,
+    Open,
     RedrawSubsectorImage,
     RegenSelectedFaction,
     RegenSelectedWorld,
@@ -326,6 +326,25 @@ impl GeneratorApp {
     const X_ICON: &'static str = "❌";
     const SAVE_ICON: &'static str = "💾";
 
+    fn process_hotkeys(&mut self, ctx: &Context) {
+        if ctx.input_mut().consume_key(Modifiers::CTRL, Key::A) {
+            self.message(Message::ApplyWorldChanges);
+        } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::N) {
+            self.message(Message::RenameSubsector);
+        } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::O) {
+            self.message(Message::Open);
+        } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::R) {
+            self.message(Message::RevertWorldChanges);
+        } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::S) {
+            self.message(Message::Save);
+        } else if ctx
+            .input_mut()
+            .consume_key(Modifiers::CTRL | Modifiers::SHIFT, Key::S)
+        {
+            self.message(Message::SaveAs);
+        }
+    }
+
     fn unsaved_changes(&self) -> bool {
         self.subsector_edited || self.world_edited
     }
@@ -539,7 +558,7 @@ impl GeneratorApp {
                 self.message_immediate(Message::WorldModelUpdated);
             }
 
-            OpenFile => {
+            Open => {
                 let result = load_file_to_string(&self.directory, "JSON", &["json"]);
 
                 let (path, json) = match result {
@@ -746,8 +765,10 @@ impl GeneratorApp {
             }
 
             RevertWorldChanges => {
-                if let Some(world) = self.subsector.get_world(&self.point) {
-                    self.world = world.clone();
+                if self.world_selected {
+                    if let Some(world) = self.subsector.get_world(&self.point) {
+                        self.world = world.clone();
+                    }
                 }
             }
 
@@ -910,18 +931,19 @@ impl GeneratorApp {
                             self.message(Message::RegenSubsector);
                         }
 
-                        if ui.button("Open File...").clicked() {
+                        ui.separator();
+
+                        if ui.button("Open...              Ctrl-O").clicked() {
                             ui.close_menu();
-                            self.message(Message::OpenFile);
+                            self.message(Message::Open);
                         }
 
-                        // TODO
-                        if ui.button("Save").clicked() {
+                        if ui.button("Save                   Ctrl-S").clicked() {
                             ui.close_menu();
                             self.message(Message::Save);
                         }
 
-                        if ui.button("Save As...").clicked() {
+                        if ui.button("Save As...           Ctrl-Shift-S").clicked() {
                             ui.close_menu();
                             self.message(Message::SaveAs);
                         }
@@ -933,11 +955,14 @@ impl GeneratorApp {
                             if ui.button("Export as SVG...").clicked() {
                                 ui.close_menu();
                             }
+                            ui.set_width(Self::FIELD_SELECTION_WIDTH);
                         });
                     });
 
                     ui.menu_button("Edit", |ui| {
-                        if ui.button("Rename Subsector...").clicked() {
+                        let rename_button =
+                            Button::new("Rename Subsector...    Ctrl-N").wrap(false);
+                        if ui.add(rename_button).clicked() {
                             ui.close_menu();
                             self.message(Message::RenameSubsector);
                         }
@@ -2091,10 +2116,18 @@ impl GeneratorApp {
                     RichText::new(Self::X_ICON.to_string() + " Revert").font(header_font),
                 );
 
-                if ui.add_enabled(self.world_edited, apply_button).clicked() {
+                if ui
+                    .add_enabled(self.world_edited, apply_button)
+                    .on_hover_text_at_pointer("Hotkey: Ctrl-A")
+                    .clicked()
+                {
                     self.message(Message::ApplyWorldChanges);
                 }
-                if ui.add_enabled(self.world_edited, revert_button).clicked() {
+                if ui
+                    .add_enabled(self.world_edited, revert_button)
+                    .on_hover_text_at_pointer("Hotkey: Ctrl-R")
+                    .clicked()
+                {
                     self.message(Message::RevertWorldChanges)
                 }
             });
@@ -2152,6 +2185,9 @@ impl App for GeneratorApp {
             None => false,
         };
 
+        self.process_hotkeys(ctx);
+
+        // GUI elements
         self.process_message_queue();
         self.top_panel(ctx);
         self.central_panel(ctx);
