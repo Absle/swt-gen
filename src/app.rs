@@ -34,6 +34,7 @@ enum Message {
     CancelRegenWorld,
     CancelRemoveWorld,
     CancelRenameSubsector,
+    CancelUnsavedExit,
     ConfigureRegenSubsector,
     ConfirmHexGridClicked { new_point: Point },
     ConfirmImportJson { path: PathBuf, subsector: Subsector },
@@ -42,6 +43,7 @@ enum Message {
     ConfirmRegenWorld,
     ConfirmRemoveWorld,
     ConfirmRenameSubsector { new_name: String },
+    ConfirmUnsavedExit,
     HexGridClicked { new_point: Point },
     NewFactionGovSelected { new_code: u16 },
     NewStarportClassSelected,
@@ -81,8 +83,10 @@ const DEFAULT_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
 trait Popup {
     /** Show this `Popup`.
 
-    Returns `Some(Message)` with the `Message` to be processed when the `Popup` is satisfied, `None`
-    otherwise.
+    ## Returns
+
+    - `Some(Message)` with the `Message` to be processed when the `Popup` dialog has been answered
+    - `None` if the `Popup` dialog has not been answered yet
     */
     fn show(&mut self, ctx: &Context) -> Option<Message>;
 }
@@ -276,6 +280,7 @@ impl ToString for TabLabel {
 }
 
 pub struct GeneratorApp {
+    can_exit: bool,
     directory: String,
     filename: String,
     subsector: Subsector,
@@ -400,6 +405,8 @@ impl GeneratorApp {
             CancelRemoveWorld => {}
             CancelRenameSubsector => {}
 
+            CancelUnsavedExit => self.can_exit = false,
+
             ConfigureRegenSubsector => {
                 let popup = SubsectorRegenPopup::default();
                 self.add_popup(popup);
@@ -470,6 +477,8 @@ impl GeneratorApp {
                 self.subsector.set_name(new_name);
                 self.message(Message::SubsectorModelUpdated);
             }
+
+            ConfirmUnsavedExit => self.can_exit = true,
 
             HexGridClicked { new_point } => {
                 if self.world_edited {
@@ -2157,6 +2166,7 @@ impl Default for GeneratorApp {
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
 
         Self {
+            can_exit: false,
             directory: "~".to_string(),
             filename: String::new(),
             subsector,
@@ -2179,7 +2189,23 @@ impl Default for GeneratorApp {
 }
 
 impl App for GeneratorApp {
-    fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+    fn on_exit_event(&mut self) -> bool {
+        let can_exit = !self.unsaved_changes() || self.can_exit;
+        if !can_exit {
+            let popup = ConfirmationPopup::unsaved_changes(
+                Message::ConfirmUnsavedExit,
+                Message::CancelUnsavedExit,
+            );
+            self.add_popup(popup);
+        }
+        can_exit
+    }
+
+    fn update(&mut self, ctx: &Context, frame: &mut Frame) {
+        if self.can_exit {
+            frame.quit();
+        }
+
         self.world_edited = match self.subsector.get_world(&self.point) {
             Some(stored_world) => self.world != *stored_world,
             None => false,

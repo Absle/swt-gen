@@ -19,8 +19,6 @@ TODOs completed in this way should probably should still have an issue created a
 - Add subsector map exporting
 - "Player-safe" version of the GUI, probably using different build targets
     - Implement "player-safe" version of json serialization
-- Add "unsaved changes, are you sure you want to close?" popup of some kind
-- Consider changing all "unsaved changes" popups to use a native dialog
 - Refactor older "description saving" `Message`s to minimize cloning
 - Add some margins to the notes editing tab for better reading
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
@@ -61,3 +59,10 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Maybe change up menus to more conventional "File > Save/Load" and "Edit > Regenerate/Rename Subsector"~~
     - ~~Distinguish between "Save" and "Save As..."~~
 - ~~Add hotkeys for "Save", "Open", etc.~~
+- ~~Add "unsaved changes, are you sure you want to close?" popup of some kind~~
+
+## Cancelled TODOs
+
+### App/GUI TODOs
+- ~~Consider changing all "unsaved changes" popups to use a native dialog~~
+    - Can not be done through the `native-dialog` crate and would require making custom windows
