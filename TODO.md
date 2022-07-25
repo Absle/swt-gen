@@ -16,7 +16,6 @@ TODOs completed in this way should probably should still have an issue created a
 - Remove redundant serialization and deserializing code once GUI is in a good state
 
 ### App/GUI TODOs
-- Add subsector map exporting
 - "Player-safe" version of the GUI, probably using different build targets
     - Implement "player-safe" version of json serialization
 - Refactor older "description saving" `Message`s to minimize cloning
@@ -60,6 +59,7 @@ TODOs completed in this way should probably should still have an issue created a
     - ~~Distinguish between "Save" and "Save As..."~~
 - ~~Add hotkeys for "Save", "Open", etc.~~
 - ~~Add "unsaved changes, are you sure you want to close?" popup of some kind~~
+- ~~Add subsector map exporting~~
 
 ## Cancelled TODOs
 

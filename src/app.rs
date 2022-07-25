@@ -44,6 +44,7 @@ enum Message {
     ConfirmRemoveWorld,
     ConfirmRenameSubsector { new_name: String },
     ConfirmUnsavedExit,
+    ExportSubsectorMapSvg,
     HexGridClicked { new_point: Point },
     NewFactionGovSelected { new_code: u16 },
     NewStarportClassSelected,
@@ -479,6 +480,30 @@ impl GeneratorApp {
             }
 
             ConfirmUnsavedExit => self.can_exit = true,
+
+            ExportSubsectorMapSvg => {
+                let filename = format!("{}_Subsector_Map.svg", self.subsector.name());
+                let result = save_file_dialog(
+                    &self.directory,
+                    &filename,
+                    "SVG",
+                    &["svg"],
+                    self.subsector.generate_svg(),
+                );
+
+                match result {
+                    Ok(Some(_)) => (),
+                    Ok(None) => (),
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Save SVG")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                    }
+                }
+            }
 
             HexGridClicked { new_point } => {
                 if self.world_edited {
@@ -959,12 +984,11 @@ impl GeneratorApp {
 
                         ui.separator();
 
-                        // TODO
-                        ui.menu_button("Subsector Map", |ui| {
-                            if ui.button("Export as SVG...").clicked() {
+                        ui.menu_button("Export", |ui| {
+                            if ui.button("Subsector Map...").clicked() {
                                 ui.close_menu();
+                                self.message(Message::ExportSubsectorMapSvg);
                             }
-                            ui.set_width(Self::FIELD_SELECTION_WIDTH);
                         });
                     });
 
