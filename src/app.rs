@@ -334,14 +334,10 @@ impl GeneratorApp {
     const SAVE_ICON: &'static str = "💾";
 
     fn process_hotkeys(&mut self, ctx: &Context) {
-        if ctx.input_mut().consume_key(Modifiers::CTRL, Key::A) {
-            self.message(Message::ApplyWorldChanges);
-        } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::N) {
+        if ctx.input_mut().consume_key(Modifiers::CTRL, Key::N) {
             self.message(Message::RenameSubsector);
         } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::O) {
             self.message(Message::Open);
-        } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::R) {
-            self.message(Message::RevertWorldChanges);
         } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::S) {
             self.message(Message::Save);
         } else if ctx
@@ -389,7 +385,7 @@ impl GeneratorApp {
             }
 
             ApplyWorldChanges => {
-                if self.world_selected {
+                if self.world_selected && self.world_edited {
                     self.subsector.insert_world(&self.point, &mut self.world);
                     self.message_immediate(Message::SubsectorModelUpdated);
                 }
@@ -2178,18 +2174,11 @@ impl GeneratorApp {
                     RichText::new(Self::X_ICON.to_string() + " Revert").font(header_font),
                 );
 
-                if ui
-                    .add_enabled(self.world_edited, apply_button)
-                    .on_hover_text_at_pointer("Hotkey: Ctrl-A")
-                    .clicked()
-                {
+                if ui.add_enabled(self.world_edited, apply_button).clicked() {
                     self.message(Message::ApplyWorldChanges);
                 }
-                if ui
-                    .add_enabled(self.world_edited, revert_button)
-                    .on_hover_text_at_pointer("Hotkey: Ctrl-R")
-                    .clicked()
-                {
+
+                if ui.add_enabled(self.world_edited, revert_button).clicked() {
                     self.message(Message::RevertWorldChanges)
                 }
             });
