@@ -44,6 +44,7 @@ enum Message {
     ConfirmRemoveWorld,
     ConfirmRenameSubsector { new_name: String },
     ConfirmUnsavedExit,
+    ExportPlayerSafeSubsectorJson,
     ExportSubsectorMapSvg,
     HexGridClicked { new_point: Point },
     NewFactionGovSelected { new_code: u16 },
@@ -480,6 +481,30 @@ impl GeneratorApp {
             }
 
             ConfirmUnsavedExit => self.can_exit = true,
+
+            ExportPlayerSafeSubsectorJson => {
+                let filename = format!("{}_Subsector-Player_Safe.json", self.subsector.name());
+                let result = save_file_dialog(
+                    &self.directory,
+                    &filename,
+                    "JSON",
+                    &["json"],
+                    self.subsector.player_safe().to_json(),
+                );
+
+                match result {
+                    Ok(Some(_)) => (),
+                    Ok(None) => (),
+                    Err(err) => {
+                        MessageDialog::new()
+                            .set_type(MessageType::Error)
+                            .set_title("Error: Failed to Save Player Safe JSON")
+                            .set_text(&format!("{}", err)[..])
+                            .show_alert()
+                            .unwrap();
+                    }
+                }
+            }
 
             ExportSubsectorMapSvg => {
                 let filename = format!("{}_Subsector_Map.svg", self.subsector.name());
@@ -985,9 +1010,13 @@ impl GeneratorApp {
                         ui.separator();
 
                         ui.menu_button("Export", |ui| {
-                            if ui.button("Subsector Map...").clicked() {
+                            if ui.button("Subsector Map SVG...").clicked() {
                                 ui.close_menu();
                                 self.message(Message::ExportSubsectorMapSvg);
+                            }
+
+                            if ui.button("Player-Safe Subsector JSON...").clicked() {
+                                self.message(Message::ExportPlayerSafeSubsectorJson);
                             }
                         });
                     });

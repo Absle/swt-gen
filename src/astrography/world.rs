@@ -722,6 +722,29 @@ impl World {
             self.trade_codes.insert(TradeCode::Wa);
         }
     }
+
+    /** Attempts to mutate the `World` into a "player-safe" state.
+
+    To do so, it defaults all of the fields that are likely to have spoilers to the zeroth index of
+    their respective roll tables or completely blanks them where possible.
+    These likely fields are:
+
+    1. Factions
+    2. Culture
+    3. World Tags
+    4. Notes
+
+    This is intended to work alongside a player-safe version of the GUI that has the defaulted
+    fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
+    */
+    pub(crate) fn make_player_safe(&mut self) {
+        self.factions.clear();
+        self.culture = TABLES.culture_table[0].clone();
+        for world_tag in self.world_tags.iter_mut() {
+            *world_tag = TABLES.world_tag_table[0].clone();
+        }
+        self.notes = String::new();
+    }
 }
 
 impl Default for World {

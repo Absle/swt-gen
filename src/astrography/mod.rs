@@ -536,6 +536,30 @@ impl Subsector {
             None
         }
     }
+
+    /** Attempts to produce a "player-safe" copy of the `Subsector`.
+
+    To do so, for each `World` it defaults all of the fields that are likely to have spoilers to the
+    zeroth index of their respective roll tables or completely blanks them where possible.
+    These likely fields are:
+
+    1. Factions
+    2. Culture
+    3. World Tags
+    4. Notes
+
+    This is intended to work alongside a player-safe version of the GUI that has the defaulted
+    fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
+    */
+    pub fn player_safe(&self) -> Self {
+        let mut player_safe_subsector = self.clone();
+
+        for (_point, world) in player_safe_subsector.map.iter_mut() {
+            world.make_player_safe();
+        }
+
+        player_safe_subsector
+    }
 }
 
 impl Default for Subsector {
