@@ -1011,7 +1011,8 @@ impl GeneratorApp {
                                 self.message(Message::ExportSubsectorMapSvg);
                             }
 
-                            if ui.button("Player-Safe Subsector JSON...").clicked() {
+                            let button = Button::new("Player-Safe Subsector JSON...").wrap(false);
+                            if ui.add(button).clicked() {
                                 self.message(Message::ExportPlayerSafeSubsectorJson);
                             }
                         });
