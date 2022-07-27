@@ -263,9 +263,25 @@ impl Popup for SubsectorRegenPopup {
 enum TabLabel {
     WorldSurvey,
     GovernmentLaw,
+    #[allow(dead_code)]
     Factions,
+    #[allow(dead_code)]
     CultureErrata,
     Notes,
+}
+
+impl TabLabel {
+    #[cfg(feature = "player-safe-gui")]
+    const TAB_LABELS: [TabLabel; 3] = [Self::WorldSurvey, Self::GovernmentLaw, Self::Notes];
+
+    #[cfg(not(feature = "player-safe-gui"))]
+    const TAB_LABELS: [TabLabel; 5] = [
+        Self::WorldSurvey,
+        Self::GovernmentLaw,
+        Self::Factions,
+        Self::CultureErrata,
+        Self::Notes,
+    ];
 }
 
 impl ToString for TabLabel {
@@ -895,6 +911,11 @@ impl GeneratorApp {
 
             SubsectorModelUpdated => {
                 self.subsector_edited = true;
+                #[cfg(feature = "player-safe-gui")]
+                {
+                    self.subsector.into_player_safe();
+                }
+
                 self.message(Message::RedrawSubsectorImage);
             }
 
@@ -1215,9 +1236,8 @@ impl GeneratorApp {
 
     /** Displays a row of selectable "tabs" of data for the user to look through. */
     fn tab_labels(&mut self, ui: &mut Ui) {
-        use TabLabel::*;
         ui.horizontal(|ui| {
-            for tab_label in [WorldSurvey, GovernmentLaw, Factions, CultureErrata, Notes] {
+            for tab_label in TabLabel::TAB_LABELS {
                 let text = tab_label.to_string();
                 ui.selectable_value(&mut self.tab, tab_label, text);
             }

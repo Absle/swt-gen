@@ -6,16 +6,28 @@ if ! cargo fmt -- --check; then
     exit 1
 fi
 
-# Fail if `cargo check` finds any warnings or errors
-check="$(cargo check -q --all-targets --color=always 2>&1)"
-if [ -n "$check" ]; then
-    echo "$check" >&2
-    echo "cargo check: found warnings/errors" >&2
-    exit 1
-fi
+# For each relevant feature, fail if `cargo check` finds any warnings or errors
+# Must manually be kept up to date with `[features]` section of `Cargo.toml`
+features=("" "player-safe-gui")
+for feature in ${features[@]}; do
+    feature_flag=""
+    if [ -n "$feature" ]; then
+        feature_flag="--features $feature"
+    fi
+
+    # Check stderr output too because `cargo check` still returns 0 if only warnings
+    check="$(cargo check -q --all-targets --color=always $feature_flag 2>&1)"
+    check_passed=$?
+    if [ $check_passed -ne 0 ] || [ -n "$check" ]; then
+        echo "$check" >&2
+        echo "cargo check: found warnings/errors while checking feature '$feature'" >&2
+        exit 1
+    fi
+done
 
 # Fail if test fail to build or run
-if ! cargo test 2>/dev/null; then
+if ! tests_output="$(cargo test --all-targets --color=always 2>/dev/null)"; then
+    echo "$tests_output" >&2
     echo "cargo test: found test issues" >&2
     exit 1
 fi

@@ -16,7 +16,6 @@ TODOs completed in this way should probably should still have an issue created a
 - Remove redundant serialization and deserializing code once GUI is in a good state
 
 ### App/GUI TODOs
-- "Player-safe" version of the GUI, probably using different build targets
 - Refactor older "description saving" `Message`s to minimize cloning
 - Add some margins to the notes editing tab for better reading
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
@@ -59,7 +58,8 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Add hotkeys for "Save", "Open", etc.~~
 - ~~Add "unsaved changes, are you sure you want to close?" popup of some kind~~
 - ~~Add subsector map exporting~~
-- ~~Implement "player-safe" version of json serialization~~
+- ~~"Player-safe" version of the GUI, probably using different build targets~~
+    - ~~Implement "player-safe" version of json serialization~~
 
 ## Cancelled TODOs
 

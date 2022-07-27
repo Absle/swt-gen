@@ -737,7 +737,7 @@ impl World {
     This is intended to work alongside a player-safe version of the GUI that has the defaulted
     fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
     */
-    pub(crate) fn make_player_safe(&mut self) {
+    pub(crate) fn into_player_safe(&mut self) {
         self.factions.clear();
         self.culture = TABLES.culture_table[0].clone();
         for world_tag in self.world_tags.iter_mut() {
