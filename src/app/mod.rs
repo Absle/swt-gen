@@ -1,3 +1,5 @@
+mod popup;
+
 use std::collections::VecDeque;
 use std::path::{Path, PathBuf};
 
@@ -5,8 +7,8 @@ use eframe::{App, Frame};
 
 use egui::{
     menu, vec2, Align, Button, CentralPanel, Color32, ColorImage, ComboBox, Context, FontId, Grid,
-    Image, Key, Label, Layout, Modifiers, Pos2, Rect, RichText, ScrollArea, Sense, Slider, Style,
-    TextEdit, TextStyle, TopBottomPanel, Ui, Vec2, Window,
+    Image, Key, Label, Layout, Modifiers, Pos2, Rect, RichText, ScrollArea, Sense, Style, TextEdit,
+    TextStyle, TopBottomPanel, Ui, Vec2,
 };
 
 use egui_extras::RetainedImage;
@@ -21,9 +23,11 @@ use crate::astrography::table::{
 
 use crate::astrography::world::{Faction, TravelCode, World};
 
+use popup::{ConfirmationPopup, Popup, SubsectorRegenPopup, SubsectorRenamePopup};
+
 /** Set of messages respresenting all non-trivial GUI events. */
 #[derive(Clone)]
-enum Message {
+pub(crate) enum Message {
     AddNewFaction,
     AddNewWorld,
     ApplyWorldChanges,
@@ -79,184 +83,6 @@ enum Message {
     WorldDiameterUpdated,
     WorldLocUpdated,
     WorldModelUpdated,
-}
-
-const DEFAULT_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
-trait Popup {
-    /** Show this `Popup`.
-
-    ## Returns
-
-    - `Some(Message)` with the `Message` to be processed when the `Popup` dialog has been answered
-    - `None` if the `Popup` dialog has not been answered yet
-    */
-    fn show(&mut self, ctx: &Context) -> Option<Message>;
-}
-
-#[derive(Clone)]
-struct ConfirmationPopup {
-    title: String,
-    text: String,
-    confirm_message: Message,
-    cancel_message: Message,
-}
-
-impl ConfirmationPopup {
-    fn unsaved_changes(confirm_message: Message, cancel_message: Message) -> Self {
-        Self {
-            title: "Unsaved Subsector Changes".to_string(),
-            text: "Any unsaved changes will be lost.\nAre you sure you'd like to continue?"
-                .to_string(),
-            confirm_message,
-            cancel_message,
-        }
-    }
-}
-
-impl Popup for ConfirmationPopup {
-    fn show(&mut self, ctx: &Context) -> Option<Message> {
-        let ConfirmationPopup {
-            title,
-            text,
-            confirm_message,
-            cancel_message,
-        } = self;
-
-        let mut result = None;
-
-        Window::new(title.clone())
-            .title_bar(false)
-            .resizable(false)
-            .fixed_size(DEFAULT_POPUP_SIZE)
-            .show(ctx, |ui| {
-                ui.vertical_centered(|ui| {
-                    ui.heading(title);
-                    ui.separator();
-                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
-                    ui.label(text.clone());
-                });
-                ui.add_space(GeneratorApp::FIELD_SPACING);
-
-                ui.horizontal(|ui| {
-                    if ui.button("Confirm").clicked() {
-                        result = Some(confirm_message.clone())
-                    }
-
-                    ui.with_layout(Layout::right_to_left(), |ui| {
-                        if ui.button("Cancel").clicked() {
-                            result = Some(cancel_message.clone())
-                        }
-                    });
-                });
-            });
-        result
-    }
-}
-
-struct SubsectorRenamePopup {
-    name: String,
-}
-
-impl SubsectorRenamePopup {
-    fn new(initial_name: &str) -> Self {
-        Self {
-            name: initial_name.to_string(),
-        }
-    }
-}
-
-impl Popup for SubsectorRenamePopup {
-    fn show(&mut self, ctx: &Context) -> Option<Message> {
-        let mut result = None;
-
-        let title = "Rename Subsector";
-
-        Window::new(title.clone())
-            .title_bar(false)
-            .resizable(false)
-            .fixed_size(DEFAULT_POPUP_SIZE)
-            .show(ctx, |ui| {
-                ui.vertical_centered(|ui| {
-                    ui.heading(title);
-                    ui.separator();
-                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
-                    ui.text_edit_singleline(&mut self.name);
-                });
-                ui.add_space(GeneratorApp::FIELD_SPACING);
-
-                ui.horizontal(|ui| {
-                    if ui.button("Confirm").clicked() {
-                        result = Some(Message::ConfirmRenameSubsector {
-                            new_name: self.name.clone(),
-                        })
-                    }
-
-                    ui.with_layout(Layout::right_to_left(), |ui| {
-                        if ui.button("Cancel").clicked() {
-                            result = Some(Message::CancelRenameSubsector)
-                        }
-                    });
-                });
-            });
-        result
-    }
-}
-
-struct SubsectorRegenPopup {
-    world_abundance_dm: i16,
-}
-
-impl Default for SubsectorRegenPopup {
-    fn default() -> Self {
-        Self {
-            world_abundance_dm: 0,
-        }
-    }
-}
-
-impl Popup for SubsectorRegenPopup {
-    fn show(&mut self, ctx: &Context) -> Option<Message> {
-        let mut result = None;
-
-        let title = "Regenerate Subsector";
-
-        Window::new(title.clone())
-            .title_bar(false)
-            .resizable(false)
-            .fixed_size(DEFAULT_POPUP_SIZE)
-            .show(ctx, |ui| {
-                ui.vertical_centered(|ui| {
-                    ui.heading(title);
-                    ui.separator();
-                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
-
-                    ui.label(
-                        RichText::new("World Abundance Modifier")
-                            .font(GeneratorApp::LABEL_FONT)
-                            .color(GeneratorApp::LABEL_COLOR),
-                    );
-                    ui.add_space(GeneratorApp::LABEL_SPACING);
-                    let slider = Slider::new(&mut self.world_abundance_dm, -2..=2);
-                    ui.add(slider);
-                });
-                ui.add_space(GeneratorApp::FIELD_SPACING);
-
-                ui.horizontal(|ui| {
-                    if ui.button("Confirm").clicked() {
-                        result = Some(Message::ConfirmRegenSubsector {
-                            world_abundance_dm: self.world_abundance_dm,
-                        })
-                    }
-
-                    ui.with_layout(Layout::right_to_left(), |ui| {
-                        if ui.button("Cancel").clicked() {
-                            result = Some(Message::CancelRegenSubsector)
-                        }
-                    });
-                });
-            });
-        result
-    }
 }
 
 #[derive(PartialEq)]
@@ -544,15 +370,15 @@ impl GeneratorApp {
 
             HexGridClicked { new_point } => {
                 if self.world_edited {
-                    let popup = ConfirmationPopup {
-                        title: "Unsaved World Changes".to_string(),
-                        text: format!(
+                    let popup = ConfirmationPopup::new(
+                        "Unsaved World Changes".to_string(),
+                        format!(
                             "The world '{}' has unsaved changes, are sure you want to change world?\n\
                             All changes will be lost.",
                             self.world.name),
-                        confirm_message: Message::ConfirmHexGridClicked { new_point },
-                        cancel_message: Message:: CancelHexGridClicked,
-                    };
+                        Message::ConfirmHexGridClicked { new_point },
+                        Message:: CancelHexGridClicked,
+                        );
                     self.add_popup(popup);
                 } else {
                     self.message_immediate(Message::ConfirmHexGridClicked { new_point });
@@ -693,15 +519,15 @@ impl GeneratorApp {
             }
 
             RegenSelectedWorld => {
-                let popup = ConfirmationPopup {
-                    title: "Regenerating World".to_string(),
-                    text: format!(
+                let popup = ConfirmationPopup::new(
+                    "Regenerating World".to_string(),
+                    format!(
                         "Are you sure you want to regenerate world '{}'?\nThis can not be undone.",
                         self.world.name
                     ),
-                    confirm_message: Message::ConfirmRegenWorld,
-                    cancel_message: Message::CancelRegenWorld,
-                };
+                    Message::ConfirmRegenWorld,
+                    Message::CancelRegenWorld,
+                );
                 self.add_popup(popup);
             }
 
@@ -818,15 +644,15 @@ impl GeneratorApp {
             }
 
             RemoveSelectedWorld => {
-                let popup = ConfirmationPopup {
-                    title: "Removing World".to_string(),
-                    text: format!(
+                let popup = ConfirmationPopup::new(
+                    "Removing World".to_string(),
+                    format!(
                         "Are you sure you want to remove world '{}'?\nThis can not be undone.",
                         self.world.name
                     ),
-                    confirm_message: Message::ConfirmRemoveWorld,
-                    cancel_message: Message::CancelRemoveWorld,
-                };
+                    Message::ConfirmRemoveWorld,
+                    Message::CancelRemoveWorld,
+                );
                 self.add_popup(popup);
             }
 
@@ -946,16 +772,16 @@ impl GeneratorApp {
                     }
 
                     if let Some(world) = self.subsector.get_world(&location).clone() {
-                        let popup = ConfirmationPopup {
-                            title: "Destination Hex Occupied".to_string(),
-                            text: format!(
+                        let popup = ConfirmationPopup::new(
+                            "Destination Hex Occupied".to_string(),
+                            format!(
                                 "'{}' is already at {}.\nWould you like to overwrite it?",
                                 world.name,
                                 location.to_string(),
                             ),
-                            confirm_message: Message::ConfirmLocUpdate { location },
-                            cancel_message: Message::CancelLocUpdate,
-                        };
+                            Message::ConfirmLocUpdate { location },
+                            Message::CancelLocUpdate,
+                        );
                         self.add_popup(popup);
                     } else {
                         self.message_immediate(Message::ConfirmLocUpdate { location })
