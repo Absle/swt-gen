@@ -575,6 +575,7 @@ impl Subsector {
     This is intended to work alongside a player-safe version of the GUI that has the defaulted
     fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
     */
+    #[allow(dead_code)]
     pub fn into_player_safe(&mut self) {
         for (_point, world) in self.map.iter_mut() {
             world.into_player_safe();
