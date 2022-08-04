@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use super::dice;
 use world::{World, WorldRecord};
 
-#[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) struct Point {
     pub x: u16,
     pub y: u16,

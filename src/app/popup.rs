@@ -14,48 +14,61 @@ pub(crate) trait Popup {
     fn show(&mut self, ctx: &Context) -> Option<Message>;
 }
 
-#[derive(Clone)]
-pub(crate) struct ConfirmationPopup {
+pub(crate) struct ButtonPopup {
     title: String,
     text: String,
-    confirm_message: Message,
-    cancel_message: Message,
+    buttons: Vec<(String, Message)>,
 }
 
-impl ConfirmationPopup {
-    pub(crate) fn new(
-        title: String,
+impl ButtonPopup {
+    pub(crate) fn add_button(&mut self, button_text: String, message: Message) {
+        self.buttons.push((button_text, message));
+    }
+
+    pub(crate) fn add_confirm_buttons(&mut self, confirm: Message, cancel: Message) {
+        self.buttons.push(("Confirm".to_string(), confirm));
+        self.buttons.push(("Cancel".to_string(), cancel));
+    }
+
+    pub(crate) fn new(title: String, text: String) -> Self {
+        Self {
+            title,
+            text,
+            buttons: Vec::new(),
+        }
+    }
+
+    pub(crate) fn unsaved_changes_dialog(
         text: String,
-        confirm_message: Message,
-        cancel_message: Message,
+        save: Message,
+        no_save: Message,
+        cancel: Message,
     ) -> Self {
+        let mut buttons = Vec::new();
+        buttons.push(("Save".to_string(), save));
+        buttons.push(("Don't Save".to_string(), no_save));
+        buttons.push(("Cancel".to_string(), cancel));
         Self {
-            title,
+            title: "Unsaved Changes".to_string(),
             text,
-            confirm_message,
-            cancel_message,
-        }
-    }
-
-    pub(crate) fn unsaved_changes(confirm_message: Message, cancel_message: Message) -> Self {
-        Self {
-            title: "Unsaved Subsector Changes".to_string(),
-            text: "Any unsaved changes will be lost.\nAre you sure you'd like to continue?"
-                .to_string(),
-            confirm_message,
-            cancel_message,
+            buttons,
         }
     }
 }
 
-impl Popup for ConfirmationPopup {
+impl Popup for ButtonPopup {
     fn show(&mut self, ctx: &Context) -> Option<Message> {
-        let ConfirmationPopup {
+        let ButtonPopup {
             title,
             text,
-            confirm_message,
-            cancel_message,
+            buttons,
         } = self;
+
+        // `ButtonPopup` without any buttons can't be closed and will lock the app
+        assert!(
+            buttons.len() > 0,
+            "Must add at least one button to the `ButtonPopup`!"
+        );
 
         let mut result = None;
 
@@ -71,64 +84,12 @@ impl Popup for ConfirmationPopup {
                     ui.label(text.clone());
                 });
                 ui.add_space(GeneratorApp::FIELD_SPACING);
-
                 ui.horizontal(|ui| {
-                    if ui.button("Confirm").clicked() {
-                        result = Some(confirm_message.clone())
-                    }
-
                     ui.with_layout(Layout::right_to_left(), |ui| {
-                        if ui.button("Cancel").clicked() {
-                            result = Some(cancel_message.clone())
-                        }
-                    });
-                });
-            });
-        result
-    }
-}
-
-pub(crate) struct SubsectorRenamePopup {
-    name: String,
-}
-
-impl SubsectorRenamePopup {
-    pub(crate) fn new(initial_name: &str) -> Self {
-        Self {
-            name: initial_name.to_string(),
-        }
-    }
-}
-
-impl Popup for SubsectorRenamePopup {
-    fn show(&mut self, ctx: &Context) -> Option<Message> {
-        let mut result = None;
-
-        let title = "Rename Subsector";
-
-        Window::new(title.clone())
-            .title_bar(false)
-            .resizable(false)
-            .fixed_size(DEFAULT_POPUP_SIZE)
-            .show(ctx, |ui| {
-                ui.vertical_centered(|ui| {
-                    ui.heading(title);
-                    ui.separator();
-                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
-                    ui.text_edit_singleline(&mut self.name);
-                });
-                ui.add_space(GeneratorApp::FIELD_SPACING);
-
-                ui.horizontal(|ui| {
-                    if ui.button("Confirm").clicked() {
-                        result = Some(Message::ConfirmRenameSubsector {
-                            new_name: self.name.clone(),
-                        })
-                    }
-
-                    ui.with_layout(Layout::right_to_left(), |ui| {
-                        if ui.button("Cancel").clicked() {
-                            result = Some(Message::CancelRenameSubsector)
+                        for (button_text, message) in buttons.iter().rev() {
+                            if ui.button(button_text).clicked() {
+                                result = Some(message.clone());
+                            }
                         }
                     });
                 });
@@ -186,6 +147,55 @@ impl Popup for SubsectorRegenPopup {
                     ui.with_layout(Layout::right_to_left(), |ui| {
                         if ui.button("Cancel").clicked() {
                             result = Some(Message::CancelRegenSubsector)
+                        }
+                    });
+                });
+            });
+        result
+    }
+}
+
+pub(crate) struct SubsectorRenamePopup {
+    name: String,
+}
+
+impl SubsectorRenamePopup {
+    pub(crate) fn new(initial_name: &str) -> Self {
+        Self {
+            name: initial_name.to_string(),
+        }
+    }
+}
+
+impl Popup for SubsectorRenamePopup {
+    fn show(&mut self, ctx: &Context) -> Option<Message> {
+        let mut result = None;
+
+        let title = "Rename Subsector";
+
+        Window::new(title.clone())
+            .title_bar(false)
+            .resizable(false)
+            .fixed_size(DEFAULT_POPUP_SIZE)
+            .show(ctx, |ui| {
+                ui.vertical_centered(|ui| {
+                    ui.heading(title);
+                    ui.separator();
+                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
+                    ui.text_edit_singleline(&mut self.name);
+                });
+                ui.add_space(GeneratorApp::FIELD_SPACING);
+
+                ui.horizontal(|ui| {
+                    if ui.button("Confirm").clicked() {
+                        result = Some(Message::ConfirmRenameSubsector {
+                            new_name: self.name.clone(),
+                        })
+                    }
+
+                    ui.with_layout(Layout::right_to_left(), |ui| {
+                        if ui.button("Cancel").clicked() {
+                            result = Some(Message::CancelRenameSubsector)
                         }
                     });
                 });
