@@ -165,9 +165,9 @@ impl GeneratorApp {
     const LABEL_COLOR: Color32 = Color32::GRAY;
     const LABEL_SPACING: f32 = 4.0;
 
-    #[allow(dead_code)]
     /// Soft, nice blue color used by egui `SelectableValue` widgets.
-    const SELECTED_BLUE: Color32 = Color32::from_rgb(144, 209, 255);
+    const POSITIVE_BLUE: Color32 = Color32::from_rgb(144, 209, 255);
+    const NEGATIVE_RED: Color32 = Color32::from_rgb(255, 144, 144);
 
     const BUTTON_FONT_SIZE: f32 = 16.0;
 
@@ -1018,10 +1018,10 @@ impl GeneratorApp {
             ui.with_layout(Layout::right_to_left(), |ui| {
                 ui.add_space(12.5);
                 let header_font = TextStyle::Heading.resolve(&Style::default());
-                if ui
-                    .button(RichText::new(Self::X_ICON).font(header_font.clone()))
-                    .clicked()
-                {
+                let world_removal_button =
+                    Button::new(RichText::new(Self::X_ICON).font(header_font.clone()))
+                        .fill(Self::NEGATIVE_RED);
+                if ui.add(world_removal_button).clicked() {
                     self.message(Message::RemoveSelectedWorld);
                 }
 
@@ -1198,28 +1198,32 @@ impl GeneratorApp {
 
                     // Regenerate and remove faction buttons
                     ui.horizontal(|ui| {
-                        // Regenerate faction button
-                        if ui
-                            .button(
-                                RichText::new(Self::DICE_ICON)
-                                    .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
-                            )
-                            .clicked()
-                        {
-                            self.message(Message::RegenSelectedFaction);
-                        }
-
-                        // Remove faction button
-                        if ui
-                            .button(
+                        ui.with_layout(Layout::right_to_left(), |ui| {
+                            let faction_removal_button = Button::new(
                                 RichText::new(Self::X_ICON)
                                     .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
                             )
-                            .on_hover_text_at_pointer("Double click to delete this faction")
-                            .double_clicked()
-                        {
-                            self.message(Message::RemoveSelectedFaction);
-                        }
+                            .fill(Self::NEGATIVE_RED);
+
+                            if ui
+                                .add(faction_removal_button)
+                                .on_hover_text_at_pointer("Double click to delete this faction")
+                                .double_clicked()
+                            {
+                                self.message(Message::RemoveSelectedFaction);
+                            }
+
+                            // Regenerate faction button
+                            if ui
+                                .button(
+                                    RichText::new(Self::DICE_ICON)
+                                        .font(FontId::proportional(Self::BUTTON_FONT_SIZE)),
+                                )
+                                .clicked()
+                            {
+                                self.message(Message::RegenSelectedFaction);
+                            }
+                        });
                     });
 
                     // Faction name
@@ -2066,17 +2070,19 @@ impl GeneratorApp {
                 let header_font = TextStyle::Heading.resolve(&Style::default());
                 let apply_button = Button::new(
                     RichText::new(Self::SAVE_ICON.to_string() + " Apply").font(header_font.clone()),
-                );
+                )
+                .fill(Self::POSITIVE_BLUE);
                 let revert_button = Button::new(
                     RichText::new(Self::X_ICON.to_string() + " Revert").font(header_font),
-                );
-
-                if ui.add_enabled(self.world_edited, apply_button).clicked() {
-                    self.message(Message::ApplyWorldChanges);
-                }
+                )
+                .fill(Self::NEGATIVE_RED);
 
                 if ui.add_enabled(self.world_edited, revert_button).clicked() {
                     self.message(Message::RevertWorldChanges)
+                }
+
+                if ui.add_enabled(self.world_edited, apply_button).clicked() {
+                    self.message(Message::ApplyWorldChanges);
                 }
             });
             ui.separator();
