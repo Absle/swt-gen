@@ -15,7 +15,7 @@ where
 
 pub(crate) fn roll_1d<T>(sides: T) -> T
 where
-    T: From<u8> + PartialOrd + SampleUniform,
+    T: Copy + From<u8> + PartialOrd + SampleUniform,
 {
     let mut rng = rand::thread_rng();
     let one = T::from(1);
@@ -26,8 +26,7 @@ pub(crate) fn roll_2d<T>(sides: T) -> T
 where
     T: Add<Output = T> + Copy + From<u8> + PartialOrd + SampleUniform,
 {
-    let temp = sides;
-    roll_1d(sides) + roll_1d(temp)
+    roll_1d(sides) + roll_1d(sides)
 }
 
 #[allow(dead_code)]
