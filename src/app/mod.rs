@@ -878,7 +878,9 @@ impl GeneratorApp {
             ui.add_enabled_ui(self.popup_queue.is_empty(), |ui| {
                 menu::bar(ui, |ui| {
                     ui.menu_button("File", |ui| {
-                        if ui.button("New Subsector").clicked() {
+                        let new_subsector_button =
+                            Button::new("Generate New Subsector...").wrap(false);
+                        if ui.add(new_subsector_button).clicked() {
                             ui.close_menu();
                             self.message(Message::RegenSubsector);
                         }

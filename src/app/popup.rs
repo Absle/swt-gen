@@ -1,4 +1,6 @@
-use egui::{vec2, Context, Layout, RichText, Slider, Vec2, Window};
+use egui::{vec2, Context, Grid, Layout, RichText, Vec2, Window};
+
+use crate::astrography::WorldAbundance;
 
 use super::{GeneratorApp, Message};
 
@@ -99,13 +101,13 @@ impl Popup for ButtonPopup {
 }
 
 pub(crate) struct SubsectorRegenPopup {
-    world_abundance_dm: i16,
+    world_abundance: WorldAbundance,
 }
 
 impl Default for SubsectorRegenPopup {
     fn default() -> Self {
         Self {
-            world_abundance_dm: 0,
+            world_abundance: WorldAbundance::Nominal,
         }
     }
 }
@@ -114,33 +116,55 @@ impl Popup for SubsectorRegenPopup {
     fn show(&mut self, ctx: &Context) -> Option<Message> {
         let mut result = None;
 
-        let title = "Regenerate Subsector";
+        let title = "Choose World Abundance";
+        let popup_size = DEFAULT_POPUP_SIZE;
 
         Window::new(title.clone())
             .title_bar(false)
             .resizable(false)
-            .fixed_size(DEFAULT_POPUP_SIZE)
+            .fixed_size(popup_size)
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
                     ui.heading(title);
                     ui.separator();
                     ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
 
-                    ui.label(
-                        RichText::new("World Abundance Modifier")
-                            .font(GeneratorApp::LABEL_FONT)
-                            .color(GeneratorApp::LABEL_COLOR),
+                    let column_count = WorldAbundance::WORLD_ABUNDANCE_VALUES.len() as f32;
+                    let grid_spacing = vec2(
+                        GeneratorApp::FIELD_SPACING / 2.0,
+                        GeneratorApp::LABEL_SPACING,
                     );
-                    ui.add_space(GeneratorApp::LABEL_SPACING);
-                    let slider = Slider::new(&mut self.world_abundance_dm, -2..=2);
-                    ui.add(slider);
+                    let column_width =
+                        (popup_size.x - (column_count - 1.0) * grid_spacing.x) / column_count;
+
+                    Grid::new("subsector_regen_grid")
+                        .spacing(grid_spacing)
+                        .min_col_width(column_width)
+                        .show(ui, |ui| {
+                            for world_abundance in WorldAbundance::WORLD_ABUNDANCE_VALUES {
+                                ui.vertical_centered(|ui| {
+                                    ui.radio_value(&mut self.world_abundance, world_abundance, "");
+                                });
+                            }
+                            ui.end_row();
+
+                            for world_abundance in WorldAbundance::WORLD_ABUNDANCE_VALUES {
+                                ui.vertical_centered(|ui| {
+                                    ui.label(
+                                        RichText::new(world_abundance.to_string())
+                                            .font(GeneratorApp::LABEL_FONT)
+                                            .color(GeneratorApp::LABEL_COLOR),
+                                    );
+                                });
+                            }
+                        });
                 });
                 ui.add_space(GeneratorApp::FIELD_SPACING);
 
                 ui.horizontal(|ui| {
-                    if ui.button("Confirm").clicked() {
+                    if ui.button("Generate").clicked() {
                         result = Some(Message::ConfirmRegenSubsector {
-                            world_abundance_dm: self.world_abundance_dm,
+                            world_abundance_dm: self.world_abundance.into(),
                         })
                     }
 

@@ -89,6 +89,49 @@ impl Sub for &Translation {
     }
 }
 
+#[derive(Clone, Copy, PartialEq)]
+pub enum WorldAbundance {
+    Rift,
+    Sparse,
+    Nominal,
+    Dense,
+    Abundant,
+}
+
+impl WorldAbundance {
+    pub const WORLD_ABUNDANCE_VALUES: [WorldAbundance; 5] = [
+        Self::Rift,
+        Self::Sparse,
+        Self::Nominal,
+        Self::Dense,
+        Self::Abundant,
+    ];
+}
+
+impl Into<i16> for WorldAbundance {
+    fn into(self) -> i16 {
+        match self {
+            Self::Rift => -2,
+            Self::Sparse => -1,
+            Self::Nominal => 0,
+            Self::Dense => 1,
+            Self::Abundant => 2,
+        }
+    }
+}
+
+impl ToString for WorldAbundance {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Rift => "Rift".to_string(),
+            Self::Sparse => "Sparse".to_string(),
+            Self::Nominal => "Nominal".to_string(),
+            Self::Dense => "Dense".to_string(),
+            Self::Abundant => "Abundant".to_string(),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct Subsector {
     name: String,
