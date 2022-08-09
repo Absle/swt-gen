@@ -16,7 +16,6 @@ TODOs completed in this way should probably should still have an issue created a
 - Remove redundant serialization and deserializing code once GUI is in a good state
 
 ### App/GUI TODOs
-- Add some margins to the notes editing tab for better reading
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
 - Add dark mode support... somehow
 - Implement a framework to more structurally link `Message`s with their hotkeys
@@ -60,6 +59,7 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~"Player-safe" version of the GUI, probably using different build targets~~
     - ~~Implement "player-safe" version of json serialization~~
 - ~~Find some way to get `Popup`s to appear in the middle of the screen, rather than the top right corner initially~~
+- ~~Add some margins to the notes editing tab for better reading~~
 
 ## Cancelled TODOs
 

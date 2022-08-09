@@ -1171,7 +1171,8 @@ impl GeneratorApp {
                 ui.add(
                     TextEdit::multiline(&mut self.world.notes)
                         .desired_width(f32::INFINITY)
-                        .desired_rows(50),
+                        .desired_rows(50)
+                        .margin(vec2(64.0, 32.0)),
                 );
             });
     }
@@ -2327,7 +2328,7 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
 
 # Returns
 - `Err` if there was an error while trying to write to the file
-- `Ok(()) if the file was successfully written to
+- `Ok(())` if the file was successfully written to
 */
 fn save_file<P, C>(
     directory: &P,
