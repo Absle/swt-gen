@@ -552,7 +552,7 @@ impl GeneratorApp {
                 let mut popup = ButtonPopup::new(
                     "Regenerating World".to_string(),
                     format!(
-                        "Are you sure you want to regenerate world '{}'?\nThis can not be undone.",
+                        "Do you want to completely regenerate '{}'? This can not be undone.",
                         self.world.name
                     ),
                 );
@@ -683,7 +683,7 @@ impl GeneratorApp {
                 let mut popup = ButtonPopup::new(
                     "Removing World".to_string(),
                     format!(
-                        "Are you sure you want to remove world '{}'?\nThis can not be undone.",
+                        "Do you want to completely remove '{}'? This can not be undone.",
                         self.world.name
                     ),
                 );

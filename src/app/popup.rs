@@ -1,10 +1,17 @@
-use egui::{vec2, Context, Grid, Layout, RichText, Vec2, Window};
+use egui::{vec2, Context, Grid, Layout, Pos2, RichText, TextEdit, Vec2, Window};
 
 use crate::astrography::WorldAbundance;
 
 use super::{GeneratorApp, Message};
 
 const DEFAULT_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
+
+/// Calculate and return the centered position of a default-sized popup for a given `Context`.
+#[inline]
+fn center(ctx: &Context) -> Pos2 {
+    ctx.available_rect().center() - DEFAULT_POPUP_SIZE / 2.0
+}
+
 pub(crate) trait Popup {
     /** Show this `Popup`.
 
@@ -77,6 +84,7 @@ impl Popup for ButtonPopup {
             .title_bar(false)
             .resizable(false)
             .fixed_size(DEFAULT_POPUP_SIZE)
+            .default_pos(center(ctx))
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
                     ui.heading(title);
@@ -122,6 +130,7 @@ impl Popup for SubsectorRegenPopup {
             .title_bar(false)
             .resizable(false)
             .fixed_size(popup_size)
+            .default_pos(center(ctx))
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
                     ui.heading(title);
@@ -200,12 +209,13 @@ impl Popup for SubsectorRenamePopup {
             .title_bar(false)
             .resizable(false)
             .fixed_size(DEFAULT_POPUP_SIZE)
+            .default_pos(center(ctx))
             .show(ctx, |ui| {
                 ui.vertical_centered(|ui| {
                     ui.heading(title);
                     ui.separator();
                     ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
-                    ui.text_edit_singleline(&mut self.name);
+                    ui.add(TextEdit::singleline(&mut self.name).margin(vec2(16.0, 4.0)));
                 });
                 ui.add_space(GeneratorApp::FIELD_SPACING);
 
