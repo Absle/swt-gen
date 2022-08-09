@@ -533,7 +533,7 @@ impl Subsector {
     Will only insert a `World` if `point` is within the bounds set by `Subsector::COLUMNS` and
     `Subsector::ROWS`.
 
-    ## Returns
+    # Returns
     - `Some(world)` with the `World` that was already at `point` if there was one
     - `None` if there was no `World` at `point`, or if `point` was out of bounds
     */

@@ -8,8 +8,7 @@ const DEFAULT_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
 pub(crate) trait Popup {
     /** Show this `Popup`.
 
-    ## Returns
-
+    # Returns
     - `Some(Message)` with the `Message` to be processed when the `Popup` dialog has been answered
     - `None` if the `Popup` dialog has not been answered yet
     */
