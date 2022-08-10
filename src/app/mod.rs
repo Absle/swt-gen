@@ -181,6 +181,13 @@ impl GeneratorApp {
     const X_ICON: &'static str = "❌";
     const SAVE_ICON: &'static str = "💾";
 
+    fn check_world_edited(&mut self) {
+        self.world_edited = match self.subsector.get_world(&self.point) {
+            Some(stored_world) => self.world != *stored_world,
+            None => false,
+        };
+    }
+
     fn process_hotkeys(&mut self, ctx: &Context) {
         if ctx.input_mut().consume_key(Modifiers::CTRL, Key::N) {
             self.message(Message::RenameSubsector);
@@ -2171,11 +2178,7 @@ impl App for GeneratorApp {
             frame.quit();
         }
 
-        self.world_edited = match self.subsector.get_world(&self.point) {
-            Some(stored_world) => self.world != *stored_world,
-            None => false,
-        };
-
+        self.check_world_edited();
         self.process_hotkeys(ctx);
 
         // GUI elements
@@ -2448,5 +2451,109 @@ mod tests {
             }
             None => panic!("Empty point got in somehow"),
         }
+    }
+
+    #[test]
+    fn hex_grid_clicked() {
+        let mut app = GeneratorApp::default();
+
+        // Test hex clicking on all points with no world changes
+        for x in 1..=Subsector::COLUMNS {
+            for y in 1..=Subsector::ROWS {
+                let point = Point {
+                    x: x as u16,
+                    y: y as u16,
+                };
+
+                app.message_immediate(Message::HexGridClicked { new_point: point });
+                assert!(app.point_selected);
+                assert_eq!(app.point, point);
+                match app.subsector.get_world(&point) {
+                    Some(world) => {
+                        assert!(app.world_selected);
+                        assert_eq!(app.world, *world);
+                        assert_eq!(app.location, point.to_string());
+                        assert_eq!(app.diameter, world.diameter.to_string());
+                        assert_eq!(app.berthing_cost, world.starport.berthing_cost.to_string());
+                    }
+
+                    None => {
+                        assert!(!app.world_selected);
+                    }
+                }
+            }
+        }
+
+        // Test hex clicking after making changes to selected world
+        let occupied_points: Vec<_> = app.subsector.get_map().keys().cloned().collect();
+        assert!(occupied_points.get(0).is_some());
+        let point = occupied_points[0];
+        assert!(app.subsector.get_world(&point).is_some());
+
+        let other_x = if point.x == Subsector::COLUMNS as u16 {
+            point.x - 1
+        } else {
+            point.x + 1
+        };
+
+        let other_y = if point.y == Subsector::ROWS as u16 {
+            point.y - 1
+        } else {
+            point.y + 1
+        };
+
+        let new_point = Point {
+            x: other_x,
+            y: other_y,
+        };
+
+        let blah = "Blah blah blah blah".to_string();
+
+        app.message_immediate(Message::HexGridClicked { new_point: point });
+
+        // Just making some/any change to the now selected world
+        app.world.notes = blah.clone();
+        app.check_world_edited();
+        assert!(app.world_edited);
+
+        app.message_immediate(Message::HexGridClicked { new_point });
+        assert!(app.popup_queue.get(0).is_some());
+        app.popup_queue.remove(0);
+
+        // Nothing should change if the "cancel" button was hit on the popup
+        app.message_immediate(Message::CancelHexGridClicked);
+        assert_eq!(app.point, point);
+
+        // Repeat as if the user had pressed the "don't apply" button
+        app.message_immediate(Message::HexGridClicked { new_point });
+        assert!(app.popup_queue.get(0).is_some());
+        app.popup_queue.remove(0);
+
+        app.message_immediate(Message::ConfirmHexGridClicked { new_point });
+        assert_eq!(app.point, new_point);
+
+        app.check_world_edited();
+        assert!(!app.world_edited);
+
+        // Confirm that the change was not kept
+        app.message_immediate(Message::HexGridClicked { new_point: point });
+        assert_eq!(app.world.notes, String::new());
+
+        // Repeat as if the "apply" button had been pressed
+        app.world.notes = blah.clone();
+        app.check_world_edited();
+        assert!(app.world_edited);
+
+        app.message_immediate(Message::HexGridClicked { new_point });
+        assert!(app.popup_queue.get(0).is_some());
+        app.popup_queue.remove(0);
+        app.message_immediate(Message::ApplyConfirmHexGridClicked { new_point });
+        assert_eq!(app.point, new_point);
+
+        app.check_world_edited();
+        assert!(!app.world_edited);
+
+        // Confirm that the change was kept
+        assert_eq!(app.subsector.get_world(&point).unwrap().notes, blah);
     }
 }
