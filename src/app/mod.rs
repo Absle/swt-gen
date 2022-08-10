@@ -2423,3 +2423,30 @@ fn load_file_to_string<P: AsRef<Path>>(
 
     Ok(loaded_file)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn add_new_faction() {
+        let mut app = GeneratorApp::default();
+        let occupied_points: Vec<_> = app.subsector.get_map().keys().cloned().collect();
+        assert!(occupied_points.get(0).is_some());
+        let point = occupied_points[0];
+        app.message_immediate(Message::HexGridClicked { new_point: point });
+        match app.subsector.get_world(&point) {
+            Some(world) => assert_eq!(app.world.factions, world.factions),
+            None => panic!("Empty point got in somehow"),
+        }
+
+        app.message_immediate(Message::AddNewFaction);
+        match app.subsector.get_world(&point) {
+            Some(world) => {
+                assert_ne!(app.world.factions, world.factions);
+                assert_eq!(app.world.factions.len(), world.factions.len() + 1);
+            }
+            None => panic!("Empty point got in somehow"),
+        }
+    }
+}

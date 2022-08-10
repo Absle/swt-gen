@@ -523,6 +523,11 @@ impl Subsector {
         output_buffer.join("\n")
     }
 
+    #[cfg(test)]
+    pub fn get_map(&mut self) -> &BTreeMap<Point, World> {
+        &self.map
+    }
+
     /** Returns a reference to the `World` at `point` or `None` if there isn't one. */
     pub fn get_world(&self, point: &Point) -> Option<&World> {
         self.map.get(point)
