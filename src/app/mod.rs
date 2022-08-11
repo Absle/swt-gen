@@ -800,11 +800,6 @@ impl GeneratorApp {
 
             SubsectorModelUpdated => {
                 self.subsector_edited = true;
-                #[cfg(feature = "player-safe-gui")]
-                {
-                    self.subsector.into_player_safe();
-                }
-
                 self.message(Message::RedrawSubsectorImage);
             }
 
