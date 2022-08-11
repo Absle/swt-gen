@@ -2487,6 +2487,31 @@ mod tests {
         }
 
         #[test]
+        fn apply_world_changes() {
+            let mut app = empty_app();
+            let point = Point { x: 1, y: 1 };
+            assert!(app.subsector.get_world(&point).is_none());
+
+            app.message_immediate(Message::HexGridClicked { new_point: point });
+            app.message_immediate(Message::AddNewWorld);
+            app.check_world_edited();
+            assert!(app.subsector.get_world(&point).is_some());
+            assert_eq!(app.world, *app.subsector.get_world(&point).unwrap());
+            assert!(!app.world_edited);
+
+            let blah = "Blah blah blah".to_string();
+            app.world.notes = blah.clone();
+            app.check_world_edited();
+            assert_ne!(app.world, *app.subsector.get_world(&point).unwrap());
+            assert!(app.world_edited);
+
+            app.message_immediate(Message::ApplyWorldChanges);
+            app.check_world_edited();
+            assert_eq!(app.world, *app.subsector.get_world(&point).unwrap());
+            assert!(!app.world_edited);
+        }
+
+        #[test]
         fn hex_grid_clicked() {
             let mut app = GeneratorApp::default();
 
