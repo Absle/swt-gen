@@ -239,9 +239,9 @@ impl GeneratorApp {
             AddNewWorld => {
                 self.subsector.insert_random_world(&self.point);
                 self.message_immediate(Message::ConfirmHexGridClicked {
-                    new_point: self.point.clone(),
+                    new_point: self.point,
                 });
-                self.message(Message::SubsectorModelUpdated);
+                self.message_immediate(Message::SubsectorModelUpdated);
             }
 
             ApplyConfirmHexGridClicked { new_point } => {
@@ -337,7 +337,7 @@ impl GeneratorApp {
                 self.point = location;
                 self.location = self.point.to_string();
                 self.message_immediate(Message::WorldModelUpdated);
-                self.message(Message::SubsectorModelUpdated);
+                self.message_immediate(Message::SubsectorModelUpdated);
             }
 
             ConfirmRegenSubsector { world_abundance_dm } => {
@@ -356,18 +356,18 @@ impl GeneratorApp {
                 self.message_immediate(Message::ConfirmHexGridClicked {
                     new_point: self.point.clone(),
                 });
-                self.message(Message::SubsectorModelUpdated);
+                self.message_immediate(Message::SubsectorModelUpdated);
             }
 
             ConfirmRemoveWorld => {
                 self.world_selected = false;
                 self.subsector.remove_world(&self.point);
-                self.message(Message::SubsectorModelUpdated);
+                self.message_immediate(Message::SubsectorModelUpdated);
             }
 
             ConfirmRenameSubsector { new_name } => {
                 self.subsector.set_name(new_name);
-                self.message(Message::SubsectorModelUpdated);
+                self.message_immediate(Message::SubsectorModelUpdated);
             }
 
             ConfirmUnsavedExit => self.can_exit = true,
@@ -2431,129 +2431,163 @@ fn load_file_to_string<P: AsRef<Path>>(
 mod tests {
     use super::*;
 
-    #[test]
-    fn add_new_faction() {
-        let mut app = GeneratorApp::default();
-        let occupied_points: Vec<_> = app.subsector.get_map().keys().cloned().collect();
-        assert!(occupied_points.get(0).is_some());
-        let point = occupied_points[0];
-        app.message_immediate(Message::HexGridClicked { new_point: point });
-        match app.subsector.get_world(&point) {
-            Some(world) => assert_eq!(app.world.factions, world.factions),
-            None => panic!("Empty point got in somehow"),
-        }
+    mod message_tests {
+        use super::*;
 
-        app.message_immediate(Message::AddNewFaction);
-        match app.subsector.get_world(&point) {
-            Some(world) => {
-                assert_ne!(app.world.factions, world.factions);
-                assert_eq!(app.world.factions.len(), world.factions.len() + 1);
+        fn empty_app() -> GeneratorApp {
+            GeneratorApp {
+                subsector: Subsector::empty(),
+                ..Default::default()
             }
-            None => panic!("Empty point got in somehow"),
         }
-    }
 
-    #[test]
-    fn hex_grid_clicked() {
-        let mut app = GeneratorApp::default();
+        #[test]
+        fn add_new_faction() {
+            let mut app = GeneratorApp::default();
+            let occupied_points: Vec<_> = app.subsector.get_map().keys().cloned().collect();
+            assert!(occupied_points.get(0).is_some());
+            let point = occupied_points[0];
+            app.message_immediate(Message::HexGridClicked { new_point: point });
+            match app.subsector.get_world(&point) {
+                Some(world) => assert_eq!(app.world.factions, world.factions),
+                None => panic!("Empty point got in somehow"),
+            }
 
-        // Test hex clicking on all points with no world changes
-        for x in 1..=Subsector::COLUMNS {
-            for y in 1..=Subsector::ROWS {
-                let point = Point {
-                    x: x as u16,
-                    y: y as u16,
-                };
+            app.message_immediate(Message::AddNewFaction);
+            match app.subsector.get_world(&point) {
+                Some(world) => {
+                    assert_ne!(app.world.factions, world.factions);
+                    assert_eq!(app.world.factions.len(), world.factions.len() + 1);
+                }
+                None => panic!("Empty point got in somehow"),
+            }
+        }
 
-                app.message_immediate(Message::HexGridClicked { new_point: point });
-                assert!(app.point_selected);
-                assert_eq!(app.point, point);
-                match app.subsector.get_world(&point) {
-                    Some(world) => {
-                        assert!(app.world_selected);
-                        assert_eq!(app.world, *world);
-                        assert_eq!(app.location, point.to_string());
-                        assert_eq!(app.diameter, world.diameter.to_string());
-                        assert_eq!(app.berthing_cost, world.starport.berthing_cost.to_string());
-                    }
+        #[test]
+        fn add_new_world() {
+            let mut app = empty_app();
 
-                    None => {
-                        assert!(!app.world_selected);
+            let unoccupied_point = Point { x: 1, y: 1 };
+            assert!(app.subsector.get_world(&unoccupied_point).is_none());
+
+            app.message_immediate(Message::HexGridClicked {
+                new_point: unoccupied_point,
+            });
+            assert!(app.point_selected);
+            assert_eq!(app.point, unoccupied_point);
+            assert!(!app.world_selected);
+
+            app.message_immediate(Message::AddNewWorld);
+            assert!(app.subsector.get_world(&unoccupied_point).is_some());
+            assert!(app.point_selected);
+            assert_eq!(app.point, unoccupied_point);
+            assert!(app.world_selected);
+
+            assert!(app.unsaved_changes());
+        }
+
+        #[test]
+        fn hex_grid_clicked() {
+            let mut app = GeneratorApp::default();
+
+            // Test hex clicking on all points with no world changes
+            for x in 1..=Subsector::COLUMNS {
+                for y in 1..=Subsector::ROWS {
+                    let point = Point {
+                        x: x as u16,
+                        y: y as u16,
+                    };
+
+                    app.message_immediate(Message::HexGridClicked { new_point: point });
+                    assert!(app.point_selected);
+                    assert_eq!(app.point, point);
+                    match app.subsector.get_world(&point) {
+                        Some(world) => {
+                            assert!(app.world_selected);
+                            assert_eq!(app.world, *world);
+                            assert_eq!(app.location, point.to_string());
+                            assert_eq!(app.diameter, world.diameter.to_string());
+                            assert_eq!(app.berthing_cost, world.starport.berthing_cost.to_string());
+                        }
+
+                        None => {
+                            assert!(!app.world_selected);
+                        }
                     }
                 }
             }
+
+            // Test hex clicking after making changes to selected world
+            let occupied_points: Vec<_> = app.subsector.get_map().keys().cloned().collect();
+            assert!(occupied_points.get(0).is_some());
+            let point = occupied_points[0];
+            assert!(app.subsector.get_world(&point).is_some());
+
+            let other_x = if point.x == Subsector::COLUMNS as u16 {
+                point.x - 1
+            } else {
+                point.x + 1
+            };
+
+            let other_y = if point.y == Subsector::ROWS as u16 {
+                point.y - 1
+            } else {
+                point.y + 1
+            };
+
+            let new_point = Point {
+                x: other_x,
+                y: other_y,
+            };
+
+            let blah = "Blah blah blah blah".to_string();
+
+            app.message_immediate(Message::HexGridClicked { new_point: point });
+
+            // Just making some/any change to the now selected world
+            app.world.notes = blah.clone();
+            app.check_world_edited();
+            assert!(app.world_edited);
+
+            app.message_immediate(Message::HexGridClicked { new_point });
+            assert!(app.popup_queue.get(0).is_some());
+            app.popup_queue.remove(0);
+
+            // Nothing should change if the "cancel" button was hit on the popup
+            app.message_immediate(Message::CancelHexGridClicked);
+            assert_eq!(app.point, point);
+
+            // Repeat as if the user had pressed the "don't apply" button
+            app.message_immediate(Message::HexGridClicked { new_point });
+            assert!(app.popup_queue.get(0).is_some());
+            app.popup_queue.remove(0);
+
+            app.message_immediate(Message::ConfirmHexGridClicked { new_point });
+            assert_eq!(app.point, new_point);
+
+            app.check_world_edited();
+            assert!(!app.world_edited);
+
+            // Confirm that the change was not kept
+            app.message_immediate(Message::HexGridClicked { new_point: point });
+            assert_eq!(app.world.notes, String::new());
+
+            // Repeat as if the "apply" button had been pressed
+            app.world.notes = blah.clone();
+            app.check_world_edited();
+            assert!(app.world_edited);
+
+            app.message_immediate(Message::HexGridClicked { new_point });
+            assert!(app.popup_queue.get(0).is_some());
+            app.popup_queue.remove(0);
+            app.message_immediate(Message::ApplyConfirmHexGridClicked { new_point });
+            assert_eq!(app.point, new_point);
+
+            app.check_world_edited();
+            assert!(!app.world_edited);
+
+            // Confirm that the change was kept
+            assert_eq!(app.subsector.get_world(&point).unwrap().notes, blah);
         }
-
-        // Test hex clicking after making changes to selected world
-        let occupied_points: Vec<_> = app.subsector.get_map().keys().cloned().collect();
-        assert!(occupied_points.get(0).is_some());
-        let point = occupied_points[0];
-        assert!(app.subsector.get_world(&point).is_some());
-
-        let other_x = if point.x == Subsector::COLUMNS as u16 {
-            point.x - 1
-        } else {
-            point.x + 1
-        };
-
-        let other_y = if point.y == Subsector::ROWS as u16 {
-            point.y - 1
-        } else {
-            point.y + 1
-        };
-
-        let new_point = Point {
-            x: other_x,
-            y: other_y,
-        };
-
-        let blah = "Blah blah blah blah".to_string();
-
-        app.message_immediate(Message::HexGridClicked { new_point: point });
-
-        // Just making some/any change to the now selected world
-        app.world.notes = blah.clone();
-        app.check_world_edited();
-        assert!(app.world_edited);
-
-        app.message_immediate(Message::HexGridClicked { new_point });
-        assert!(app.popup_queue.get(0).is_some());
-        app.popup_queue.remove(0);
-
-        // Nothing should change if the "cancel" button was hit on the popup
-        app.message_immediate(Message::CancelHexGridClicked);
-        assert_eq!(app.point, point);
-
-        // Repeat as if the user had pressed the "don't apply" button
-        app.message_immediate(Message::HexGridClicked { new_point });
-        assert!(app.popup_queue.get(0).is_some());
-        app.popup_queue.remove(0);
-
-        app.message_immediate(Message::ConfirmHexGridClicked { new_point });
-        assert_eq!(app.point, new_point);
-
-        app.check_world_edited();
-        assert!(!app.world_edited);
-
-        // Confirm that the change was not kept
-        app.message_immediate(Message::HexGridClicked { new_point: point });
-        assert_eq!(app.world.notes, String::new());
-
-        // Repeat as if the "apply" button had been pressed
-        app.world.notes = blah.clone();
-        app.check_world_edited();
-        assert!(app.world_edited);
-
-        app.message_immediate(Message::HexGridClicked { new_point });
-        assert!(app.popup_queue.get(0).is_some());
-        app.popup_queue.remove(0);
-        app.message_immediate(Message::ApplyConfirmHexGridClicked { new_point });
-        assert_eq!(app.point, new_point);
-
-        app.check_world_edited();
-        assert!(!app.world_edited);
-
-        // Confirm that the change was kept
-        assert_eq!(app.subsector.get_world(&point).unwrap().notes, blah);
     }
 }
