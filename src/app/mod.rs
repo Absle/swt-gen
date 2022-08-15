@@ -2426,15 +2426,15 @@ fn load_file_to_string<P: AsRef<Path>>(
 mod tests {
     use super::*;
 
+    fn empty_app() -> GeneratorApp {
+        GeneratorApp {
+            subsector: Subsector::empty(),
+            ..Default::default()
+        }
+    }
+
     mod message_tests {
         use super::*;
-
-        fn empty_app() -> GeneratorApp {
-            GeneratorApp {
-                subsector: Subsector::empty(),
-                ..Default::default()
-            }
-        }
 
         #[test]
         fn add_new_faction() {
@@ -2608,6 +2608,82 @@ mod tests {
 
             // Confirm that the change was kept
             assert_eq!(app.subsector.get_world(&point).unwrap().notes, blah);
+        }
+
+        #[test]
+        fn new_faction_gov_selected() {
+            let mut app = empty_app();
+            let point = Point { x: 1, y: 1 };
+            app.message_immediate(Message::HexGridClicked { new_point: point });
+            app.message_immediate(Message::AddNewWorld);
+
+            if app.world.factions.len() < 1 {
+                app.message_immediate(Message::AddNewFaction);
+            }
+            assert!(app.world.factions.len() >= 1);
+
+            // Simulate selecting a new faction by simply changing the faction_idx
+            app.faction_idx = 0;
+            let faction = &mut app.world.factions[app.faction_idx];
+
+            let gov_table = &TABLES.gov_table;
+            let default_description = &gov_table
+                .iter()
+                .find(|g| g.kind == faction.government.kind)
+                .unwrap()
+                .description;
+            assert_eq!(faction.government.description, *default_description);
+
+            let new_gov = gov_table
+                .iter()
+                .find(|g| g.kind != faction.government.kind)
+                .unwrap();
+            assert_ne!(*new_gov, faction.government);
+
+            // Simulate choosing a new faction government selectable value on the GUI by changing
+            // government "kind" directly and messaging NewFactionGovSelected with the new code
+            faction.government.kind = new_gov.kind.clone();
+            app.message_immediate(Message::NewFactionGovSelected {
+                new_code: new_gov.code,
+            });
+
+            let faction = &mut app.world.factions[app.faction_idx];
+            assert_eq!(faction.government.code, new_gov.code);
+            assert_eq!(faction.government.kind, new_gov.kind);
+            // Because we didn't change the faction's government description from the default on the
+            // gov_table, it should have updated to that of the newly selected government
+            assert_eq!(faction.government.description, new_gov.description);
+            // We don't change the contraband of the faction's government because we don't care or
+            // display contraband in the context of factions
+
+            // We repeat the same test, but this time we change the faction's government description
+            // from the default and confirm that it is retained
+            let default_description = &gov_table
+                .iter()
+                .find(|g| g.kind == faction.government.kind)
+                .unwrap()
+                .description;
+            assert_eq!(faction.government.description, *default_description);
+
+            let new_gov = gov_table
+                .iter()
+                .find(|g| g.kind != faction.government.kind)
+                .unwrap();
+            assert_ne!(*new_gov, faction.government);
+
+            let blah = "Blah blah blah".to_string();
+            faction.government.description = blah.clone();
+            faction.government.kind = new_gov.kind.clone();
+            app.message_immediate(Message::NewFactionGovSelected {
+                new_code: new_gov.code,
+            });
+
+            let faction = &app.world.factions[app.faction_idx];
+            assert_eq!(faction.government.code, new_gov.code);
+            assert_eq!(faction.government.kind, new_gov.kind);
+            // Because we changed the faction's government description from the default it should
+            // have been retained
+            assert_eq!(faction.government.description, blah);
         }
     }
 }
