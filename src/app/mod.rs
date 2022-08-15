@@ -2685,5 +2685,43 @@ mod tests {
             // have been retained
             assert_eq!(faction.government.description, blah);
         }
+
+        #[test]
+        fn new_starport_class_selected() {
+            let mut app = empty_app();
+            let point = Point { x: 1, y: 1 };
+            app.message_immediate(Message::HexGridClicked { new_point: point });
+            app.message_immediate(Message::AddNewWorld);
+
+            let old_starport = app.world.starport.clone();
+            let new_class = match app.world.starport.class {
+                StarportClass::A => StarportClass::B,
+                StarportClass::B => StarportClass::C,
+                StarportClass::C => StarportClass::D,
+                StarportClass::D => StarportClass::E,
+                StarportClass::E => StarportClass::X,
+                StarportClass::X => StarportClass::A,
+            };
+            let new_starport = TABLES
+                .starport_table
+                .iter()
+                .find(|sp| sp.class == new_class)
+                .unwrap();
+
+            app.world.starport.class = new_class;
+            app.message_immediate(Message::NewStarportClassSelected);
+            assert_ne!(app.world.starport, old_starport);
+            assert_eq!(app.world.starport.code, new_starport.code);
+            assert_eq!(app.world.starport.class, new_starport.class);
+            // Generated berthing costs are 1d6 * the "base" starport table berthing cost; just need
+            // to account for when berthing costs are zero
+            if new_starport.berthing_cost != 0 {
+                assert!(app.world.starport.berthing_cost % new_starport.berthing_cost == 0);
+            } else {
+                assert_eq!(app.world.starport.berthing_cost, new_starport.berthing_cost);
+            }
+            assert_eq!(app.world.starport.fuel, new_starport.fuel);
+            assert_eq!(app.world.starport.facilities, new_starport.facilities);
+        }
     }
 }
