@@ -755,7 +755,7 @@ mod tests {
 
     #[test]
     fn subsector_creation() {
-        const ATTEMPTS: usize = 100;
+        const ATTEMPTS: usize = 1000;
         for _ in 0..ATTEMPTS {
             Subsector::default();
         }

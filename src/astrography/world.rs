@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use super::table::{
     AtmoRecord, CulturalDiffRecord, GovRecord, HydroRecord, LawRecord, PopRecord, StarportClass,
-    StarportRecord, TempRecord, WorldTagRecord, TABLES,
+    StarportRecord, Table, TempRecord, WorldTagRecord, TABLES,
 };
 use super::Point;
 use crate::dice;
@@ -21,14 +21,13 @@ pub(crate) struct Faction {
 
 impl Faction {
     pub fn random() -> Faction {
-        let gov_roll = dice::roll_2d(6);
-        let faction_roll = dice::roll_2d(6);
+        let faction_info = TABLES.faction_table.roll_normal_2d6(0);
 
         Faction {
             name: String::from("Unnamed"),
-            code: TABLES.faction_table[faction_roll].code,
-            strength: TABLES.faction_table[faction_roll].strength.clone(),
-            government: TABLES.gov_table[gov_roll].clone(),
+            code: faction_info.code,
+            strength: faction_info.strength.clone(),
+            government: TABLES.gov_table.roll_normal_2d6(0).clone(),
         }
     }
 }
@@ -196,8 +195,8 @@ impl World {
     pub(crate) const SIZE_MIN: u16 = 0;
     pub(crate) const SIZE_MAX: u16 = 10;
 
-    pub(crate) const TECH_MIN: i16 = 0;
-    pub(crate) const TECH_MAX: i16 = 15;
+    pub(crate) const TECH_MIN: i32 = 0;
+    pub(crate) const TECH_MAX: i32 = 15;
 
     pub(crate) const NUM_TAGS: usize = 2;
 
@@ -318,19 +317,16 @@ impl World {
         };
         let min = median - 200;
         let max = median + 200;
-        self.diameter = dice::roll(min..=max);
+        self.diameter = dice::roll_range(min..=max);
     }
 
     pub(crate) fn generate_atmosphere(&mut self) {
-        let lower = 0;
-        let upper = (TABLES.atmo_table.len() - 1) as i32;
-        let roll: i32 = dice::roll_2d(6) - 7 + self.size as i32;
-        let index = roll.clamp(lower, upper) as usize;
-        self.atmosphere = TABLES.atmo_table[index].clone();
+        let modifier = self.size as i32 - 7;
+        self.atmosphere = TABLES.atmo_table.roll_normal_2d6(modifier).clone();
     }
 
     pub(crate) fn generate_temperature(&mut self) {
-        let atmo_modifier: i32 = match self.atmosphere.code {
+        let modifier: i32 = match self.atmosphere.code {
             0 | 1 => 0,
             2 | 3 => -2,
             4 | 5 | 14 => -1,
@@ -338,82 +334,70 @@ impl World {
             8 | 9 => 1,
             10 | 13 | 15 => 2,
             11 | 12 => 6,
-            // Should *never* happen
-            _ => 0,
+            _ => unreachable!("The atmosphere should always be in the range 0..=12"),
         };
-
-        let lower = 0;
-        let upper = (TABLES.temp_table.len() - 1) as i32;
-        let roll = dice::roll_2d(6) + atmo_modifier;
-        let index = roll.clamp(lower, upper) as usize;
-        self.temperature = TABLES.temp_table[index].clone();
+        self.temperature = TABLES.temp_table.roll_normal_2d6(modifier).clone();
     }
 
     pub(crate) fn generate_hydrographics(&mut self) {
-        let roll = if self.size > 1 {
-            let atmo_modifier: i32 = match self.atmosphere.code {
-                0 | 1 | 10 | 11 | 12 => -4,
+        if self.size <= 1 {
+            self.hydrographics = TABLES.hydro_table[0].clone();
+            return;
+        }
 
-                // These two are not strictly following the rulebook, but any hydro
-                // above a 5 is impossible without them
-                6..=7 => 2,
-                8..=9 => 4,
+        let atmo_modifier: i32 = match self.atmosphere.code {
+            0 | 1 | 10 | 11 | 12 => -4,
+            _ => 0,
+        };
 
+        let temp_modifier: i32 = if self.atmosphere.code != 13 {
+            match self.temperature.code {
+                10 | 11 => -2,
+                12 => -6,
                 _ => 0,
-            };
-
-            let temp_modifier: i32 = if self.atmosphere.code != 13 {
-                match self.temperature.code {
-                    5..=9 => 2, // Not following the rulebook for same reason as above
-                    10 | 11 => -2,
-                    12 => -6,
-                    _ => 0,
-                }
-            } else {
-                0
-            };
-
-            dice::roll_2d(6) - 7 + atmo_modifier + temp_modifier
+            }
         } else {
             0
         };
 
-        let lower = 0;
-        let upper = (TABLES.hydro_table.len() - 1) as i32;
-        let index = roll.clamp(lower, upper) as usize;
-        self.hydrographics = TABLES.hydro_table[index].clone();
+        let modifier = atmo_modifier + temp_modifier;
+        self.hydrographics = TABLES.hydro_table.roll_normal_2d6(modifier).clone();
     }
 
     pub(crate) fn generate_population(&mut self) {
         // By default, the population roll is a straight 2d6-2; in my opinion
         // the population of a planet should be modified by the habitability of
-        // its size, atmosphere, and hydrographic. See this reddit post for the
-        // inspiration:
-        // https://www.reddit.com/r/traveller/comments/2xoqyy/mgt_new_to_traveller_question_about_worlds/cp29vt1/
+        // its size, atmosphere, and hydrographic. Because of this, we borrow
+        // the modifiers from the Cepheus Engine's world population modifiers.
+        // See: https://www.orffenspace.com/cepheus-srd/worlds.html#world-population
 
         // We keep the unmodified roll to use as the modifier for the government rolls;
         // this is to avoid too high of an average law level in the subsector
 
         let size_mod: i32 = match self.size {
-            7..=9 => 1,
-            _ => -1,
+            0..=2 => -1,
+            _ => 0,
         };
 
         let atmo_mod: i32 = match self.atmosphere.code {
-            5..=8 => 1,
-            _ => -1,
+            10..=u16::MAX => -2,
+            6 => 3,
+            5 | 8 => 1,
+            _ => 0,
         };
 
-        let hydro_mod: i32 = match self.hydrographics.code {
-            2..=8 => 1,
-            _ => -1,
+        let hydro_mod: i32 = if self.hydrographics.code == 0 && self.atmosphere.code < 3 {
+            -2
+        } else {
+            0
         };
+        let modifier = size_mod + atmo_mod + hydro_mod - 2;
+
+        let roll = dice::roll_2d(6);
+        let modified_roll = roll + modifier;
 
         let lower = 0;
         let upper = (TABLES.pop_table.len() - 1) as i32;
-
-        let roll = dice::roll_2d(6) - 2;
-        let modified_roll = roll + size_mod + atmo_mod + hydro_mod;
         let index = modified_roll.clamp(lower, upper) as usize;
 
         self.unmodified_pop = roll.clamp(lower, upper) as u16;
@@ -425,25 +409,17 @@ impl World {
             self.government = TABLES.gov_table[0].clone();
             return;
         }
-
-        let lower = 0;
-        let upper = (TABLES.gov_table.len() - 1) as i32;
-        let roll: i32 = dice::roll_2d(6) - 7 + self.unmodified_pop as i32;
-        let index = roll.clamp(lower, upper) as usize;
-        self.government = TABLES.gov_table[index].clone();
+        let modifier = self.unmodified_pop as i32 - 7;
+        self.government = TABLES.gov_table.roll_normal_2d6(modifier).clone();
     }
 
     pub(crate) fn generate_law_level(&mut self) {
-        if self.population.code == 0 {
+        if self.government.code == 0 {
             self.law_level = TABLES.law_table[0].clone();
             return;
         }
-
-        let lower = 0;
-        let upper = (TABLES.law_table.len() - 1) as i32;
-        let roll: i32 = dice::roll_2d(6) - 7 + self.government.code as i32;
-        let index = roll.clamp(lower, upper) as usize;
-        self.law_level = TABLES.law_table[index].clone();
+        let modifier = self.government.code as i32 - 7;
+        self.law_level = TABLES.law_table.roll_normal_2d6(modifier).clone();
     }
 
     fn generate_factions(&mut self) {
@@ -464,14 +440,32 @@ impl World {
     }
 
     pub(crate) fn generate_culture(&mut self) {
-        let range = 0..TABLES.culture_table.len();
-        let roll = dice::roll(range);
-        self.culture = TABLES.culture_table[roll].clone();
+        self.culture = TABLES.culture_table.roll_uniform().clone();
     }
 
+    /** Regenerate all of the world's world tags. */
     fn generate_world_tags(&mut self) {
-        for tag in self.world_tags.iter_mut() {
-            *tag = WorldTagRecord::random();
+        for index in 0..self.world_tags.len() {
+            self.generate_world_tag(index);
+        }
+    }
+
+    /** Mutate the world tag at `index` to a random one on the `world_tag_table`.
+
+    Currently each world only has two world tags, so the only valid indices are `0` and `1`.
+
+    # Returns
+    - `Some(world_tag)` with the old, displaced world tag if `index` is valid, or
+    - `None` otherwise
+    */
+    pub(crate) fn generate_world_tag(&mut self, index: usize) -> Option<WorldTagRecord> {
+        match self.world_tags.get_mut(index) {
+            Some(world_tag) => {
+                let old_tag = world_tag.clone();
+                *world_tag = TABLES.world_tag_table.roll_uniform().clone();
+                Some(old_tag)
+            }
+            None => None,
         }
     }
 
@@ -484,12 +478,7 @@ impl World {
             _ => 0,
         };
 
-        let lower = 0;
-        let upper = (TABLES.starport_table.len() - 1) as i32;
-        let roll = dice::roll_2d(6) + pop_mod;
-        let index = roll.clamp(lower, upper) as usize;
-        self.starport = TABLES.starport_table[index].clone();
-
+        self.starport = TABLES.starport_table.roll_normal_2d6(pop_mod).clone();
         self.generate_berthing_cost();
     }
 
@@ -499,6 +488,11 @@ impl World {
     }
 
     pub(crate) fn generate_tech_level(&mut self) {
+        if self.population.code == 0 {
+            self.tech_level = 0;
+            return;
+        }
+
         let size_mod = match self.size {
             0..=1 => 2,
             2..=4 => 1,
@@ -542,8 +536,8 @@ impl World {
             _ => 0,
         };
 
-        let roll: i16 =
-            dice::roll_1d(6) + size_mod + atmo_mod + hydro_mod + pop_mod + gov_mod + starport_mod;
+        let modifier = size_mod + atmo_mod + hydro_mod + pop_mod + gov_mod + starport_mod;
+        let roll: i32 = dice::roll_1d(6) + modifier;
         self.tech_level = roll.clamp(Self::TECH_MIN, Self::TECH_MAX) as u16;
     }
 
@@ -568,24 +562,24 @@ impl World {
             }
 
             StarportClass::C => {
-                naval_target = 100; // Impossible
+                naval_target = i32::MAX; // Impossible
                 scout_target = 8;
                 research_target = 10;
                 tas_target = 10;
             }
 
             StarportClass::D => {
-                naval_target = 100; // Impossible
+                naval_target = i32::MAX; // Impossible
                 scout_target = 7;
-                research_target = 100; // Impossible
-                tas_target = 100; // Impossible
+                research_target = i32::MAX; // Impossible
+                tas_target = i32::MAX; // Impossible
             }
 
             _ => {
-                naval_target = 100; // Impossible
-                scout_target = 100; // Impossible
-                research_target = 100; // Impossible
-                tas_target = 100; // Impossible
+                naval_target = i32::MAX; // Impossible
+                scout_target = i32::MAX; // Impossible
+                research_target = i32::MAX; // Impossible
+                tas_target = i32::MAX; // Impossible
             }
         }
 
@@ -1219,5 +1213,14 @@ mod tests {
         let deserialized: WorldRecord = reader.deserialize().next().unwrap().unwrap();
 
         assert_eq!(deserialized, original);
+    }
+
+    // TODO: this, and other statistical analysis functions, should probably be moved into a
+    // separate bin or something at some point
+    #[allow(dead_code)]
+    fn show_histograms() {
+        histograms(10_000);
+        // Purposefully fail get cargo test to show the output
+        assert!(false);
     }
 }

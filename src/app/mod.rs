@@ -647,20 +647,22 @@ impl GeneratorApp {
                 self.message_immediate(Message::WorldModelUpdated);
             }
 
-            RegenWorldTag { index } => {
-                let world_tag = &mut self.world.world_tags[index];
-                let old_code = world_tag.code as usize;
-
-                let new_tag = WorldTagRecord::random();
-                world_tag.code = new_tag.code;
-                world_tag.tag = new_tag.tag.clone();
-
-                // Replace existing description iff the user hasn't changed it from the default
-                if world_tag.description == TABLES.world_tag_table[old_code].description {
-                    world_tag.description = new_tag.description.clone();
+            RegenWorldTag { index } => match self.world.generate_world_tag(index) {
+                Some(WorldTagRecord {
+                    code: old_code,
+                    description: old_description,
+                    ..
+                }) => {
+                    let default_description =
+                        &TABLES.world_tag_table[old_code as usize].description;
+                    if old_description != *default_description {
+                        self.world.world_tags[index].description = old_description;
+                    }
+                    self.message_immediate(Message::WorldModelUpdated);
                 }
-                self.message_immediate(Message::WorldModelUpdated);
-            }
+
+                None => (),
+            },
 
             RegenWorldTechLevel => {
                 self.world.generate_tech_level();
