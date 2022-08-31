@@ -5,10 +5,25 @@ use serde::{Deserialize, Serialize};
 
 use crate::dice;
 
+/** Trait representing a record or row in a table. */
+trait Record {
+    /** Get the `code` of this `Record`; i.e. its index in the table.
+
+    This *must* match the physical row index of the `Record` in the table.
+    */
+    fn code(&self) -> u16;
+}
+
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct AtmoRecord {
     pub(crate) code: u16,
     pub(crate) composition: String,
+}
+
+impl Record for AtmoRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
 }
 type AtmoTable = Vec<AtmoRecord>;
 
@@ -25,6 +40,11 @@ impl PartialEq for TempRecord {
     }
 }
 
+impl Record for TempRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
+}
 type TempTable = Vec<TempRecord>;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -32,12 +52,24 @@ pub(crate) struct HydroRecord {
     pub(crate) code: u16,
     pub(crate) description: String,
 }
+
+impl Record for HydroRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
+}
 type HydroTable = Vec<HydroRecord>;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct PopRecord {
     pub(crate) code: u16,
     pub(crate) inhabitants: String,
+}
+
+impl Record for PopRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
 }
 type PopTable = Vec<PopRecord>;
 
@@ -48,12 +80,24 @@ pub(crate) struct GovRecord {
     pub(crate) description: String,
     pub(crate) contraband: String,
 }
+
+impl Record for GovRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
+}
 type GovTable = Vec<GovRecord>;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct FactionRecord {
     pub(crate) code: u16,
     pub(crate) strength: String,
+}
+
+impl Record for FactionRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
 }
 type FactionTable = Vec<FactionRecord>;
 
@@ -62,6 +106,12 @@ pub(crate) struct CulturalDiffRecord {
     pub(crate) code: u16,
     pub(crate) cultural_difference: String,
     pub(crate) description: String,
+}
+
+impl Record for CulturalDiffRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
 }
 type CulturalDiffTable = Vec<CulturalDiffRecord>;
 
@@ -72,6 +122,11 @@ pub(crate) struct WorldTagRecord {
     pub(crate) description: String,
 }
 
+impl Record for WorldTagRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
+}
 type WorldTagTable = Vec<WorldTagRecord>;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -79,6 +134,12 @@ pub(crate) struct LawRecord {
     pub(crate) code: u16,
     pub(crate) banned_weapons: String,
     pub(crate) banned_armor: String,
+}
+
+impl Record for LawRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
 }
 type LawTable = Vec<LawRecord>;
 
@@ -116,6 +177,11 @@ impl PartialEq for StarportRecord {
     }
 }
 
+impl Record for StarportRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
+}
 type StarportTable = Vec<StarportRecord>;
 
 pub(crate) trait Table<T> {
@@ -165,11 +231,16 @@ where
     }
 }
 
-fn load_table<T: for<'de> Deserialize<'de>>(file_path: &str) -> Vec<T> {
+fn load_table<T: for<'de> Deserialize<'de> + Record>(file_path: &str) -> Vec<T> {
     let mut table = Vec::new();
     let mut reader = csv::Reader::from_path(file_path).unwrap();
-    for result in reader.deserialize() {
+    for (index, result) in reader.deserialize().enumerate() {
         let record: T = result.unwrap();
+        assert_eq!(
+            record.code(),
+            index as u16,
+            "The code field in each row must match its zero-indexed position in the table"
+        );
         table.push(record);
     }
     table
