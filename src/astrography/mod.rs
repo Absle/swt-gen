@@ -2,10 +2,15 @@ pub(crate) mod table;
 pub(crate) mod world;
 
 use std::collections::BTreeMap;
+use std::convert::TryFrom;
 use std::error::Error;
 use std::fs;
 use std::ops::{Add, Sub};
+use std::str;
 
+use lazy_static::lazy_static;
+use quick_xml::events::Event;
+use quick_xml::reader::Reader;
 use rand::Rng;
 use roxmltree as xml;
 use serde::{Deserialize, Serialize};
@@ -63,10 +68,31 @@ impl TryFrom<&str> for Point {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 struct Translation {
     x: f64,
     y: f64,
+}
+
+impl Translation {
+    fn try_from_transform_str(transform: &str) -> Result<Self, Box<dyn Error>> {
+        let translate_args: Vec<&str> = transform
+            .strip_prefix("translate(")
+            .ok_or(format!("Incorrect prefix in transform '{transform}'"))?
+            .strip_suffix(")")
+            .ok_or(format!("Unclosed tranform '{transform}'"))?
+            .split(',')
+            .collect();
+
+        let x: f64 = translate_args
+            .get(0)
+            .ok_or(format!("Could not find x value in '{transform}'"))?
+            .parse()?;
+
+        let y: f64 = translate_args.get(1).unwrap_or(&"0.0").parse()?;
+
+        Ok(Translation { x, y })
+    }
 }
 
 impl Add for &Translation {
@@ -76,6 +102,12 @@ impl Add for &Translation {
             x: self.x + other.x,
             y: self.y + other.y,
         }
+    }
+}
+
+impl Default for Translation {
+    fn default() -> Self {
+        Translation { x: 0.0, y: 0.0 }
     }
 }
 
@@ -140,6 +172,133 @@ pub(crate) struct Subsector {
 
 #[allow(dead_code)]
 const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population,Notes";
+const TEMPLATE_SVG: &'static str = include_str!("../../resources/traveller_subsector_grid.svg");
+
+lazy_static! {
+    static ref CENTER_MARKERS: BTreeMap<Point, Translation> = get_svg_center_marks();
+}
+
+fn get_svg_center_marks() -> BTreeMap<Point, Translation> {
+    let mut reader = Reader::from_str(TEMPLATE_SVG);
+    reader.trim_text(true);
+    let mut reader_buf = Vec::new();
+
+    let mut column_translations: [Translation; Subsector::COLUMNS] =
+        [Translation::default(); Subsector::COLUMNS];
+    let mut circle_translations: BTreeMap<Point, Translation> = BTreeMap::new();
+    loop {
+        match reader.read_event_into(&mut reader_buf) {
+            Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
+            Ok(Event::Eof) => break,
+
+            Ok(Event::Start(element)) => {
+                let _name_bytes = element.name();
+                let _name = str::from_utf8(_name_bytes.as_ref()).unwrap();
+                let attributes: BTreeMap<_, _> = element
+                    .attributes()
+                    .map(|a| {
+                        let attribute = a.unwrap();
+                        (
+                            str::from_utf8(attribute.key.as_ref()).unwrap().to_string(),
+                            str::from_utf8(attribute.value.as_ref())
+                                .unwrap()
+                                .to_string(),
+                        )
+                    })
+                    .collect();
+
+                if let Some(id) = attributes.get("id") {
+                    if let Some(column_num) = id.strip_prefix("center-marker-column-") {
+                        // If the element is a center marker column, get the column offset
+                        let column_num: usize = column_num
+                            .parse()
+                            .expect(&format!("Unparsable column number in {id}"));
+                        assert!(
+                            (1..=Subsector::COLUMNS).contains(&column_num),
+                            "Out of bounds column number while parsing {id}"
+                        );
+
+                        let column_idx = column_num - 1;
+                        assert_eq!(
+                            column_translations[column_idx],
+                            Translation::default(),
+                            "Found double definition of center-mark-column {id}"
+                        );
+
+                        if let Some(transform) = attributes.get("transform") {
+                            column_translations[column_idx] =
+                                Translation::try_from_transform_str(transform).unwrap();
+                        }
+                    }
+                }
+            }
+
+            Ok(Event::Empty(element)) => {
+                let attributes: BTreeMap<_, _> = element
+                    .attributes()
+                    .map(|a| {
+                        let attribute = a.unwrap();
+                        (
+                            str::from_utf8(attribute.key.as_ref()).unwrap().to_string(),
+                            str::from_utf8(attribute.value.as_ref())
+                                .unwrap()
+                                .to_string(),
+                        )
+                    })
+                    .collect();
+
+                if let Some(id) = attributes.get("id") {
+                    if let Some(point_str) = id.strip_prefix("center-mark-") {
+                        // If the element is a center mark circle itself, get the center coordinates
+                        let point = Point::try_from(point_str).unwrap();
+                        assert!(
+                            circle_translations.get(&point).is_none(),
+                            "Found double definition of center mark {id}"
+                        );
+                        assert!(
+                            Subsector::point_is_inbounds(&point),
+                            "Found out-of-bounds center mark {id}"
+                        );
+
+                        let x: f64 = attributes
+                            .get("cx")
+                            .expect(&format!("Could not find cx attribute while parsing {id}"))
+                            .parse()
+                            .expect(&format!("Unparsable cx attribute in {id}"));
+                        let y: f64 = attributes
+                            .get("cy")
+                            .expect(&format!("Could not find cy attribute while parsing {id}"))
+                            .parse()
+                            .expect(&format!("Unparsable cy attribute in {id}"));
+
+                        circle_translations.insert(point, Translation { x, y });
+                    }
+                }
+            }
+            _ => (),
+        }
+        reader_buf.clear();
+    }
+
+    let mut center_marks = BTreeMap::new();
+    for x in 1..=Subsector::COLUMNS {
+        let column_idx = x - 1;
+        let column_translation = column_translations[column_idx];
+        for y in 1..=Subsector::ROWS {
+            let point = Point {
+                x: x as u16,
+                y: y as u16,
+            };
+
+            let center_mark = circle_translations
+                .get(&point)
+                .expect("Not all expected center marks were parsed")
+                + &column_translation;
+            center_marks.insert(point, center_mark);
+        }
+    }
+    center_marks
+}
 
 impl Subsector {
     pub const COLUMNS: usize = 8;
@@ -284,71 +443,8 @@ impl Subsector {
     }
 
     pub fn generate_svg(&self) -> String {
-        let template_svg = fs::read_to_string("resources/traveller_subsector_grid.svg").unwrap();
+        let template_svg = TEMPLATE_SVG.to_string();
         let doc = xml::Document::parse(&template_svg).unwrap();
-
-        // Parse through svg document to find coordinates of center markers
-        let mut marker_coordinates: BTreeMap<Point, Translation> = BTreeMap::new();
-        for (x, column) in doc
-            .descendants()
-            .find(|node| node.attribute("id") == Some("CenterMarkers"))
-            .unwrap()
-            .descendants()
-            .filter(|node| {
-                node.is_element()
-                    && node.tag_name().name() == "g"
-                    && node.attribute("id") != Some("CenterMarkers")
-            })
-            .enumerate()
-        {
-            let column_x: f64;
-            let column_y: f64;
-            if let Some(tranform) = column.attribute("transform") {
-                let translate_args: Vec<&str> = tranform
-                    .strip_prefix("translate(")
-                    .unwrap()
-                    .strip_suffix(")")
-                    .unwrap()
-                    .split(',')
-                    .collect();
-
-                column_x = match translate_args.get(0) {
-                    Some(arg) => arg.parse().unwrap(),
-                    None => 0.0,
-                };
-
-                column_y = match translate_args.get(1) {
-                    Some(arg) => arg.parse().unwrap(),
-                    None => 0.0,
-                };
-            } else {
-                column_x = 0.0;
-                column_y = 0.0;
-            }
-
-            let column_translation = Translation {
-                x: column_x,
-                y: column_y,
-            };
-
-            for (y, circle) in column
-                .descendants()
-                .filter(|node| node.tag_name().name() == "circle")
-                .enumerate()
-            {
-                let circle_translation = Translation {
-                    x: circle.attribute("cx").unwrap().parse().unwrap(),
-                    y: circle.attribute("cy").unwrap().parse().unwrap(),
-                };
-
-                let point = Point {
-                    x: x as u16 + 1,
-                    y: y as u16 + 1,
-                };
-
-                marker_coordinates.insert(point, &column_translation + &circle_translation);
-            }
-        }
 
         // Find translations of all symbols in the map legend
         let gas_giant = doc
@@ -391,15 +487,14 @@ impl Subsector {
         ));
 
         for (point, world) in &self.map {
-            let marker_translation = match marker_coordinates.get(point) {
-                Some(translation) => translation.clone(),
-                None => continue,
-            };
+            let marker_translation = CENTER_MARKERS
+                .get(point)
+                .unwrap_or_else(|| unreachable!("Found a point with no center marker"));
 
             // Add gas giant symbol
             if world.has_gas_giant {
                 let offset = Translation { x: 0.0, y: -6.0 };
-                let translation = &(&marker_translation - &gas_giant_trans) + &offset;
+                let translation = &(marker_translation - &gas_giant_trans) + &offset;
                 output_buffer.push(format!(
                     "<use \
                     x=\"0\" \
@@ -444,7 +539,7 @@ impl Subsector {
 
             // Add dry/wet world symbol below and to the left of center
             let offset = Translation { x: -5.0, y: 4.0 };
-            let translation = &(&marker_translation - world_trans) + &offset;
+            let translation = &(marker_translation - world_trans) + &offset;
             output_buffer.push(format!(
                 "<use \
                 x=\"0\" \
@@ -462,7 +557,7 @@ impl Subsector {
 
             // Add `StarportClass-TL` text to hex
             let offset = Translation { x: 5.0, y: 5.0 };
-            let translation = &marker_translation + &offset;
+            let translation = marker_translation + &offset;
             output_buffer.push(format!(
                 "<text \
                 xml:space=\"preserve\" \
@@ -485,7 +580,7 @@ impl Subsector {
 
             // Add world profile code at bottom of hex
             let offset = Translation { x: 0.0, y: 10.0 };
-            let translation = &marker_translation + &offset;
+            let translation = marker_translation + &offset;
             output_buffer.push(format!(
                 "<text \
                 xml:space=\"preserve\" \
@@ -533,6 +628,13 @@ impl Subsector {
         self.map.get(point)
     }
 
+    fn point_is_inbounds(point: &Point) -> bool {
+        point.x > 0
+            && point.x as usize <= Self::COLUMNS
+            && point.y > 0
+            && point.y as usize <= Self::ROWS
+    }
+
     /** Inserts `world` at `point`, replacing any other `World` that was there previously.
 
     Will only insert a `World` if `point` is within the bounds set by `Subsector::COLUMNS` and
@@ -543,11 +645,7 @@ impl Subsector {
     - `None` if there was no `World` at `point`, or if `point` was out of bounds
     */
     pub fn insert_world(&mut self, point: &Point, world: &mut World) -> Option<World> {
-        if point.x > 0
-            && point.x as usize <= Self::COLUMNS
-            && point.y > 0
-            && point.y as usize <= Self::ROWS
-        {
+        if Self::point_is_inbounds(point) {
             self.map.insert(point.clone(), world.clone())
         } else {
             None
@@ -785,7 +883,7 @@ mod tests {
 
     #[test]
     fn subsector_svg() {
-        const ATTEMPTS: usize = 10;
+        const ATTEMPTS: usize = 100;
         for _ in 0..ATTEMPTS {
             let subsector = Subsector::default();
             let _svg = subsector.generate_svg();

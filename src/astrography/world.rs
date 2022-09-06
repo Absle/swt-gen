@@ -1219,7 +1219,7 @@ mod tests {
     // separate bin or something at some point
     #[allow(dead_code)]
     fn show_histograms() {
-        histograms(10_000);
+        histograms(100_000);
         // Purposefully fail get cargo test to show the output
         assert!(false);
     }
