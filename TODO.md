@@ -25,7 +25,6 @@ TODOs completed in this way should probably should still have an issue created a
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
 - Rename project and repo to "Stars With Travellers Generator" (swt-gen) or something like that
-- Refactor svg generation to use a proper xml editor
 - Add a background color to the subsector grid svg template, rather than just transparent and unreadable on renderers with a dark background
 - Add support for colored "stellar alliances" and trade/diplomatic connection lines; ***actually creating these alliances and connections*** will be done by the user in the GUI
     - Update svg generation to display these
@@ -67,3 +66,6 @@ TODOs completed in this way should probably should still have an issue created a
 ### App/GUI TODOs
 - ~~Consider changing all "unsaved changes" popups to use a native dialog~~
     - Can not be done through the `native-dialog` crate and would require making custom windows
+
+### Backened/Astrography TODOs
+- ~~Refactor svg generation to use a proper xml editor~~

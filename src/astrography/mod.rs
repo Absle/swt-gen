@@ -9,10 +9,7 @@ use std::ops::{Add, Sub};
 use std::str;
 
 use lazy_static::lazy_static;
-use quick_xml::events::Event;
-use quick_xml::reader::Reader;
 use rand::Rng;
-use roxmltree as xml;
 use serde::{Deserialize, Serialize};
 
 use super::dice;
@@ -175,129 +172,10 @@ const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Tra
 const TEMPLATE_SVG: &'static str = include_str!("../../resources/traveller_subsector_grid.svg");
 
 lazy_static! {
-    static ref CENTER_MARKERS: BTreeMap<Point, Translation> = get_svg_center_marks();
-}
-
-fn get_svg_center_marks() -> BTreeMap<Point, Translation> {
-    let mut reader = Reader::from_str(TEMPLATE_SVG);
-    reader.trim_text(true);
-    let mut reader_buf = Vec::new();
-
-    let mut column_translations: [Translation; Subsector::COLUMNS] =
-        [Translation::default(); Subsector::COLUMNS];
-    let mut circle_translations: BTreeMap<Point, Translation> = BTreeMap::new();
-    loop {
-        match reader.read_event_into(&mut reader_buf) {
-            Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
-            Ok(Event::Eof) => break,
-
-            Ok(Event::Start(element)) => {
-                let _name_bytes = element.name();
-                let _name = str::from_utf8(_name_bytes.as_ref()).unwrap();
-                let attributes: BTreeMap<_, _> = element
-                    .attributes()
-                    .map(|a| {
-                        let attribute = a.unwrap();
-                        (
-                            str::from_utf8(attribute.key.as_ref()).unwrap().to_string(),
-                            str::from_utf8(attribute.value.as_ref())
-                                .unwrap()
-                                .to_string(),
-                        )
-                    })
-                    .collect();
-
-                if let Some(id) = attributes.get("id") {
-                    if let Some(column_num) = id.strip_prefix("center-marker-column-") {
-                        // If the element is a center marker column, get the column offset
-                        let column_num: usize = column_num
-                            .parse()
-                            .expect(&format!("Unparsable column number in {id}"));
-                        assert!(
-                            (1..=Subsector::COLUMNS).contains(&column_num),
-                            "Out of bounds column number while parsing {id}"
-                        );
-
-                        let column_idx = column_num - 1;
-                        assert_eq!(
-                            column_translations[column_idx],
-                            Translation::default(),
-                            "Found double definition of center-mark-column {id}"
-                        );
-
-                        if let Some(transform) = attributes.get("transform") {
-                            column_translations[column_idx] =
-                                Translation::try_from_transform_str(transform).unwrap();
-                        }
-                    }
-                }
-            }
-
-            Ok(Event::Empty(element)) => {
-                let attributes: BTreeMap<_, _> = element
-                    .attributes()
-                    .map(|a| {
-                        let attribute = a.unwrap();
-                        (
-                            str::from_utf8(attribute.key.as_ref()).unwrap().to_string(),
-                            str::from_utf8(attribute.value.as_ref())
-                                .unwrap()
-                                .to_string(),
-                        )
-                    })
-                    .collect();
-
-                if let Some(id) = attributes.get("id") {
-                    if let Some(point_str) = id.strip_prefix("center-mark-") {
-                        // If the element is a center mark circle itself, get the center coordinates
-                        let point = Point::try_from(point_str).unwrap();
-                        assert!(
-                            circle_translations.get(&point).is_none(),
-                            "Found double definition of center mark {id}"
-                        );
-                        assert!(
-                            Subsector::point_is_inbounds(&point),
-                            "Found out-of-bounds center mark {id}"
-                        );
-
-                        let x: f64 = attributes
-                            .get("cx")
-                            .expect(&format!("Could not find cx attribute while parsing {id}"))
-                            .parse()
-                            .expect(&format!("Unparsable cx attribute in {id}"));
-                        let y: f64 = attributes
-                            .get("cy")
-                            .expect(&format!("Could not find cy attribute while parsing {id}"))
-                            .parse()
-                            .expect(&format!("Unparsable cy attribute in {id}"));
-
-                        circle_translations.insert(point, Translation { x, y });
-                    }
-                }
-            }
-            _ => (),
-        }
-        reader_buf.clear();
-    }
-
-    let mut center_marks = BTreeMap::new();
-    for x in 1..=Subsector::COLUMNS {
-        let column_idx = x - 1;
-        let column_translation = column_translations[column_idx];
-        for y in 1..=Subsector::ROWS {
-            let point = Point {
-                x: x as u16,
-                y: y as u16,
-            };
-
-            let center_mark = circle_translations
-                .get(&point)
-                .expect("Not all expected center marks were parsed")
-                + &column_translation;
-            center_marks.insert(point, center_mark);
-        }
-    }
-    center_marks
+    static ref CENTER_MARKERS: BTreeMap<Point, Translation> = center_markers();
+    static ref GAS_GIANT_TRANS: Translation = map_legend_translation("GasGiantCircle");
+    static ref DRY_WORLD_TRANS: Translation = map_legend_translation("DryWorldSymbol");
+    static ref WET_WORLD_TRANS: Translation = map_legend_translation("WetWorldSymbol");
 }
 
 impl Subsector {
@@ -443,179 +321,186 @@ impl Subsector {
     }
 
     pub fn generate_svg(&self) -> String {
-        let template_svg = TEMPLATE_SVG.to_string();
-        let doc = xml::Document::parse(&template_svg).unwrap();
+        use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
+        use std::io::Cursor;
 
-        // Find translations of all symbols in the map legend
-        let gas_giant = doc
-            .descendants()
-            .find(|node| node.attribute("id") == Some("GasGiantSymbol"))
-            .unwrap()
-            .descendants()
-            .find(|node| node.tag_name().name() == "circle")
-            .unwrap();
-        let gas_giant_trans = Translation {
-            x: gas_giant.attribute("cx").unwrap().parse().unwrap(),
-            y: gas_giant.attribute("cy").unwrap().parse().unwrap(),
-        };
+        let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
+        let mut writer = quick_xml::Writer::new(Cursor::new(Vec::new()));
+        loop {
+            match reader.read_event() {
+                Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
+                Ok(Event::Eof) => break,
+                Ok(Event::Comment(_)) => (),
 
-        let dry_world = doc
-            .descendants()
-            .find(|node| node.attribute("id") == Some("DryWorldSymbol"))
-            .unwrap();
-        let dry_world_trans = Translation {
-            x: dry_world.attribute("cx").unwrap().parse().unwrap(),
-            y: dry_world.attribute("cy").unwrap().parse().unwrap(),
-        };
+                Ok(Event::Start(element)) => {
+                    writer.write_event(Event::Start(element)).unwrap();
+                }
 
-        let wet_world = doc
-            .descendants()
-            .find(|node| node.attribute("id") == Some("WetWorldSymbol"))
-            .unwrap();
-        let wet_world_trans = Translation {
-            x: wet_world.attribute("cx").unwrap().parse().unwrap(),
-            y: wet_world.attribute("cy").unwrap().parse().unwrap(),
-        };
+                Ok(Event::End(element)) => {
+                    if element.name().as_ref() == b"svg" {
+                        let mut layer = BytesStart::new("g");
+                        layer.extend_attributes(vec![
+                            ("inkscape:groupmode", "layer"),
+                            ("id", "layer6"),
+                            ("inkscape:label", "Generated"),
+                        ]);
+                        writer.write_event(Event::Start(layer)).unwrap();
 
-        let mut output_buffer: Vec<String> =
-            template_svg.lines().map(|s| String::from(s)).collect();
-        let close_svg = output_buffer.pop().unwrap();
+                        for (point, world) in &self.map {
+                            let point_str = point.to_string();
+                            let marker_translation = CENTER_MARKERS
+                                .get(point)
+                                .expect("Found a point with no center marker");
 
-        // Adding a "layer" called "Generated" to contain all the generated symbols
-        output_buffer.push(String::from(
-            "<g inkscape:groupmode=\"layer\" id=\"layer6\" inkscape:label=\"Generated\">",
-        ));
+                            // Place gas giant symbol
+                            if world.has_gas_giant {
+                                let offset = Translation { x: 0.0, y: -6.0 };
+                                let trans = &(marker_translation - &GAS_GIANT_TRANS) + &offset;
 
-        for (point, world) in &self.map {
-            let marker_translation = CENTER_MARKERS
-                .get(point)
-                .unwrap_or_else(|| unreachable!("Found a point with no center marker"));
+                                writer
+                                    .create_element("use")
+                                    .with_attributes(vec![
+                                        ("href", "#GasGiantSymbol"),
+                                        (
+                                            "id",
+                                            &format!("{:02}{:02}GasGiantSymbol", point.x, point.y),
+                                        ),
+                                        (
+                                            "transform",
+                                            &format!("translate({},{})", trans.x, trans.y),
+                                        ),
+                                    ])
+                                    .write_empty()
+                                    .unwrap();
+                            }
 
-            // Add gas giant symbol
-            if world.has_gas_giant {
-                let offset = Translation { x: 0.0, y: -6.0 };
-                let translation = &(marker_translation - &gas_giant_trans) + &offset;
-                output_buffer.push(format!(
-                    "<use \
-                    x=\"0\" \
-                    y=\"0\" \
-                    href=\"#{symbol}\" \
-                    id=\"{id}\" \
-                    width=\"100%\" \
-                    height=\"100%\" \
-                    transform=\"translate({translate_x},{translate_y})\"/>",
-                    symbol = "GasGiantSymbol",
-                    id = format!("{:02}{:02}GasGiantSymbol", point.x, point.y),
-                    translate_x = translation.x,
-                    translate_y = translation.y
-                ));
+                            // Place world name
+                            writer
+                                .create_element("text")
+                                .with_attributes(vec![
+                                    ("xml:space", "preserve"),
+                                    ("class", "text-world-name"),
+                                    ("x", &marker_translation.x.to_string()),
+                                    ("y", &marker_translation.y.to_string()),
+                                    ("id", &format!("{}NameText", point_str)),
+                                ])
+                                .write_inner_content(|writer| {
+                                    writer
+                                        .create_element("tspan")
+                                        .with_attributes(vec![
+                                            ("sodipodi:role", "line"),
+                                            ("id", &format!("{}NameTspan", point_str)),
+                                        ])
+                                        .write_text_content(BytesText::new(&world.name))
+                                        .unwrap();
+                                    Ok(())
+                                })
+                                .unwrap();
+
+                            // Place dry/world symbol
+                            let (symbol_id, world_trans) = match world.hydrographics.code {
+                                h if h <= 3 => ("DryWorldSymbol", *DRY_WORLD_TRANS),
+                                _ => ("WetWorldSymbol", *WET_WORLD_TRANS),
+                            };
+                            let offset = Translation { x: -5.0, y: 4.0 };
+                            let trans = &(marker_translation - &world_trans) + &offset;
+                            writer
+                                .create_element("use")
+                                .with_attributes(vec![
+                                    ("href", &format!("#{}", symbol_id)[..]),
+                                    ("id", &format!("{}{}", point_str, symbol_id)),
+                                    ("transform", &format!("translate({},{})", trans.x, trans.y)),
+                                ])
+                                .write_empty()
+                                .unwrap();
+
+                            // Add `StarportClass-TL` text to hex
+                            let offset = Translation { x: 5.0, y: 5.0 };
+                            let trans = marker_translation + &offset;
+                            writer
+                                .create_element("text")
+                                .with_attributes(vec![
+                                    ("xml:space", "preserve"),
+                                    ("class", "text-starport-tl"),
+                                    ("x", &trans.x.to_string()),
+                                    ("y", &trans.y.to_string()),
+                                    ("id", &format!("{}StarportTlText", point_str)),
+                                ])
+                                .write_inner_content(|writer| {
+                                    let starport_tl =
+                                        format!("{:?}-{}", world.starport.class, world.tech_level);
+                                    writer
+                                        .create_element("tspan")
+                                        .with_attributes(vec![
+                                            ("sodipodi:role", "line"),
+                                            ("id", &format!("{}StarportTlTspan", point_str)),
+                                        ])
+                                        .write_text_content(BytesText::new(&starport_tl))
+                                        .unwrap();
+                                    Ok(())
+                                })
+                                .unwrap();
+
+                            // Place world profile code
+                            let offset = Translation { x: 0.0, y: 10.0 };
+                            let trans = marker_translation + &offset;
+                            writer
+                                .create_element("text")
+                                .with_attributes(vec![
+                                    ("xml:space", "preserve"),
+                                    ("class", "text-world-profile"),
+                                    ("x", &format!("{}", trans.x)),
+                                    ("y", &format!("{}", trans.y)),
+                                    ("id", &format!("{}WorldProfileText", point_str)),
+                                ])
+                                .write_inner_content(|writer| {
+                                    writer
+                                        .create_element("tspan")
+                                        .with_attributes(vec![
+                                            ("sodipodi:role", "line"),
+                                            ("id", &format!("{}WorldProfileTspan", point_str)),
+                                            ("x", &format!("{}", trans.x)),
+                                            ("y", &format!("{}", trans.y)),
+                                        ])
+                                        .write_text_content(BytesText::new(&world.profile()))
+                                        .unwrap();
+                                    Ok(())
+                                })
+                                .unwrap();
+                        }
+                        // End of layer
+                        writer.write_event(Event::End(BytesEnd::new("g"))).unwrap();
+                    }
+                    // Close svg section
+                    writer.write_event(Event::End(element)).unwrap();
+                }
+
+                Ok(Event::Empty(element)) => {
+                    writer.write_event(Event::Empty(element)).unwrap();
+                }
+
+                Ok(Event::Text(text)) => {
+                    let t: &[u8] = text.as_ref();
+                    if t == b"Subsector Name" {
+                        let map_title = format!("{} Subsector", self.name());
+                        let subsector_name = BytesText::new(&map_title);
+                        writer.write_event(Event::Text(subsector_name)).unwrap();
+                    } else {
+                        writer.write_event(Event::Text(text)).unwrap();
+                    }
+                }
+
+                Ok(Event::Decl(element)) => {
+                    writer.write_event(Event::Decl(element)).unwrap();
+                }
+
+                _ => panic!("Unexpected element in template svg"),
             }
-
-            // Add world name in center of hex
-            output_buffer.push(format!(
-                "<text \
-                xml:space=\"preserve\" \
-                style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
-                x=\"{translate_x}\" \
-                y=\"{translate_y}\" \
-                id=\"{point_str}NameText\">\
-                <tspan \
-                sodipodi:role=\"line\" \
-                id=\"{point_str}NameTspan\" \
-                style=\"font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
-                x=\"{translate_x}\" \
-                y=\"{translate_y}\">{name}</tspan></text>",
-                translate_x = marker_translation.x,
-                translate_y = marker_translation.y,
-                point_str = format!("{:02}{:02}", point.x, point.y),
-                name = world.name
-            ));
-
-            // Decide whether to use dry or wet world symbol
-            let (world_symbol, world_trans) = match world.hydrographics.code {
-                h if h <= 3 => ("DryWorldSymbol", &dry_world_trans),
-                _ => ("WetWorldSymbol", &wet_world_trans),
-            };
-
-            // Add dry/wet world symbol below and to the left of center
-            let offset = Translation { x: -5.0, y: 4.0 };
-            let translation = &(marker_translation - world_trans) + &offset;
-            output_buffer.push(format!(
-                "<use \
-                x=\"0\" \
-                y=\"0\" \
-                href=\"#{symbol}\" \
-                id=\"{id}\" \
-                width=\"100%\" \
-                height=\"100%\" \
-                transform=\"translate({translate_x},{translate_y})\"/>",
-                symbol = world_symbol,
-                id = format!("{:02}{:02}{}", point.x, point.y, world_symbol),
-                translate_x = translation.x,
-                translate_y = translation.y
-            ));
-
-            // Add `StarportClass-TL` text to hex
-            let offset = Translation { x: 5.0, y: 5.0 };
-            let translation = marker_translation + &offset;
-            output_buffer.push(format!(
-                "<text \
-                xml:space=\"preserve\" \
-                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
-                x=\"{translate_x}\" \
-                y=\"{translate_y}\" \
-                id=\"{point_str}StarportTlText\">\
-                <tspan \
-                sodipodi:role=\"line\" \
-                id=\"{point_str}StarportTlTspan\" \
-                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
-                x=\"{translate_x}\" \
-                y=\"{translate_y}\">{starport:?}-{tech_level}</tspan></text>",
-                translate_x = translation.x,
-                translate_y = translation.y,
-                point_str = format!("{:02}{:02}", point.x, point.y),
-                starport = world.starport.class,
-                tech_level = world.tech_level
-            ));
-
-            // Add world profile code at bottom of hex
-            let offset = Translation { x: 0.0, y: 10.0 };
-            let translation = marker_translation + &offset;
-            output_buffer.push(format!(
-                "<text \
-                xml:space=\"preserve\" \
-                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.8px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
-                x=\"{translate_x}\" \
-                y=\"{translate_y}\" \
-                id=\"{point_str}WorldProfileText\">\
-                <tspan \
-                sodipodi:role=\"line\" \
-                id=\"{point_str}WorldProfileTspan\" \
-                style=\"font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583\" \
-                x=\"{translate_x}\" \
-                y=\"{translate_y}\">{profile}</tspan></text>",
-                translate_x = translation.x,
-                translate_y = translation.y,
-                point_str = format!("{:02}{:02}", point.x, point.y),
-                profile = world.profile()
-            ));
         }
 
-        // Closing layer and svg document
-        output_buffer.push(String::from("</g>"));
-        output_buffer.push(close_svg);
-
-        // Place name of subsector as title
-        for i in 0..output_buffer.len() {
-            if output_buffer[i].contains("Subsector Name") {
-                output_buffer[i] =
-                    output_buffer[i].replace("Subsector Name", &format!("{} Subsector", self.name));
-                // As a sanity check, make sure we only do this once
-                break;
-            }
-        }
-
-        output_buffer.join("\n")
+        std::str::from_utf8(&writer.into_inner().into_inner())
+            .expect("Invalid UTF-8 while generating svg")
+            .to_string()
     }
 
     #[cfg(test)]
@@ -774,6 +659,201 @@ impl From<Subsector> for JsonableSubsector {
         Self {
             name,
             map: json_map,
+        }
+    }
+}
+
+fn center_markers() -> BTreeMap<Point, Translation> {
+    use quick_xml::events::Event;
+
+    let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
+    let mut column_translations: [Translation; Subsector::COLUMNS] =
+        [Translation::default(); Subsector::COLUMNS];
+    let mut circle_translations: BTreeMap<Point, Translation> = BTreeMap::new();
+    loop {
+        match reader.read_event() {
+            Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
+            Ok(Event::Eof) => break,
+
+            Ok(Event::Start(element)) => {
+                let _name_bytes = element.name();
+                let _name = str::from_utf8(_name_bytes.as_ref()).unwrap();
+                let attributes: BTreeMap<_, _> = element
+                    .attributes()
+                    .map(|a| {
+                        let attribute = a.unwrap();
+                        (
+                            str::from_utf8(attribute.key.as_ref()).unwrap().to_string(),
+                            str::from_utf8(attribute.value.as_ref())
+                                .unwrap()
+                                .to_string(),
+                        )
+                    })
+                    .collect();
+
+                if let Some(id) = attributes.get("id") {
+                    if let Some(column_num) = id.strip_prefix("center-marker-column-") {
+                        // If the element is a center marker column, get the column offset
+                        let column_num: usize = column_num
+                            .parse()
+                            .unwrap_or_else(|_| panic!("Unparsable column number in {id}"));
+                        assert!(
+                            (1..=Subsector::COLUMNS).contains(&column_num),
+                            "Out of bounds column number while parsing {id}"
+                        );
+
+                        let column_idx = column_num - 1;
+                        assert_eq!(
+                            column_translations[column_idx],
+                            Translation::default(),
+                            "Found double definition of center-mark-column {id}"
+                        );
+
+                        if let Some(transform) = attributes.get("transform") {
+                            column_translations[column_idx] =
+                                Translation::try_from_transform_str(transform).unwrap();
+                        }
+                    }
+                }
+            }
+
+            Ok(Event::Empty(element)) => {
+                let attributes: BTreeMap<_, _> = element
+                    .attributes()
+                    .map(|a| {
+                        let attribute = a.unwrap();
+                        (
+                            str::from_utf8(attribute.key.as_ref()).unwrap().to_string(),
+                            str::from_utf8(attribute.value.as_ref())
+                                .unwrap()
+                                .to_string(),
+                        )
+                    })
+                    .collect();
+
+                if let Some(id) = attributes.get("id") {
+                    if let Some(point_str) = id.strip_prefix("center-mark-") {
+                        // If the element is a center mark circle itself, get the center coordinates
+                        let point = Point::try_from(point_str).unwrap();
+                        assert!(
+                            circle_translations.get(&point).is_none(),
+                            "Found double definition of center mark {id}"
+                        );
+                        assert!(
+                            Subsector::point_is_inbounds(&point),
+                            "Found out-of-bounds center mark {id}"
+                        );
+
+                        let x: f64 = attributes
+                            .get("cx")
+                            .unwrap_or_else(|| panic!("Could not find cx attr while parsing {id}"))
+                            .parse()
+                            .unwrap_or_else(|_| panic!("Unparsable cx attr in {id}"));
+                        let y: f64 = attributes
+                            .get("cy")
+                            .unwrap_or_else(|| panic!("Could not find cy attr while parsing {id}"))
+                            .parse()
+                            .unwrap_or_else(|_| panic!("Unparsable cy attr in {id}"));
+
+                        circle_translations.insert(point, Translation { x, y });
+                    }
+                }
+            }
+            _ => (),
+        }
+    }
+
+    let mut center_marks = BTreeMap::new();
+    for x in 1..=Subsector::COLUMNS {
+        let column_idx = x - 1;
+        let column_translation = column_translations[column_idx];
+        for y in 1..=Subsector::ROWS {
+            let point = Point {
+                x: x as u16,
+                y: y as u16,
+            };
+
+            let center_mark = circle_translations
+                .get(&point)
+                .expect("Not all expected center marks were parsed")
+                + &column_translation;
+            center_marks.insert(point, center_mark);
+        }
+    }
+    center_marks
+}
+
+fn map_legend_translation(id: &str) -> Translation {
+    use quick_xml::events::Event;
+
+    let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
+    loop {
+        match reader.read_event() {
+            Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
+            Ok(Event::Eof) => unreachable!("Failed to find {id} before readching EOF"),
+
+            Ok(Event::Start(element)) => {
+                let attributes: BTreeMap<_, _> = element
+                    .attributes()
+                    .map(|a| {
+                        let attribute = a.unwrap();
+                        (
+                            str::from_utf8(attribute.key.as_ref()).unwrap().to_string(),
+                            str::from_utf8(attribute.value.as_ref())
+                                .unwrap()
+                                .to_string(),
+                        )
+                    })
+                    .collect();
+
+                if let Some(found_id) = attributes.get("id") {
+                    if id == found_id {
+                        let x = attributes
+                            .get("cx")
+                            .unwrap_or_else(|| panic!("Fail to find cx attr translating {id}"))
+                            .parse()
+                            .unwrap_or_else(|_| panic!("Fail to parse cx value translating {id}"));
+                        let y = attributes
+                            .get("cy")
+                            .unwrap_or_else(|| panic!("Fail to find cy attrib translating {id}"))
+                            .parse()
+                            .unwrap_or_else(|_| panic!("Fail to parse cy value translating {id}"));
+                        return Translation { x, y };
+                    }
+                }
+            }
+
+            Ok(Event::Empty(element)) => {
+                let attributes: BTreeMap<_, _> = element
+                    .attributes()
+                    .map(|a| {
+                        let attribute = a.unwrap();
+                        (
+                            str::from_utf8(attribute.key.as_ref()).unwrap().to_string(),
+                            str::from_utf8(attribute.value.as_ref())
+                                .unwrap()
+                                .to_string(),
+                        )
+                    })
+                    .collect();
+
+                if let Some(found_id) = attributes.get("id") {
+                    if id == found_id {
+                        let x = attributes
+                            .get("cx")
+                            .unwrap_or_else(|| panic!("Fail to find cx attr translating {id}"))
+                            .parse()
+                            .unwrap_or_else(|_| panic!("Fail to parse cx value translating {id}"));
+                        let y = attributes
+                            .get("cy")
+                            .unwrap_or_else(|| panic!("Fail to find cy attr translating {id}"))
+                            .parse()
+                            .unwrap_or_else(|_| panic!("Fail to parse cy value translating {id}"));
+                        return Translation { x, y };
+                    }
+                }
+            }
+            _ => (),
         }
     }
 }

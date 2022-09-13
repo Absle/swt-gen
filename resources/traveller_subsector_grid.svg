@@ -101,6 +101,48 @@
       stroke-miterlimit: 4;
       stroke-dasharray: none;
     }
+
+    .text-world-name {
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      font-stretch: condensed;
+      font-size: 3.52777px;
+      line-height: 0;
+      font-family: sans-serif;
+      -inkscape-font-specification: 'Arial Italic Condensed';
+      text-align: center;
+      text-anchor: middle;
+      stroke-width: 0.264583;
+    }
+
+    .text-world-profile {
+      font-style:italic;
+      font-variant:normal;
+      font-weight:normal;
+      font-stretch:condensed;
+      font-size:2.8px;
+      line-height:0;
+      font-family:sans-serif;
+      -inkscape-font-specification:'Arial Italic Condensed';
+      text-align:center;
+      text-anchor:middle;
+      stroke-width:0.264583;
+    }
+
+    .text-starport-tl {
+      font-style:italic;
+      font-variant:normal;
+      font-weight:normal;
+      font-stretch:condensed;
+      font-size:3.52777px;
+      line-height:0;
+      font-family:sans-serif;
+      -inkscape-font-specification:'Arial Italic Condensed';
+      text-align:center;
+      text-anchor:middle;
+      stroke-width:0.264583;
+    }
   </style>
   <g
      inkscape:label="Legend"
@@ -167,7 +209,7 @@
          transform="matrix(1.2059881,0,0,1.2059881,-16.197046,-52.451805)">
         <circle
            style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="circle112311"
+           id="GasGiantCircle"
            cx="78.630997"
            cy="256.73788"
            r="0.63499999" />
