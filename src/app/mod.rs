@@ -195,17 +195,17 @@ impl GeneratorApp {
     }
 
     fn process_hotkeys(&mut self, ctx: &Context) {
-        if ctx.input_mut().consume_key(Modifiers::CTRL, Key::N) {
-            self.message(Message::RenameSubsector);
-        } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::O) {
-            self.message(Message::Open);
-        } else if ctx.input_mut().consume_key(Modifiers::CTRL, Key::S) {
-            self.message(Message::Save);
-        } else if ctx
-            .input_mut()
-            .consume_key(Modifiers::CTRL | Modifiers::SHIFT, Key::S)
-        {
-            self.message(Message::SaveAs);
+        let hotkeys = [
+            (Modifiers::CTRL, Key::N, Message::RenameSubsector),
+            (Modifiers::CTRL, Key::O, Message::Open),
+            (Modifiers::CTRL, Key::S, Message::Save),
+            (Modifiers::CTRL | Modifiers::SHIFT, Key::S, Message::SaveAs),
+        ];
+
+        for (modifiers, key, message) in hotkeys {
+            if ctx.input_mut().consume_key(modifiers, key) {
+                self.message(message);
+            }
         }
     }
 
