@@ -25,6 +25,12 @@ use crate::astrography::world::{Faction, TravelCode, World};
 
 use popup::{ButtonPopup, Popup, SubsectorRegenPopup, SubsectorRenamePopup};
 
+// TODO: calls to `Subsector::generate_svg` using this variable need to have their logic of when to
+// have the svg colored updated once proper svg coloring has been implemented. This `const` is just
+// part of the proof of concept commit; set to true to have the hexes of generated svg's be rainbow
+// colored. Make sure to commit only with this set to `false`.
+const COLORED: bool = false;
+
 /** Set of messages respresenting all non-trivial GUI events. */
 #[derive(Clone)]
 pub(crate) enum Message {
@@ -403,7 +409,7 @@ impl GeneratorApp {
                     &filename,
                     "SVG",
                     &["svg"],
-                    self.subsector.generate_svg(),
+                    self.subsector.generate_svg(COLORED),
                 );
 
                 match result {
@@ -534,7 +540,7 @@ impl GeneratorApp {
             }
 
             RedrawSubsectorImage => {
-                let subsector_svg = self.subsector.generate_svg();
+                let subsector_svg = self.subsector.generate_svg(COLORED);
                 self.subsector_image =
                     generate_subsector_image(self.subsector.name(), &subsector_svg).unwrap();
             }
@@ -2125,7 +2131,7 @@ impl GeneratorApp {
 impl Default for GeneratorApp {
     fn default() -> Self {
         let subsector = Subsector::default();
-        let subsector_svg = subsector.generate_svg();
+        let subsector_svg = subsector.generate_svg(COLORED);
         let subsector_image = generate_subsector_image(subsector.name(), &subsector_svg).unwrap();
 
         Self {

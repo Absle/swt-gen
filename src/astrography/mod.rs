@@ -65,6 +65,50 @@ impl TryFrom<&str> for Point {
     }
 }
 
+#[derive(Debug)]
+enum PolityColor {
+    Turqoise,
+    Yellow,
+    Periwinkle,
+    Red,
+    Blue,
+    Orange,
+    Pear,
+    Lavender,
+    Grey,
+    Violet,
+    Pistachio,
+    Gold,
+}
+
+impl PolityColor {
+    const ALL_VALUES: [PolityColor; 12] = [
+        Self::Turqoise,
+        Self::Yellow,
+        Self::Periwinkle,
+        Self::Red,
+        Self::Blue,
+        Self::Orange,
+        Self::Pear,
+        Self::Lavender,
+        Self::Grey,
+        Self::Violet,
+        Self::Pistachio,
+        Self::Gold,
+    ];
+
+    fn class(&self) -> String {
+        let lower = self.to_string().to_lowercase();
+        format!("hex-color-{lower}")
+    }
+}
+
+impl ToString for PolityColor {
+    fn to_string(&self) -> String {
+        format!("{:?}", self)
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 struct Translation {
     x: f64,
@@ -320,7 +364,7 @@ impl Subsector {
         Ok(subsector)
     }
 
-    pub fn generate_svg(&self) -> String {
+    pub fn generate_svg(&self, colored: bool) -> String {
         use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
         use std::io::Cursor;
 
@@ -476,6 +520,39 @@ impl Subsector {
                 }
 
                 Ok(Event::Empty(element)) => {
+                    if !colored {
+                        writer.write_event(Event::Empty(element)).unwrap();
+                        continue;
+                    }
+
+                    let element = if let Ok(Some(id_attr)) = element.try_get_attribute("id") {
+                        let id = str::from_utf8(&id_attr.value).unwrap();
+                        if let Some(point_str) = id.strip_prefix("HexPath-") {
+                            let point =
+                                Point::try_from(point_str).expect("Failed to parse HexPath point");
+                            let x = point.x as usize;
+                            let y = point.y as usize;
+                            let point_index =
+                                ((x - 1) * Subsector::ROWS + y - 1) % PolityColor::ALL_VALUES.len();
+                            let class = PolityColor::ALL_VALUES[point_index].class();
+
+                            let mut hex = BytesStart::new("path");
+                            hex.extend_attributes(element.attributes().map(|attr| {
+                                let attr = attr.unwrap();
+                                if attr.key.as_ref() == b"class" {
+                                    ("class", &class[..]).into()
+                                } else {
+                                    attr
+                                }
+                            }));
+
+                            hex
+                        } else {
+                            element
+                        }
+                    } else {
+                        element
+                    };
                     writer.write_event(Event::Empty(element)).unwrap();
                 }
 
@@ -498,7 +575,7 @@ impl Subsector {
             }
         }
 
-        std::str::from_utf8(&writer.into_inner().into_inner())
+        str::from_utf8(&writer.into_inner().into_inner())
             .expect("Invalid UTF-8 while generating svg")
             .to_string()
     }
@@ -676,8 +753,6 @@ fn center_markers() -> BTreeMap<Point, Translation> {
             Ok(Event::Eof) => break,
 
             Ok(Event::Start(element)) => {
-                let _name_bytes = element.name();
-                let _name = str::from_utf8(_name_bytes.as_ref()).unwrap();
                 let attributes: BTreeMap<_, _> = element
                     .attributes()
                     .map(|a| {
@@ -692,7 +767,7 @@ fn center_markers() -> BTreeMap<Point, Translation> {
                     .collect();
 
                 if let Some(id) = attributes.get("id") {
-                    if let Some(column_num) = id.strip_prefix("center-marker-column-") {
+                    if let Some(column_num) = id.strip_prefix("CenterMarkerColumn-") {
                         // If the element is a center marker column, get the column offset
                         let column_num: usize = column_num
                             .parse()
@@ -706,7 +781,7 @@ fn center_markers() -> BTreeMap<Point, Translation> {
                         assert_eq!(
                             column_translations[column_idx],
                             Translation::default(),
-                            "Found double definition of center-mark-column {id}"
+                            "Found double definition of CenterMarkerColumn {id}"
                         );
 
                         if let Some(transform) = attributes.get("transform") {
@@ -732,16 +807,16 @@ fn center_markers() -> BTreeMap<Point, Translation> {
                     .collect();
 
                 if let Some(id) = attributes.get("id") {
-                    if let Some(point_str) = id.strip_prefix("center-mark-") {
+                    if let Some(point_str) = id.strip_prefix("CenterMark-") {
                         // If the element is a center mark circle itself, get the center coordinates
                         let point = Point::try_from(point_str).unwrap();
                         assert!(
                             circle_translations.get(&point).is_none(),
-                            "Found double definition of center mark {id}"
+                            "Found double definition of CenterMark {id}"
                         );
                         assert!(
                             Subsector::point_is_inbounds(&point),
-                            "Found out-of-bounds center mark {id}"
+                            "Found out-of-bounds CenterMark {id}"
                         );
 
                         let x: f64 = attributes
@@ -966,7 +1041,7 @@ mod tests {
         const ATTEMPTS: usize = 100;
         for _ in 0..ATTEMPTS {
             let subsector = Subsector::default();
-            let _svg = subsector.generate_svg();
+            let _svg = subsector.generate_svg(false);
         }
     }
 }
