@@ -106,7 +106,7 @@ pub(crate) enum TravelCode {
 impl TryFrom<&str> for TravelCode {
     type Error = Box<dyn Error>;
     fn try_from(string: &str) -> Result<Self, Self::Error> {
-        match &string[..] {
+        match string {
             "Safe" => Ok(TravelCode::Safe),
             "Amber" => Ok(TravelCode::Amber),
             "Red" => Ok(TravelCode::Red),
@@ -731,7 +731,7 @@ impl World {
     This is intended to work alongside a player-safe version of the GUI that has the defaulted
     fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
     */
-    pub(crate) fn into_player_safe(&mut self) {
+    pub(crate) fn make_player_safe(&mut self) {
         self.factions.clear();
         self.culture = TABLES.culture_table[0].clone();
         for world_tag in self.world_tags.iter_mut() {
@@ -777,7 +777,7 @@ impl PartialEq for World {
 impl TryFrom<WorldRecord> for World {
     type Error = Box<dyn Error>;
     fn try_from(record: WorldRecord) -> Result<Self, Self::Error> {
-        let profile = record.profile.split("-").collect::<Vec<_>>().join("");
+        let profile = record.profile.split('-').collect::<Vec<_>>().join("");
         let mut chars = profile.chars();
 
         // Parsing profile string
@@ -873,14 +873,14 @@ impl TryFrom<WorldRecord> for World {
                 .clone();
         }
 
-        let has_naval_base = record.bases.contains("N");
-        let has_scout_base = record.bases.contains("S");
-        let has_research_base = record.bases.contains("R");
-        let has_tas = record.bases.contains("T");
+        let has_naval_base = record.bases.contains('N');
+        let has_scout_base = record.bases.contains('S');
+        let has_research_base = record.bases.contains('R');
+        let has_tas = record.bases.contains('T');
 
         let mut trade_codes = BTreeSet::new();
-        for code in record.trade_codes.split(" ") {
-            if code == "" {
+        for code in record.trade_codes.split(' ') {
+            if code.is_empty() {
                 continue;
             }
             trade_codes.insert(TradeCode::try_from(code)?);
@@ -1022,54 +1022,42 @@ impl From<World> for WorldRecord {
 
         let fac_name = name.clone();
         let fac_location = location.clone();
-        let faction_1: SimpleFaction;
-        let faction_2: SimpleFaction;
-        let faction_3: SimpleFaction;
-        let faction_4: SimpleFaction;
 
-        match world.factions.get(0) {
-            Some(faction) => {
-                faction_1 = SimpleFaction {
-                    name: faction.name.clone(),
-                    strength: faction.strength.clone(),
-                    government: faction.government.kind.clone(),
-                };
-            }
-            None => faction_1 = SimpleFaction::empty(),
-        }
+        let faction_1 = match world.factions.get(0) {
+            Some(faction) => SimpleFaction {
+                name: faction.name.clone(),
+                strength: faction.strength.clone(),
+                government: faction.government.kind.clone(),
+            },
+            None => SimpleFaction::empty(),
+        };
 
-        match world.factions.get(1) {
-            Some(faction) => {
-                faction_2 = SimpleFaction {
-                    name: faction.name.clone(),
-                    strength: faction.strength.clone(),
-                    government: faction.government.kind.clone(),
-                };
-            }
-            None => faction_2 = SimpleFaction::empty(),
-        }
+        let faction_2 = match world.factions.get(1) {
+            Some(faction) => SimpleFaction {
+                name: faction.name.clone(),
+                strength: faction.strength.clone(),
+                government: faction.government.kind.clone(),
+            },
+            None => SimpleFaction::empty(),
+        };
 
-        match world.factions.get(2) {
-            Some(faction) => {
-                faction_3 = SimpleFaction {
-                    name: faction.name.clone(),
-                    strength: faction.strength.clone(),
-                    government: faction.government.kind.clone(),
-                };
-            }
-            None => faction_3 = SimpleFaction::empty(),
-        }
+        let faction_3 = match world.factions.get(2) {
+            Some(faction) => SimpleFaction {
+                name: faction.name.clone(),
+                strength: faction.strength.clone(),
+                government: faction.government.kind.clone(),
+            },
+            None => SimpleFaction::empty(),
+        };
 
-        match world.factions.get(3) {
-            Some(faction) => {
-                faction_4 = SimpleFaction {
-                    name: faction.name.clone(),
-                    strength: faction.strength.clone(),
-                    government: faction.government.kind.clone(),
-                };
-            }
-            None => faction_4 = SimpleFaction::empty(),
-        }
+        let faction_4 = match world.factions.get(3) {
+            Some(faction) => SimpleFaction {
+                name: faction.name.clone(),
+                strength: faction.strength.clone(),
+                government: faction.government.kind.clone(),
+            },
+            None => SimpleFaction::empty(),
+        };
 
         // Physical details
         let det_name = name.clone();
@@ -1220,7 +1208,8 @@ mod tests {
     #[allow(dead_code)]
     fn show_histograms() {
         histograms(100_000);
-        // Purposefully fail get cargo test to show the output
-        assert!(false);
+        // Purposefully fail get cargo test to show stdout and to make sure this doesn't get
+        // commited as a test
+        panic!();
     }
 }

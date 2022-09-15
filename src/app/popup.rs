@@ -52,10 +52,11 @@ impl ButtonPopup {
         no_save: Message,
         cancel: Message,
     ) -> Self {
-        let mut buttons = Vec::new();
-        buttons.push(("Save".to_string(), save));
-        buttons.push(("Don't Save".to_string(), no_save));
-        buttons.push(("Cancel".to_string(), cancel));
+        let buttons = vec![
+            ("Save".to_string(), save),
+            ("Don't Save".to_string(), no_save),
+            ("Cancel".to_string(), cancel),
+        ];
         Self {
             title: "Unsaved Changes".to_string(),
             text,
@@ -74,7 +75,7 @@ impl Popup for ButtonPopup {
 
         // `ButtonPopup` without any buttons can't be closed and will lock the app
         assert!(
-            buttons.len() > 0,
+            !buttons.is_empty(),
             "Must add at least one button to the `ButtonPopup`!"
         );
 
@@ -126,7 +127,7 @@ impl Popup for SubsectorRegenPopup {
         let title = "Choose World Abundance";
         let popup_size = DEFAULT_POPUP_SIZE;
 
-        Window::new(title.clone())
+        Window::new(title)
             .title_bar(false)
             .resizable(false)
             .fixed_size(popup_size)
@@ -205,7 +206,7 @@ impl Popup for SubsectorRenamePopup {
 
         let title = "Rename Subsector";
 
-        Window::new(title.clone())
+        Window::new(title)
             .title_bar(false)
             .resizable(false)
             .fixed_size(DEFAULT_POPUP_SIZE)

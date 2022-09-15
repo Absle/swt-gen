@@ -107,9 +107,6 @@ enum TabLabel {
 }
 
 impl TabLabel {
-    #[cfg(feature = "player-safe-gui")]
-    const TAB_LABELS: [TabLabel; 3] = [Self::WorldSurvey, Self::GovernmentLaw, Self::Notes];
-
     #[cfg(not(feature = "player-safe-gui"))]
     const TAB_LABELS: [TabLabel; 5] = [
         Self::WorldSurvey,
@@ -118,6 +115,9 @@ impl TabLabel {
         Self::CultureErrata,
         Self::Notes,
     ];
+
+    #[cfg(feature = "player-safe-gui")]
+    const TAB_LABELS: [TabLabel; 3] = [Self::WorldSurvey, Self::GovernmentLaw, Self::Notes];
 }
 
 impl ToString for TabLabel {
@@ -360,7 +360,7 @@ impl GeneratorApp {
                 self.subsector.insert_random_world(&self.point);
                 self.world_selected = false;
                 self.message_immediate(Message::ConfirmHexGridClicked {
-                    new_point: self.point.clone(),
+                    new_point: self.point,
                 });
                 self.message_immediate(Message::SubsectorModelUpdated);
             }
@@ -385,7 +385,7 @@ impl GeneratorApp {
                     &filename,
                     "JSON",
                     &["json"],
-                    self.subsector.player_safe().to_json(),
+                    self.subsector.copy_player_safe().to_json(),
                 );
 
                 match result {
@@ -686,7 +686,7 @@ impl GeneratorApp {
 
                 factions.remove(*index);
 
-                if factions.len() == 0 {
+                if factions.is_empty() {
                     *index = 0;
                 } else if *index >= factions.len() {
                     *index = factions.len() - 1;
@@ -837,7 +837,7 @@ impl GeneratorApp {
                         return true;
                     }
 
-                    if let Some(world) = self.subsector.get_world(&location).clone() {
+                    if let Some(world) = self.subsector.get_world(&location) {
                         let mut popup = ButtonPopup::new(
                             "Destination Hex Occupied".to_string(),
                             format!(
@@ -987,7 +987,7 @@ impl GeneratorApp {
         desired_size *= (max_size.y / desired_size.y).min(1.0);
 
         let subsector_image =
-            Image::new(self.subsector_image.texture_id(&ctx), desired_size).sense(Sense::click());
+            Image::new(self.subsector_image.texture_id(ctx), desired_size).sense(Sense::click());
 
         let response = ui.add(subsector_image);
         if response.clicked() {
@@ -2502,8 +2502,7 @@ mod tests {
             assert_eq!(app.world, *app.subsector.get_world(&point).unwrap());
             assert!(!app.world_edited);
 
-            let blah = "Blah blah blah".to_string();
-            app.world.notes = blah.clone();
+            app.world.notes = "Blah blah blah".to_string();
             app.check_world_edited();
             assert_ne!(app.world, *app.subsector.get_world(&point).unwrap());
             assert!(app.world_edited);
@@ -2625,10 +2624,10 @@ mod tests {
             app.message_immediate(Message::HexGridClicked { new_point: point });
             app.message_immediate(Message::AddNewWorld);
 
-            if app.world.factions.len() < 1 {
+            if app.world.factions.is_empty() {
                 app.message_immediate(Message::AddNewFaction);
             }
-            assert!(app.world.factions.len() >= 1);
+            assert!(!app.world.factions.is_empty());
 
             // Simulate selecting a new faction by simply changing the faction_idx
             app.faction_idx = 0;

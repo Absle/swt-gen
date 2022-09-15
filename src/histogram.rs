@@ -9,7 +9,7 @@ pub struct Histogram<'a, T> {
 impl<'a, T: std::cmp::Ord + std::fmt::Debug> Histogram<'a, T> {
     pub fn new(title: &'a str) -> Self {
         Histogram {
-            title: title,
+            title,
             data_set: BTreeMap::new(),
             total: 0,
         }
@@ -25,7 +25,7 @@ impl<'a, T: std::cmp::Ord + std::fmt::Debug> Histogram<'a, T> {
         }
 
         Histogram {
-            title: title,
+            title,
             data_set: set,
             total: 0,
         }
@@ -38,7 +38,7 @@ impl<'a, T: std::cmp::Ord + std::fmt::Debug> Histogram<'a, T> {
 
     #[allow(dead_code)]
     pub fn dec(&mut self, item: &T) {
-        if let Some(count) = self.data_set.get_mut(&item) {
+        if let Some(count) = self.data_set.get_mut(item) {
             *count -= 1;
             self.total -= 1;
         }

@@ -15,16 +15,10 @@ use serde::{Deserialize, Serialize};
 use super::dice;
 use world::{World, WorldRecord};
 
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) struct Point {
     pub x: u16,
     pub y: u16,
-}
-
-impl Default for Point {
-    fn default() -> Self {
-        Point { x: 0, y: 0 }
-    }
 }
 
 impl ToString for Point {
@@ -39,8 +33,8 @@ impl TryFrom<&str> for Point {
         let string = string.trim();
 
         // Handle old and new prefix respectively
-        let string = string.strip_prefix("'").unwrap_or(&string);
-        let string = string.strip_prefix("_").unwrap_or(&string);
+        let string = string.strip_prefix('\'').unwrap_or(string);
+        let string = string.strip_prefix('_').unwrap_or(string);
         let string = string.trim();
 
         let mut chars = string.chars();
@@ -55,7 +49,7 @@ impl TryFrom<&str> for Point {
         }
 
         // After removing prefixes and process four characters, there should be nothing left
-        if !chars.next().is_none() {
+        if chars.next().is_some() {
             return Err("World location string too long".into());
         }
 
@@ -120,13 +114,13 @@ impl Translation {
         let translate_args: Vec<&str> = transform
             .strip_prefix("translate(")
             .ok_or(format!("Incorrect prefix in transform '{transform}'"))?
-            .strip_suffix(")")
+            .strip_suffix(')')
             .ok_or(format!("Unclosed tranform '{transform}'"))?
             .split(',')
             .collect();
 
         let x: f64 = translate_args
-            .get(0)
+            .first()
             .ok_or(format!("Could not find x value in '{transform}'"))?
             .parse()?;
 
@@ -162,7 +156,7 @@ impl Sub for &Translation {
     }
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub enum WorldAbundance {
     Rift,
     Sparse,
@@ -181,14 +175,14 @@ impl WorldAbundance {
     ];
 }
 
-impl Into<i16> for WorldAbundance {
-    fn into(self) -> i16 {
-        match self {
-            Self::Rift => -2,
-            Self::Sparse => -1,
-            Self::Nominal => 0,
-            Self::Dense => 1,
-            Self::Abundant => 2,
+impl From<WorldAbundance> for i16 {
+    fn from(world_abundance: WorldAbundance) -> Self {
+        match world_abundance {
+            WorldAbundance::Rift => -2,
+            WorldAbundance::Sparse => -1,
+            WorldAbundance::Nominal => 0,
+            WorldAbundance::Dense => 1,
+            WorldAbundance::Abundant => 2,
         }
     }
 }
@@ -213,7 +207,7 @@ pub(crate) struct Subsector {
 
 #[allow(dead_code)]
 const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population,Notes";
-const TEMPLATE_SVG: &'static str = include_str!("../../resources/traveller_subsector_grid.svg");
+const TEMPLATE_SVG: &str = include_str!("../../resources/traveller_subsector_grid.svg");
 
 lazy_static! {
     static ref CENTER_MARKERS: BTreeMap<Point, Translation> = center_markers();
@@ -300,7 +294,7 @@ impl Subsector {
         for (point, world) in &self.map {
             let mut record = WorldRecord::from(world.clone());
             record.set_subsector_name(&self.name[..]);
-            record.set_location(&point);
+            record.set_location(point);
             writer.serialize(record).unwrap();
         }
 
@@ -608,7 +602,7 @@ impl Subsector {
     */
     pub fn insert_world(&mut self, point: &Point, world: &mut World) -> Option<World> {
         if Self::point_is_inbounds(point) {
-            self.map.insert(point.clone(), world.clone())
+            self.map.insert(*point, world.clone())
         } else {
             None
         }
@@ -621,7 +615,7 @@ impl Subsector {
     pub fn insert_random_world(&mut self, point: &Point) -> Option<World> {
         let mut names = random_names(Subsector::COLUMNS * Subsector::ROWS + 1).into_iter();
         let name = names.next().unwrap();
-        self.map.insert(point.clone(), World::new(name))
+        self.map.insert(*point, World::new(name))
     }
 
     /** Removes any `World` at `point` and returns it if there was a `World` there.
@@ -659,13 +653,9 @@ impl Subsector {
     This is intended to work alongside a player-safe version of the GUI that has the defaulted
     fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
     */
-    pub fn player_safe(&self) -> Self {
+    pub fn copy_player_safe(&self) -> Self {
         let mut player_safe_subsector = self.clone();
-
-        for (_point, world) in player_safe_subsector.map.iter_mut() {
-            world.into_player_safe();
-        }
-
+        player_safe_subsector.make_player_safe();
         player_safe_subsector
     }
 
@@ -683,10 +673,9 @@ impl Subsector {
     This is intended to work alongside a player-safe version of the GUI that has the defaulted
     fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
     */
-    #[allow(dead_code)]
-    pub fn into_player_safe(&mut self) {
+    pub fn make_player_safe(&mut self) {
         for (_point, world) in self.map.iter_mut() {
-            world.into_player_safe();
+            world.make_player_safe();
         }
     }
 }

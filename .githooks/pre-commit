@@ -1,32 +1,31 @@
 #!/bin/sh
 
-separator="\n------------------------------------------------------------------------------------\n"
+separator="\n====================================================================================\n"
 exit_code=0
 
 # Fail if formatting issues are found
-if ! cargo fmt -- --check; then
+if ! fmt_check="$(cargo fmt -- --check 2>&1)"; then
     echo "cargo fmt: found code style issues" >&2
-    echo -e "$separator"
+    echo "$fmt_check" >&2
+    echo -e "$separator" >&2
     exit_code=1
 fi
 
 # For each relevant feature, fail if `cargo check` finds any warnings or errors
 # Must manually be kept up to date with `[features]` section of `Cargo.toml`
-features=("_" "player-safe-gui")
+features=("default" "player-safe-gui")
 for feature in ${features[@]}; do
     feature_flag=""
-    if [ "$feature" != "_" ]; then
+    if [ "$feature" != "default" ]; then
         feature_flag="--features $feature"
     fi
 
-    # Check stderr output too because `cargo check` still returns 0 if only warnings
-    check="$(cargo check -q --all-targets --color=always $feature_flag 2>&1)"
-    check_passed=$?
-    if [ $check_passed -ne 0 ] || [ -n "$check" ]; then
-        echo "cargo check: found warnings/errors while checking feature '$feature'" >&2
+    if ! check="$(cargo clippy -q --all-targets --color=always $feature_flag -- --deny warnings 2>&1)"; then
+        echo "cargo clippy: found warnings/errors while checking feature '$feature'" >&2
         echo "$check" >&2
-        echo -e "$separator"
+        echo -e "$separator" >&2
         exit_code=1
+        break
     fi
 done
 
@@ -34,7 +33,7 @@ done
 if ! tests_output="$(cargo test --all-targets --color=always 2>&1)"; then
     echo "cargo test: found test issues" >&2
     echo "$tests_output" >&2
-    echo -e "$separator"
+    echo -e "$separator" >&2
     exit_code=1
 fi
 
