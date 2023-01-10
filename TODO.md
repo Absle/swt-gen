@@ -21,6 +21,10 @@ TODOs completed in this way should probably should still have an issue created a
 - Add dark mode support... somehow
 - Implement a framework to more structurally link `Message`s with their hotkeys
 - Refactor older "description saving" `Message`s to minimize cloning
+- Clicking to new planet should just apply the changes by default rather than having a popup
+- Tech level should have some indication of what the number means, not just a number
+- Size should have some comparison with Earth or the gravity list, not just a number
+- Refactor the player-safe gui into a separate binary rather than a feature
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
@@ -34,6 +38,15 @@ TODOs completed in this way should probably should still have an issue created a
 - Create a demo website using the web-app
 - Create an Obsidian plugin; this is ***only worth doing if*** making the web-app takes you 95% of the way towards to displaying the GUI in an Electron application like Obsidian
 - Add Markdown syntax support in the notes area of the app
+
+### Bugs
+- Pressing the revert button doesn't correctly reset the displayed diameter of the world. Reverting and changing away from the world and back makes it display the original value, so it's mostly likely just the text box not updating properly
+
+### Refactoring
+- Break up GUI elements in `app/mod.rs` into multiple files similar to `polity_display.rs`
+- Refactor calls to `TextStyle::Heading.resolve(&Style::default())` into one `rich_text_heading` function; consider using lazy static for it
+- Refactor `ButtonPopup` to use builder-pattern `add_button` calls rather than requiring `ButtonPopup` to always be mut. Then `add_button` might be able to use the `must_call` tag
+- Remove `Message::Cancel*` messages that don't do anything anything and replace with `Message::NoOp`
 
 ## Completed TODOs
 
