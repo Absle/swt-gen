@@ -7,6 +7,12 @@ use crate::{
     astrography::{Point, Subsector},
 };
 
+enum ClickKind {
+    Hex(Point),
+    SubsectorName,
+    None,
+}
+
 pub(crate) struct SubsectorMapDisplay {
     subsector_image: RetainedImage,
     tx: pipe::Sender<Message>,
@@ -40,11 +46,16 @@ impl SubsectorMapDisplay {
         let response = ui.add(subsector_image);
         if response.clicked() {
             if let Some(pointer_pos) = response.interact_pointer_pos() {
-                let new_point = pointer_pos_to_hex_point(pointer_pos, &response.rect);
+                let new_point = determine_click_kind(pointer_pos, &response.rect);
 
                 // A new point has been selected
-                if let Some(new_point) = new_point {
-                    self.tx.send(Message::HexGridClicked { new_point });
+                match new_point {
+                    ClickKind::Hex(new_point) => {
+                        self.tx.send(Message::HexGridClicked { new_point })
+                    }
+
+                    ClickKind::SubsectorName => self.tx.send(Message::RenameSubsector),
+                    ClickKind::None => (),
                 }
             }
         }
@@ -105,8 +116,14 @@ fn load_svg_bytes(svg_bytes: &[u8]) -> Result<ColorImage, String> {
     Ok(image)
 }
 
-/** Returns `Point` of clicked hex or `None` if click position is outside the hex grid. */
-fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
+/** Converts a pointer position to its corresponding interaction type with the subsector map image.
+
+# Returns
+- [`ClickKind::Hex(Point)`] containing the hex grid coordinate if a hex is clicked near its center,
+- [`ClickKind::SubsectorName`] if the click is near the subsector name in the top margin,
+- [`ClickKind::None`] otherwise
+*/
+fn determine_click_kind(pointer_pos: Pos2, rect: &Rect) -> ClickKind {
     // In inches
     const SVG_WIDTH: f32 = 8.5;
     const SVG_HEIGHT: f32 = 11.0;
@@ -125,6 +142,23 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
 
     let pixels_per_inch = rect.width() / SVG_WIDTH;
 
+    // Find pointer position relative to the image
+    let relative_pos = pointer_pos - rect.left_top();
+    let relative_pos = Pos2::from([relative_pos.x, relative_pos.y]);
+
+    // Find the rect containing the subsector name; just a centered section of the top margin
+    let left_bound: f32 = 2.0 * LEFT_MARGIN * pixels_per_inch;
+    let right_bound = (SVG_WIDTH - 2.0 * RIGHT_MARGIN) * pixels_per_inch;
+    let top_bound = 0.0;
+    let bottom_bound = 0.75 * TOP_MARGIN * pixels_per_inch;
+
+    let left_top = Pos2::from([left_bound, top_bound]);
+    let right_bottom = Pos2::from([right_bound, bottom_bound]);
+    let subsector_name_rect = Rect::from_min_max(left_top, right_bottom);
+    if subsector_name_rect.contains(relative_pos) {
+        return ClickKind::SubsectorName;
+    }
+
     let left_bound = LEFT_MARGIN * pixels_per_inch;
     let right_bound = (SVG_WIDTH - RIGHT_MARGIN) * pixels_per_inch;
     let top_bound = TOP_MARGIN * pixels_per_inch;
@@ -133,12 +167,8 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
     let left_top = Pos2::from([left_bound, top_bound]);
     let right_bottom = Pos2::from([right_bound, bottom_bound]);
     let grid_rect = Rect::from_min_max(left_top, right_bottom);
-
-    // Make sure click is inside the grid's rectangle, return None if not
-    let relative_pos = pointer_pos - rect.left_top();
-    let relative_pos = Pos2::from([relative_pos.x, relative_pos.y]);
     if !grid_rect.contains(relative_pos) {
-        return None;
+        return ClickKind::None;
     }
 
     // Find the hex center that is nearest to the click position
@@ -174,9 +204,9 @@ fn pointer_pos_to_hex_point(pointer_pos: Pos2, rect: &Rect) -> Option<Point> {
     }
 
     if smallest_distance < HEX_SHORT_RADIUS * pixels_per_inch {
-        Some(point)
+        ClickKind::Hex(point)
     } else {
-        None
+        ClickKind::None
     }
 }
 
