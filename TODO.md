@@ -15,6 +15,7 @@ TODOs completed in this way should probably should still have an issue created a
 - More doc-comments where useful
 - Remove redundant serialization and deserializing code once GUI is in a good state
 - Fix up interface and module interdependencies to make things more usable externally and less monolithic
+- Rename `mod.rs` files
 
 ### App/GUI TODOs
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
@@ -25,6 +26,8 @@ TODOs completed in this way should probably should still have an issue created a
 - Tech level should have some indication of what the number means, not just a number
 - Size should have some comparison with Earth or the gravity list, not just a number
 - Refactor the player-safe gui into a separate binary rather than a feature
+- Refactor all gui elements into different files
+- Refactor popups to use message pipes instead
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
