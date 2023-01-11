@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# TODO: remove
-# set -x
-
 separator="\=====================================================================================\n"
 err_file='/tmp/swtgen_pre-commit.err'
 
