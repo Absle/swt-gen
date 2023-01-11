@@ -1,40 +1,105 @@
 #!/bin/sh
 
-separator="\n====================================================================================\n"
+# TODO: remove
+# set -x
+
+separator="\=====================================================================================\n"
+err_file='/tmp/swtgen_pre-commit.err'
+
 exit_code=0
 
-# Fail if formatting issues are found
-if ! fmt_check="$(cargo fmt -- --check 2>&1)"; then
-    echo "cargo fmt: found code style issues" >&2
-    echo "$fmt_check" >&2
-    echo -e "$separator" >&2
-    exit_code=1
-fi
-
-# For each relevant feature, fail if `cargo check` finds any warnings or errors
-# Must manually be kept up to date with `[features]` section of `Cargo.toml`
-features=("default" "player-safe-gui")
-for feature in ${features[@]}; do
-    feature_flag=""
-    if [ "$feature" != "default" ]; then
-        feature_flag="--features $feature"
-    fi
-
-    if ! check="$(cargo clippy -q --all-targets --color=always $feature_flag -- --deny warnings 2>&1)"; then
-        echo "cargo clippy: found warnings/errors while checking feature '$feature'" >&2
-        echo "$check" >&2
+check_formatting () {
+    printf "check code formatting ..."
+    if ! fmt_check="$(cargo fmt -- --check 2>&1)"; then
+        printf " FAILED"
+        echo "cargo fmt: found code style issues" >&2
+        echo "$fmt_check" >&2
         echo -e "$separator" >&2
-        exit_code=1
-        break
+        return 1
+    else
+        printf " ok"
+        return 0
     fi
-done
+}
 
-# Fail if test fail to build or run
-if ! tests_output="$(cargo test --all-targets --color=always 2>&1)"; then
-    echo "cargo test: found test issues" >&2
-    echo "$tests_output" >&2
-    echo -e "$separator" >&2
-    exit_code=1
-fi
+check_errors_and_warnings () {
+    printf "check all features for errors/warnings ..."
+    # For each relevant feature, fail if `cargo check` finds any warnings or errors
+    # Must manually be kept up to date with `[features]` section of `Cargo.toml`
+    features=("default" "player-safe-gui")
+    for feature in ${features[@]}; do
+        feature_flag=""
+        if [ "$feature" != "default" ]; then
+            feature_flag="--features $feature"
+        fi
+
+        if ! check="$(cargo clippy -q --all-targets --color=always $feature_flag -- --deny warnings 2>&1)"; then
+            printf " FAILED"
+            echo "cargo clippy: found warnings/errors while checking feature '$feature'" >&2
+            echo "$check" >&2
+            echo -e "$separator" >&2
+
+            # Return on first error/warning because most features will probably have the same issues
+            # and flooding the terminal with repetitive issues is less than helpful
+            return 1
+        fi
+    done
+    printf " ok"
+    return 0
+}
+
+run_tests () {
+    printf "run test cases ..."
+    if ! tests_output="$(cargo test --all-targets --color=always 2>&1)"; then
+        printf " FAILED"
+        echo "cargo test: found test issues" >&2
+        echo "$tests_output" >&2
+        return 1
+    else
+        printf " ok"
+        return 0
+    fi
+}
+
+spinner () {
+    local f="$1"
+    local i=1
+
+    if [ -f "$err_file" ]; then
+        rm "$err_file"
+    fi
+
+    $f 2>$err_file &
+    local pid=$!
+    while [ -d "/proc/$pid" ]; do
+        sleep 1
+
+        # Need to double check while loop so we don't print after the function is done
+        if [ -d "/proc/$pid" ]; then
+            printf '.'
+        fi
+    done
+    echo
+
+    # If the error log exists and is not empty, the function failed
+    if [ -s "$err_file" ]; then
+        cat "$err_file" >&2
+        local ecode=1
+    else
+        local ecode=0
+    fi
+
+    rm "$err_file"
+    return $ecode
+}
+
+spinner check_formatting
+exit_code=$(($exit_code + $?))
+
+spinner check_errors_and_warnings
+exit_code=$(($exit_code + $?))
+
+spinner run_tests
+exit_code=$(($exit_code + $?))
 
 exit $exit_code
