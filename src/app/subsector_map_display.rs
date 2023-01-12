@@ -1,3 +1,5 @@
+use std::{sync::mpsc, thread};
+
 use egui::{vec2, ColorImage, Context, Image, Pos2, Rect, Sense, Ui, Vec2};
 
 use egui_extras::RetainedImage;
@@ -15,7 +17,9 @@ enum ClickKind {
 
 pub(crate) struct SubsectorMapDisplay {
     subsector_image: RetainedImage,
-    tx: pipe::Sender<Message>,
+    app_tx: pipe::Sender<Message>,
+    worker_tx: mpsc::Sender<String>,
+    worker_rx: mpsc::Receiver<RetainedImage>,
 }
 
 impl SubsectorMapDisplay {
@@ -23,15 +27,34 @@ impl SubsectorMapDisplay {
 
     /** Creates a new [`SubsectorMapDisplay`] from an SVG and a [`pipe::Sender`]. */
     pub(crate) fn new(subsector_svg: String, tx: pipe::Sender<Message>) -> Self {
+        let (worker_tx, boss_rx) = mpsc::channel::<String>();
+        let (boss_tx, worker_rx) = mpsc::channel::<RetainedImage>();
+
+        // Spawn worker thread to process SVG asynchronously
+        thread::spawn(move || loop {
+            while let Ok(svg) = boss_rx.recv() {
+                match boss_tx.send(generate_subsector_image(svg)) {
+                    Ok(_) => (),
+                    Err(_) => break,
+                }
+            }
+        });
+
         let subsector_image = generate_subsector_image(subsector_svg);
         SubsectorMapDisplay {
             subsector_image,
-            tx,
+            app_tx: tx,
+            worker_tx,
+            worker_rx,
         }
     }
 
     /** Displays a map of the [`Subsector`] and handles any mouse clicks on it. */
     pub(crate) fn show(&mut self, ctx: &Context, ui: &mut Ui) {
+        if let Ok(new_image) = self.worker_rx.try_recv() {
+            self.subsector_image = new_image;
+        }
+
         let max_size = ui.available_size();
         ui.set_min_size(Self::SUBSECTOR_IMAGE_MIN_SIZE);
         ui.set_max_size(max_size);
@@ -40,10 +63,10 @@ impl SubsectorMapDisplay {
         desired_size *= (max_size.x / desired_size.x).min(1.0);
         desired_size *= (max_size.y / desired_size.y).min(1.0);
 
-        let subsector_image =
+        let ui_image =
             Image::new(self.subsector_image.texture_id(ctx), desired_size).sense(Sense::click());
 
-        let response = ui.add(subsector_image);
+        let response = ui.add(ui_image);
         if response.clicked() {
             if let Some(pointer_pos) = response.interact_pointer_pos() {
                 let new_point = determine_click_kind(pointer_pos, &response.rect);
@@ -51,10 +74,10 @@ impl SubsectorMapDisplay {
                 // A new point has been selected
                 match new_point {
                     ClickKind::Hex(new_point) => {
-                        self.tx.send(Message::HexGridClicked { new_point })
+                        self.app_tx.send(Message::HexGridClicked { new_point })
                     }
 
-                    ClickKind::SubsectorName => self.tx.send(Message::RenameSubsector),
+                    ClickKind::SubsectorName => self.app_tx.send(Message::RenameSubsector),
                     ClickKind::None => (),
                 }
             }
@@ -63,7 +86,9 @@ impl SubsectorMapDisplay {
 
     /** Updates the map image with a new SVG. */
     pub(crate) fn update_image(&mut self, svg: String) {
-        self.subsector_image = generate_subsector_image(svg);
+        self.worker_tx
+            .send(svg)
+            .expect("Subsector map worker thread should never hang up.");
     }
 }
 

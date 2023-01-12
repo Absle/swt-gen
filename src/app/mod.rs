@@ -326,12 +326,10 @@ impl GeneratorApp {
                 let directory = path.parent().unwrap().to_str().unwrap().to_string();
                 let filename = path.file_name().unwrap().to_str().unwrap().to_string();
                 *self = Self {
-                    subsector,
                     directory,
                     filename,
-                    ..Self::default()
+                    ..Self::with_subsector(subsector)
                 };
-                self.message(Message::RedrawSubsectorImage);
             }
 
             ConfirmLocUpdate { location } => {
@@ -345,11 +343,9 @@ impl GeneratorApp {
             ConfirmRegenSubsector { world_abundance_dm } => {
                 let directory = self.directory.clone();
                 *self = Self {
-                    subsector: Subsector::new(world_abundance_dm),
                     directory,
-                    ..Self::default()
+                    ..Self::with_world_abundance(world_abundance_dm)
                 };
-                self.message(Message::RedrawSubsectorImage);
             }
 
             ConfirmRegenWorld => {
@@ -882,6 +878,63 @@ impl GeneratorApp {
                 self.popup_queue.remove(i);
             }
             self.message(message);
+        }
+    }
+
+    fn with_subsector(subsector: Subsector) -> Self {
+        let svg = subsector.generate_svg(COLORED);
+        let (message_tx, message_rx) = pipe::channel();
+
+        let subsector_map_display = SubsectorMapDisplay::new(svg, message_tx.clone());
+        Self {
+            can_exit: false,
+            directory: "~".to_string(),
+            filename: String::new(),
+            subsector,
+            subsector_edited: false,
+            message_tx,
+            message_rx,
+            popup_queue: Vec::new(),
+            point_selected: false,
+            world_selected: false,
+            world_edited: false,
+            point: Point::default(),
+            world: World::empty(),
+            tab: TabLabel::WorldSurvey,
+            faction_idx: 0,
+            location: String::new(),
+            diameter: String::new(),
+            berthing_cost: String::new(),
+            subsector_map_display,
+        }
+    }
+
+    fn with_world_abundance(world_abundance_dm: i16) -> Self {
+        let subsector = Subsector::new(world_abundance_dm);
+        let svg = subsector.generate_svg(COLORED);
+        let (message_tx, message_rx) = pipe::channel();
+
+        let subsector_map_display = SubsectorMapDisplay::new(svg, message_tx.clone());
+        Self {
+            can_exit: false,
+            directory: "~".to_string(),
+            filename: String::new(),
+            subsector,
+            subsector_edited: false,
+            message_tx,
+            message_rx,
+            popup_queue: Vec::new(),
+            point_selected: false,
+            world_selected: false,
+            world_edited: false,
+            point: Point::default(),
+            world: World::empty(),
+            tab: TabLabel::WorldSurvey,
+            faction_idx: 0,
+            location: String::new(),
+            diameter: String::new(),
+            berthing_cost: String::new(),
+            subsector_map_display,
         }
     }
 
@@ -2099,33 +2152,7 @@ impl GeneratorApp {
 
 impl Default for GeneratorApp {
     fn default() -> Self {
-        let subsector = Subsector::default();
-        let svg = subsector.generate_svg(COLORED);
-        let (message_tx, message_rx) = pipe::channel();
-
-        let subsector_map_display = SubsectorMapDisplay::new(svg, message_tx.clone());
-
-        Self {
-            can_exit: false,
-            directory: "~".to_string(),
-            filename: String::new(),
-            subsector,
-            subsector_edited: false,
-            message_tx,
-            message_rx,
-            popup_queue: Vec::new(),
-            point_selected: false,
-            world_selected: false,
-            world_edited: false,
-            point: Point::default(),
-            world: World::empty(),
-            tab: TabLabel::WorldSurvey,
-            faction_idx: 0,
-            location: String::new(),
-            diameter: String::new(),
-            berthing_cost: String::new(),
-            subsector_map_display,
-        }
+        Self::with_world_abundance(0)
     }
 }
 
