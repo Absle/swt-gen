@@ -488,11 +488,6 @@ impl World {
     }
 
     pub(crate) fn generate_tech_level(&mut self) {
-        if self.population.code == 0 {
-            self.tech_level = 0;
-            return;
-        }
-
         let size_mod = match self.size {
             0..=1 => 2,
             2..=4 => 1,
