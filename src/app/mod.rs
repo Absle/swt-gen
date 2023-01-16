@@ -134,6 +134,7 @@ pub struct GeneratorApp {
     filename: String,
     subsector: Subsector,
     subsector_edited: bool,
+    subsector_name_changed: bool,
     message_tx: pipe::Sender<Message>,
     message_rx: pipe::Receiver<Message>,
     /// List of blocking confirmation popups
@@ -365,6 +366,7 @@ impl GeneratorApp {
 
             ConfirmRenameSubsector { new_name } => {
                 self.subsector.set_name(new_name);
+                self.subsector_name_changed = true;
                 self.message_immediate(Message::SubsectorModelUpdated);
             }
 
@@ -892,6 +894,7 @@ impl GeneratorApp {
             filename: String::new(),
             subsector,
             subsector_edited: false,
+            subsector_name_changed: true,
             message_tx,
             message_rx,
             popup_queue: Vec::new(),
@@ -921,6 +924,7 @@ impl GeneratorApp {
             filename: String::new(),
             subsector,
             subsector_edited: false,
+            subsector_name_changed: true,
             message_tx,
             message_rx,
             popup_queue: Vec::new(),
@@ -2183,8 +2187,12 @@ impl App for GeneratorApp {
         self.check_world_edited();
         self.process_hotkeys(ctx);
 
-        // GUI elements
         self.process_message_queue();
+        if self.subsector_name_changed {
+            frame.set_window_title(&(self.subsector.name().to_string() + " Subsector"));
+        }
+
+        // GUI elements
         self.top_panel(ctx);
         self.central_panel(ctx);
         self.show_popups(ctx);

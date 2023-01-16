@@ -24,10 +24,12 @@ TODOs completed in this way should probably should still have an issue created a
 - Refactor older "description saving" `Message`s to minimize cloning
 - Clicking to new planet should just apply the changes by default rather than having a popup
 - Tech level should have some indication of what the number means, not just a number
-- Size should have some comparison with Earth or the gravity list, not just a number
+- Size should have some comparison with Earth or list the gravity, not just a number
 - Refactor the player-safe gui into a separate binary rather than a feature
 - Refactor all gui elements into different files
 - Refactor popups to use message pipes instead
+- Add a way to reorder factions
+- Adjust faction tab GUI spacing
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
