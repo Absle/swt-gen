@@ -979,7 +979,7 @@ impl WorldRecord {
     pub fn set_location(&mut self, point: &Point) {
         // The '_' prefix is to prevent any csv editor from treating the location string as a number
         // and truncating the leading '0'
-        self.location = format!("_{}", point.to_string());
+        self.location = format!("_{}", point);
     }
 }
 

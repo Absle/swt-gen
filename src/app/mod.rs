@@ -144,14 +144,14 @@ pub struct GeneratorApp {
     /// Whether a `Point` on the hex grid is currently selected or not
     point_selected: bool,
     /// Selected `Point`
-    point: Point,
+    selected_point: Point,
     /// Whether a `World` is at the selected `Point` or not
     world_selected: bool,
     world_edited: bool,
     /// Selected `World`
     world: World,
     /// Buffer for `String` representation of the selected world's `Point` location
-    location: String,
+    selected_point_str: String,
     /// Buffer for `String` representation of the selected world's diameter in km
     diameter: String,
     /// Buffer for `String` representation of the selected world's starport berthing cost
@@ -185,7 +185,7 @@ impl GeneratorApp {
     const SAVE_ICON: &'static str = "💾";
 
     fn check_world_edited(&mut self) {
-        self.world_edited = match self.subsector.get_world(&self.point) {
+        self.world_edited = match self.subsector.get_world(&self.selected_point) {
             Some(stored_world) => self.world != *stored_world,
             None => false,
         };
@@ -239,13 +239,15 @@ impl GeneratorApp {
                 self.message_immediate(Message::WorldModelUpdated);
             }
 
-            AddNewWorld => {
-                self.subsector.insert_random_world(&self.point);
-                self.message_immediate(Message::ConfirmHexGridClicked {
-                    new_point: self.point,
-                });
-                self.message_immediate(Message::SubsectorModelUpdated);
-            }
+            AddNewWorld => match self.subsector.insert_random_world(&self.selected_point) {
+                Ok(_) => {
+                    self.message_immediate(Message::ConfirmHexGridClicked {
+                        new_point: self.selected_point,
+                    });
+                    self.message_immediate(Message::SubsectorModelUpdated);
+                }
+                Err(_) => return false,
+            },
 
             ApplyConfirmHexGridClicked { new_point } => {
                 self.message_immediate(Message::ApplyWorldChanges);
@@ -254,8 +256,15 @@ impl GeneratorApp {
 
             ApplyWorldChanges => {
                 if self.world_selected && self.world_edited {
-                    self.subsector.insert_world(&self.point, &mut self.world);
-                    self.message_immediate(Message::SubsectorModelUpdated);
+                    match self
+                        .subsector
+                        .insert_world(&self.selected_point, self.world.clone())
+                    {
+                        Ok(_) => {
+                            self.message_immediate(Message::SubsectorModelUpdated);
+                        }
+                        Err(_) => return false,
+                    }
                 }
             }
 
@@ -263,7 +272,7 @@ impl GeneratorApp {
             CancelImportJson => {}
 
             CancelLocUpdate => {
-                self.location = self.point.to_string();
+                self.selected_point_str = self.selected_point.to_string();
             }
 
             CancelRegenSubsector => {}
@@ -280,13 +289,13 @@ impl GeneratorApp {
 
             ConfirmHexGridClicked { new_point } => {
                 self.point_selected = true;
-                self.point = new_point;
+                self.selected_point = new_point;
                 self.faction_idx = 0;
-                let world = self.subsector.get_world(&self.point);
+                let world = self.subsector.get_world(&self.selected_point);
                 if let Some(world) = world {
                     self.world_selected = true;
                     self.world = world.clone();
-                    self.location = self.point.to_string();
+                    self.selected_point_str = self.selected_point.to_string();
                     self.diameter = self.world.diameter.to_string();
                     self.berthing_cost = self.world.starport.berthing_cost.to_string();
                 } else {
@@ -334,11 +343,18 @@ impl GeneratorApp {
             }
 
             ConfirmLocUpdate { location } => {
-                self.subsector.move_world(&self.point, &location);
-                self.point = location;
-                self.location = self.point.to_string();
-                self.message_immediate(Message::WorldModelUpdated);
-                self.message_immediate(Message::SubsectorModelUpdated);
+                let success = match self.subsector.move_world(&self.selected_point, &location) {
+                    Ok(_) => {
+                        self.selected_point = location;
+                        self.message_immediate(Message::WorldModelUpdated);
+                        self.message_immediate(Message::SubsectorModelUpdated);
+                        true
+                    }
+
+                    Err(_) => false,
+                };
+                self.selected_point_str = self.selected_point.to_string();
+                return success;
             }
 
             ConfirmRegenSubsector { world_abundance_dm } => {
@@ -349,19 +365,25 @@ impl GeneratorApp {
                 };
             }
 
-            ConfirmRegenWorld => {
-                self.subsector.insert_random_world(&self.point);
-                self.world_selected = false;
-                self.message_immediate(Message::ConfirmHexGridClicked {
-                    new_point: self.point,
-                });
-                self.message_immediate(Message::SubsectorModelUpdated);
-            }
+            ConfirmRegenWorld => match self.subsector.insert_random_world(&self.selected_point) {
+                Ok(_) => {
+                    self.world_selected = false;
+                    self.message_immediate(Message::ConfirmHexGridClicked {
+                        new_point: self.selected_point,
+                    });
+                    self.message_immediate(Message::SubsectorModelUpdated);
+                }
+                Err(_) => return false,
+            },
 
             ConfirmRemoveWorld => {
                 self.world_selected = false;
-                self.subsector.remove_world(&self.point);
-                self.message_immediate(Message::SubsectorModelUpdated);
+                match self.subsector.remove_world(&self.selected_point) {
+                    Ok(_) => {
+                        self.message_immediate(Message::SubsectorModelUpdated);
+                    }
+                    Err(_) => return false,
+                }
             }
 
             ConfirmRenameSubsector { new_name } => {
@@ -707,7 +729,7 @@ impl GeneratorApp {
 
             RevertWorldChanges => {
                 if self.world_selected {
-                    if let Some(world) = self.subsector.get_world(&self.point) {
+                    if let Some(world) = self.subsector.get_world(&self.selected_point) {
                         self.world = world.clone();
                     }
                 }
@@ -823,10 +845,10 @@ impl GeneratorApp {
             }
 
             WorldLocUpdated => {
-                let location = Point::try_from(&self.location[..]);
+                let location = Point::try_from(&self.selected_point_str[..]);
                 if let Ok(location) = location {
-                    if location == self.point {
-                        self.location = self.point.to_string();
+                    if location == self.selected_point {
+                        self.selected_point_str = self.selected_point.to_string();
                         return true;
                     }
 
@@ -835,8 +857,7 @@ impl GeneratorApp {
                             "Destination Hex Occupied".to_string(),
                             format!(
                                 "'{}' is already at {}.\nWould you like to overwrite it?",
-                                world.name,
-                                location.to_string()
+                                world.name, location
                             ),
                         );
                         popup.add_confirm_buttons(
@@ -849,7 +870,7 @@ impl GeneratorApp {
                         self.message_immediate(Message::ConfirmLocUpdate { location });
                     }
                 } else {
-                    self.location = self.point.to_string();
+                    self.selected_point_str = self.selected_point.to_string();
                 }
             }
 
@@ -857,7 +878,6 @@ impl GeneratorApp {
                 self.world.resolve_trade_codes();
             }
         }
-
         true
     }
 
@@ -901,11 +921,11 @@ impl GeneratorApp {
             point_selected: false,
             world_selected: false,
             world_edited: false,
-            point: Point::default(),
+            selected_point: Point::default(),
             world: World::empty(),
             tab: TabLabel::WorldSurvey,
             faction_idx: 0,
-            location: String::new(),
+            selected_point_str: String::new(),
             diameter: String::new(),
             berthing_cost: String::new(),
             subsector_map_display,
@@ -931,11 +951,11 @@ impl GeneratorApp {
             point_selected: false,
             world_selected: false,
             world_edited: false,
-            point: Point::default(),
+            selected_point: Point::default(),
             world: World::empty(),
             tab: TabLabel::WorldSurvey,
             faction_idx: 0,
-            location: String::new(),
+            selected_point_str: String::new(),
             diameter: String::new(),
             berthing_cost: String::new(),
             subsector_map_display,
@@ -1111,14 +1131,17 @@ impl GeneratorApp {
                 ui.end_row();
 
                 // Location
-                if ui
-                    .add(
-                        TextEdit::singleline(&mut self.location)
-                            .desired_width(Self::SHORT_SELECTION_WIDTH),
-                    )
-                    .clicked()
-                {
-                    self.message(Message::WorldLocUpdated);
+                let response = ui.add(
+                    TextEdit::singleline(&mut self.selected_point_str)
+                        .desired_width(Self::SHORT_SELECTION_WIDTH),
+                );
+
+                if response.lost_focus() {
+                    if ui.input().key_pressed(Key::Enter) {
+                        self.message(Message::WorldLocUpdated);
+                    } else {
+                        self.selected_point_str = self.selected_point.to_string();
+                    }
                 }
 
                 // World profile
@@ -2144,7 +2167,7 @@ impl GeneratorApp {
             let height = ui.available_height();
             ui.add_space(height / 2.0);
 
-            ui.heading(self.point.to_string());
+            ui.heading(self.selected_point.to_string());
             let header_font = TextStyle::Heading.resolve(&Style::default());
             let text = RichText::new("Add New World").font(header_font);
             if ui.button(text).clicked() {
@@ -2346,13 +2369,13 @@ mod tests {
                 new_point: unoccupied_point,
             });
             assert!(app.point_selected);
-            assert_eq!(app.point, unoccupied_point);
+            assert_eq!(app.selected_point, unoccupied_point);
             assert!(!app.world_selected);
 
             app.message_immediate(Message::AddNewWorld);
             assert!(app.subsector.get_world(&unoccupied_point).is_some());
             assert!(app.point_selected);
-            assert_eq!(app.point, unoccupied_point);
+            assert_eq!(app.selected_point, unoccupied_point);
             assert!(app.world_selected);
 
             assert!(app.unsaved_changes());
@@ -2396,12 +2419,12 @@ mod tests {
 
                     app.message_immediate(Message::HexGridClicked { new_point: point });
                     assert!(app.point_selected);
-                    assert_eq!(app.point, point);
+                    assert_eq!(app.selected_point, point);
                     match app.subsector.get_world(&point) {
                         Some(world) => {
                             assert!(app.world_selected);
                             assert_eq!(app.world, *world);
-                            assert_eq!(app.location, point.to_string());
+                            assert_eq!(app.selected_point_str, point.to_string());
                             assert_eq!(app.diameter, world.diameter.to_string());
                             assert_eq!(app.berthing_cost, world.starport.berthing_cost.to_string());
                         }
@@ -2451,7 +2474,7 @@ mod tests {
 
             // Nothing should change if the "cancel" button was hit on the popup
             app.message_immediate(Message::CancelHexGridClicked);
-            assert_eq!(app.point, point);
+            assert_eq!(app.selected_point, point);
 
             // Repeat as if the user had pressed the "don't apply" button
             app.message_immediate(Message::HexGridClicked { new_point });
@@ -2459,7 +2482,7 @@ mod tests {
             app.popup_queue.remove(0);
 
             app.message_immediate(Message::ConfirmHexGridClicked { new_point });
-            assert_eq!(app.point, new_point);
+            assert_eq!(app.selected_point, new_point);
 
             app.check_world_edited();
             assert!(!app.world_edited);
@@ -2477,7 +2500,7 @@ mod tests {
             assert!(app.popup_queue.get(0).is_some());
             app.popup_queue.remove(0);
             app.message_immediate(Message::ApplyConfirmHexGridClicked { new_point });
-            assert_eq!(app.point, new_point);
+            assert_eq!(app.selected_point, new_point);
 
             app.check_world_edited();
             assert!(!app.world_edited);

@@ -1,8 +1,11 @@
-.replit
-.patch/
-.vscode/
+.replit/
 replit.nix
-Cargo.lock
+
+.patch/
+.user/
+.vscode/
+output/
 target/
 *.out
-output/
+
+Cargo.lock

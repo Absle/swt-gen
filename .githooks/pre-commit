@@ -59,14 +59,14 @@ run_tests () {
 }
 
 spinner () {
-    local f="$1"
+    local function="$1"
     local i=1
 
     if [ -f "$err_file" ]; then
         rm "$err_file"
     fi
 
-    $f 2>$err_file &
+    $function 2>$err_file &
     local pid=$!
     while [ -d "/proc/$pid" ]; do
         sleep 1

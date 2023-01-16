@@ -1,12 +1,14 @@
 pub(crate) mod table;
 pub(crate) mod world;
 
-use std::collections::BTreeMap;
-use std::convert::TryFrom;
-use std::error::Error;
-use std::fs;
-use std::ops::{Add, Sub};
-use std::str;
+use std::{
+    collections::BTreeMap,
+    convert::TryFrom,
+    error::Error,
+    fmt, fs,
+    ops::{Add, Sub},
+    str,
+};
 
 use lazy_static::lazy_static;
 use rand::Rng;
@@ -21,9 +23,9 @@ pub(crate) struct Point {
     pub y: u16,
 }
 
-impl ToString for Point {
-    fn to_string(&self) -> String {
-        format!("{:02}{:02}", self.x, self.y)
+impl std::fmt::Display for Point {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:02}{:02}", self.x, self.y)
     }
 }
 
@@ -252,7 +254,9 @@ impl Subsector {
 
                     let name = names.next().unwrap();
                     let world = World::new(name);
-                    subsector.map.insert(point, world);
+                    subsector
+                        .insert_world(&point, world)
+                        .expect("All new subsector world's should be valid");
                 }
             }
         }
@@ -591,51 +595,76 @@ impl Subsector {
             && point.y as usize <= Self::ROWS
     }
 
-    /** Inserts `world` at `point`, replacing any other `World` that was there previously.
-
-    Will only insert a `World` if `point` is within the bounds set by `Subsector::COLUMNS` and
-    `Subsector::ROWS`.
+    /** Inserts `world` at `point`, replacing any other [`World`] that was there previously.
 
     # Returns
-    - `Some(world)` with the `World` that was already at `point` if there was one
-    - `None` if there was no `World` at `point`, or if `point` was out of bounds
+    - `Ok(Some(world))` with the `World` that was already at `point` if there was one,
+    - `Ok(None)` if the was inserted into an empty location,
+    - `Err(msg)` if `point` was out of bounds and the insertion failed
     */
-    pub fn insert_world(&mut self, point: &Point, world: &mut World) -> Option<World> {
+    pub fn insert_world(&mut self, point: &Point, world: World) -> Result<Option<World>, String> {
         if Self::point_is_inbounds(point) {
-            self.map.insert(*point, world.clone())
+            Ok(self.map.insert(*point, world))
         } else {
-            None
+            Err("Can not insert a world at an out of bounds point".to_string())
         }
     }
 
-    /** Inserts a random `World` at `point`, replacing any other `World` that was there previously.
+    /** Inserts a random [`World`] at `point`, replacing any [`World`] there.
 
-    Returns the `World` already at `point` if there was one, or `None` otherwise.
+    # Returns
+    - `Ok(Some(World))` containing the displaced world if there was one,
+    - `Ok(None)` if the world was inserted into an empty location,
+    - `Err(msg)` if `point` was out of bounds and the insertion failed
     */
-    pub fn insert_random_world(&mut self, point: &Point) -> Option<World> {
+    pub fn insert_random_world(&mut self, point: &Point) -> Result<Option<World>, String> {
         let mut names = random_names(Subsector::COLUMNS * Subsector::ROWS + 1).into_iter();
         let name = names.next().unwrap();
-        self.map.insert(*point, World::new(name))
+        self.insert_world(point, World::new(name))
     }
 
-    /** Removes any `World` at `point` and returns it if there was a `World` there.
+    /** Remove any [`World`] at `point` and return it if there was one.
 
-    Returns `None` otherwise.
+    # Returns
+    - `Ok(Some(World))` containing the removed world if there was one,
+    - `Ok(None)` if there was no world to remove,
+    - `Err(msg)` if `point` is out of bounds and the removal failed
     */
-    pub fn remove_world(&mut self, point: &Point) -> Option<World> {
-        self.map.remove(point)
-    }
-
-    /** Moves any `World` at `source` to `destination`, replacing any other `World` that was there.
-
-    Returns `Some(())` if there was a world at `source` to move, `None` otherwise.
-    */
-    pub fn move_world(&mut self, source: &Point, destination: &Point) -> Option<()> {
-        if let Some(mut world) = self.remove_world(source) {
-            self.insert_world(destination, &mut world);
-            Some(())
+    pub fn remove_world(&mut self, point: &Point) -> Result<Option<World>, String> {
+        if Self::point_is_inbounds(point) {
+            Ok(self.map.remove(point))
         } else {
-            None
+            Err("Can not remove a world from an out of bounds point".to_string())
+        }
+    }
+
+    /** Move any [`World`] at `source` to `destination`, replacing any [`World`] there.
+
+    # Returns
+    - `Ok(Some(World))` containing the displaced world that at `destination` if the world moved
+    successfully
+    - `Ok(None)` if the world moved successfully to an empty location, or
+    - `Err(msg)` if the world could not be moved for one of the following reasons:
+        - `source` was out of bounds
+        - `destination` was out of bounds
+        - There was no world to move at `source`
+    */
+    pub fn move_world(
+        &mut self,
+        source: &Point,
+        destination: &Point,
+    ) -> Result<Option<World>, String> {
+        if let Some(world) = self.remove_world(source)? {
+            match self.insert_world(destination, world.clone()) {
+                Err(msg) => {
+                    self.insert_world(source, world)
+                        .expect("World should insert back into same location with no problems");
+                    Err(msg)
+                }
+                ok => ok,
+            }
+        } else {
+            Err(format!("No world to move at {}", source))
         }
     }
 
