@@ -81,6 +81,28 @@ pub(crate) struct GovRecord {
     pub(crate) contraband: String,
 }
 
+impl GovRecord {
+    /** Mutate `self` into `other`, but retain non-default `description` and `contraband` fields. */
+    pub(crate) fn safe_mutate(&mut self, other: &Self) {
+        let Self {
+            code: new_code,
+            kind: new_kind,
+            description: new_desc,
+            contraband: new_contra,
+        } = other;
+
+        if self.description == TABLES.gov_table[self.code as usize].description {
+            self.description = new_desc.clone();
+        }
+        if self.contraband == TABLES.gov_table[self.code as usize].contraband {
+            self.contraband = new_contra.clone();
+        }
+
+        self.code = *new_code;
+        self.kind = new_kind.clone();
+    }
+}
+
 impl Record for GovRecord {
     fn code(&self) -> u16 {
         self.code
@@ -89,23 +111,41 @@ impl Record for GovRecord {
 type GovTable = Vec<GovRecord>;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
-pub(crate) struct FactionRecord {
+pub(crate) struct FactionStrengthRecord {
     pub(crate) code: u16,
     pub(crate) strength: String,
 }
 
-impl Record for FactionRecord {
+impl Record for FactionStrengthRecord {
     fn code(&self) -> u16 {
         self.code
     }
 }
-type FactionTable = Vec<FactionRecord>;
+type FactionTable = Vec<FactionStrengthRecord>;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct CulturalDiffRecord {
     pub(crate) code: u16,
     pub(crate) cultural_difference: String,
     pub(crate) description: String,
+}
+
+impl CulturalDiffRecord {
+    /** Mutate `self` into `other`, but retain non-default `description` fields. */
+    pub(crate) fn safe_mutate(&mut self, other: &Self) {
+        let Self {
+            code: new_code,
+            cultural_difference: new_culture,
+            description: new_desc,
+        } = other;
+
+        if self.description == TABLES.culture_table[self.code as usize].description {
+            self.description = new_desc.clone();
+        }
+
+        self.code = *new_code;
+        self.cultural_difference = new_culture.clone();
+    }
 }
 
 impl Record for CulturalDiffRecord {
@@ -120,6 +160,24 @@ pub(crate) struct WorldTagRecord {
     pub(crate) code: u16,
     pub(crate) tag: String,
     pub(crate) description: String,
+}
+
+impl WorldTagRecord {
+    /** Mutate `self` into `other`, but retain non-default `description` fields. */
+    pub(crate) fn safe_mutate(&mut self, other: &Self) {
+        let Self {
+            code: new_code,
+            tag: new_tag,
+            description: new_desc,
+        } = other;
+
+        if self.description == TABLES.culture_table[self.code as usize].description {
+            self.description = new_desc.clone();
+        }
+
+        self.code = *new_code;
+        self.tag = new_tag.clone();
+    }
 }
 
 impl Record for WorldTagRecord {

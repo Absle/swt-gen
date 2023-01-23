@@ -588,7 +588,7 @@ impl Subsector {
         self.map.get(point)
     }
 
-    fn point_is_inbounds(point: &Point) -> bool {
+    pub(crate) fn point_is_inbounds(point: &Point) -> bool {
         point.x > 0
             && point.x as usize <= Self::COLUMNS
             && point.y > 0

@@ -1,8 +1,12 @@
 use egui::{vec2, Context, Grid, Layout, Pos2, RichText, TextEdit, Vec2, Window};
 
-use crate::astrography::WorldAbundance;
-
-use super::{GeneratorApp, Message};
+use crate::{
+    app::{
+        gui::{FIELD_SPACING, LABEL_COLOR, LABEL_FONT, LABEL_SPACING},
+        Message,
+    },
+    astrography::WorldAbundance,
+};
 
 const DEFAULT_POPUP_SIZE: Vec2 = vec2(256.0, 144.0);
 
@@ -90,10 +94,10 @@ impl Popup for ButtonPopup {
                 ui.vertical_centered(|ui| {
                     ui.heading(title);
                     ui.separator();
-                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
+                    ui.add_space(FIELD_SPACING / 2.0);
                     ui.label(text.clone());
                 });
-                ui.add_space(GeneratorApp::FIELD_SPACING);
+                ui.add_space(FIELD_SPACING);
                 ui.horizontal(|ui| {
                     ui.with_layout(Layout::right_to_left(), |ui| {
                         for (button_text, message) in buttons.iter().rev() {
@@ -136,13 +140,10 @@ impl Popup for SubsectorRegenPopup {
                 ui.vertical_centered(|ui| {
                     ui.heading(title);
                     ui.separator();
-                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
+                    ui.add_space(FIELD_SPACING / 2.0);
 
                     let column_count = WorldAbundance::WORLD_ABUNDANCE_VALUES.len() as f32;
-                    let grid_spacing = vec2(
-                        GeneratorApp::FIELD_SPACING / 2.0,
-                        GeneratorApp::LABEL_SPACING,
-                    );
+                    let grid_spacing = vec2(FIELD_SPACING / 2.0, LABEL_SPACING);
                     let column_width =
                         (popup_size.x - (column_count - 1.0) * grid_spacing.x) / column_count;
 
@@ -161,14 +162,14 @@ impl Popup for SubsectorRegenPopup {
                                 ui.vertical_centered(|ui| {
                                     ui.label(
                                         RichText::new(world_abundance.to_string())
-                                            .font(GeneratorApp::LABEL_FONT)
-                                            .color(GeneratorApp::LABEL_COLOR),
+                                            .font(LABEL_FONT)
+                                            .color(LABEL_COLOR),
                                     );
                                 });
                             }
                         });
                 });
-                ui.add_space(GeneratorApp::FIELD_SPACING);
+                ui.add_space(FIELD_SPACING);
 
                 ui.horizontal(|ui| {
                     if ui.button("Generate").clicked() {
@@ -215,10 +216,10 @@ impl Popup for SubsectorRenamePopup {
                 ui.vertical_centered(|ui| {
                     ui.heading(title);
                     ui.separator();
-                    ui.add_space(GeneratorApp::FIELD_SPACING / 2.0);
+                    ui.add_space(FIELD_SPACING / 2.0);
                     ui.add(TextEdit::singleline(&mut self.name).margin(vec2(16.0, 4.0)));
                 });
-                ui.add_space(GeneratorApp::FIELD_SPACING);
+                ui.add_space(FIELD_SPACING);
 
                 ui.horizontal(|ui| {
                     if ui.button("Confirm").clicked() {

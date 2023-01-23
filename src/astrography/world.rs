@@ -200,6 +200,12 @@ impl World {
 
     pub(crate) const NUM_TAGS: usize = 2;
 
+    /** Add a randomized faction and return its index. */
+    pub(crate) fn add_faction(&mut self) -> usize {
+        self.factions.push(Faction::random());
+        self.factions.len() - 1
+    }
+
     pub fn profile(&self) -> String {
         format!(
             "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
@@ -733,6 +739,25 @@ impl World {
             *world_tag = TABLES.world_tag_table[0].clone();
         }
         self.notes = String::new();
+    }
+
+    /** Remove the [`Faction`] at `idx` and return the nearest valid index to `idx`.
+
+    Does nothing and returns 0 if `idx` is out of bounds.
+    */
+    pub(crate) fn remove_faction(&mut self, idx: usize) -> usize {
+        if idx >= self.factions.len() {
+            return 0;
+        }
+
+        self.factions.remove(idx);
+        if self.factions.is_empty() {
+            0
+        } else if idx >= self.factions.len() {
+            self.factions.len() - 1
+        } else {
+            idx
+        }
     }
 }
 
