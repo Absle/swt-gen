@@ -9,7 +9,6 @@ TODOs completed in this way should probably should still have an issue created a
 ## Open TODOs
 
 ### Bugs
-- Pressing the revert button doesn't correctly reset the displayed diameter of the world. Reverting and changing away from the world and back makes it display the original value, so it's mostly likely just the text box not updating properly
 - Large world names overflow hex on a single line
 
 ### General TODOs
@@ -53,6 +52,10 @@ TODOs completed in this way should probably should still have an issue created a
 
 ## Completed TODOs
 
+### Bugs
+- ~~When regenerating the subsector with an unsaved, no-file one already loaded, pressing "Cancel" on the save dialog still lets the regeneration continue when it should stop. Uncertain if this affects file loading in the same way.~~
+- ~~Pressing the revert button doesn't correctly reset the displayed diameter of the world. Reverting and changing away from the world and back makes it display the original value, so it's mostly likely just the text box not updating properly~~
+
 ### General Issues
 - ~~Make this TODO list~~
 - ~~Rename `mod.rs` files~~
@@ -86,6 +89,3 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Refactor svg generation to use a proper xml editor~~
 - ~~Consider moving from `self.message(Message)` to using the `pipe` system to take advantage of non-mutable borrowing~~
 - ~~Remove `Message::Cancel*` messages that don't do anything anything and replace with `Message::NoOp`~~
-
-### Bugs
-- ~~When regenerating the subsector with an unsaved, no-file one already loaded, pressing "Cancel" on the save dialog still lets the regeneration continue when it should stop. Uncertain if this affects file loading in the same way.~~

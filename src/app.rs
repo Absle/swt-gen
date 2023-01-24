@@ -733,6 +733,9 @@ impl GeneratorApp {
         if self.world_selected {
             if let Some(world) = self.subsector.get_world(&self.point) {
                 self.world = world.clone();
+                self.berthing_cost_str = self.world.starport.berthing_cost.to_string();
+                self.diameter_str = self.world.diameter.to_string();
+                self.point_str = self.point.to_string();
                 Ok(Some(()))
             } else {
                 Err("Could not find world reversion data".to_string())
