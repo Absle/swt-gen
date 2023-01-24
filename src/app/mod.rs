@@ -698,21 +698,31 @@ impl GeneratorApp {
             }
 
             SaveConfigRegenSubsector => {
-                self.message_immediate(Message::Save);
-                self.message_immediate(Message::ConfigRegenSubsector);
+                let save_success = self.message_immediate(Message::Save);
+                if save_success {
+                    return self.message_immediate(Message::ConfigRegenSubsector);
+                } else {
+                    return false;
+                }
             }
 
             SaveConfirmImportJson => {
                 let save_success = self.message_immediate(Message::Save);
-                match save_success {
-                    true => return self.message_immediate(Message::ConfirmImportJson),
-                    false => return false,
+                if save_success {
+                    return self.message_immediate(Message::ConfirmImportJson);
+                } else {
+                    return false;
                 }
             }
 
             SaveExit => {
-                self.message_immediate(Message::Save);
-                self.can_exit = true;
+                let save_success = self.message_immediate(Message::Save);
+                if save_success {
+                    self.can_exit = true;
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
             SubsectorModelUpdated => {

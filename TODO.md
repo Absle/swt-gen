@@ -8,6 +8,10 @@ TODOs completed in this way should probably should still have an issue created a
 
 ## Open TODOs
 
+### Bugs
+- Pressing the revert button doesn't correctly reset the displayed diameter of the world. Reverting and changing away from the world and back makes it display the original value, so it's mostly likely just the text box not updating properly
+- Large world names overflow hex on a single line
+
 ### General TODOs
 - Update project name
 - Make executable portable by using `include_str!` and `include!` macros
@@ -45,11 +49,6 @@ TODOs completed in this way should probably should still have an issue created a
 - Create an Obsidian plugin; this is ***only worth doing if*** making the web-app takes you 95% of the way towards to displaying the GUI in an Electron application like Obsidian
 - Add Markdown syntax support in the notes area of the app
 
-### Bugs
-- Pressing the revert button doesn't correctly reset the displayed diameter of the world. Reverting and changing away from the world and back makes it display the original value, so it's mostly likely just the text box not updating properly
-- Large world names overflow hex on a single line
-- When regenerating the subsector with an unsaved, no-file one already loaded, pressing "Cancel" on the save dialog still lets the regeneration continue when it should stop. Uncertain if this affects file loading in the same way.
-
 ### Refactoring
 
 
@@ -84,13 +83,8 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Refactor popups to use message pipes instead~~
 - ~~Refactor popup processing into `gui` code~~
 - ~~Refactor `ButtonPopup` to use builder-pattern `add_button` calls rather than requiring `ButtonPopup` to always be mut. Then `add_button` might be able to use the `must_call` tag~~
+- ~~Refactor svg generation to use a proper xml editor~~
 - ~~Consider moving from `self.message(Message)` to using the `pipe` system to take advantage of non-mutable borrowing~~
 
-## Cancelled TODOs
-
-### App/GUI TODOs
-- ~~Consider changing all "unsaved changes" popups to use a native dialog~~
-    - Can not be done through the `native-dialog` crate and would require making custom windows
-
-### Backened/Astrography TODOs
-- ~~Refactor svg generation to use a proper xml editor~~
+### Bugs
+- ~~When regenerating the subsector with an unsaved, no-file one already loaded, pressing "Cancel" on the save dialog still lets the regeneration continue when it should stop. Uncertain if this affects file loading in the same way.~~
