@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{fmt, ops::Deref};
 
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
@@ -211,9 +211,17 @@ pub(crate) enum StarportClass {
     X,
 }
 
-impl ToString for StarportClass {
-    fn to_string(&self) -> String {
-        format!("{:?}", self)
+impl fmt::Display for StarportClass {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            Self::A => "A",
+            Self::B => "B",
+            Self::C => "C",
+            Self::D => "D",
+            Self::E => "E",
+            Self::X => "X",
+        };
+        write!(f, "{}", s)
     }
 }
 

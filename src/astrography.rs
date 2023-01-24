@@ -23,7 +23,7 @@ pub(crate) struct Point {
     pub y: u16,
 }
 
-impl std::fmt::Display for Point {
+impl fmt::Display for Point {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:02}{:02}", self.x, self.y)
     }
@@ -99,9 +99,23 @@ impl PolityColor {
     }
 }
 
-impl ToString for PolityColor {
-    fn to_string(&self) -> String {
-        format!("{:?}", self)
+impl fmt::Display for PolityColor {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            Self::Turqoise => "Turqoise",
+            Self::Yellow => "Yellow",
+            Self::Periwinkle => "Periwinkle",
+            Self::Red => "Red",
+            Self::Blue => "Blue",
+            Self::Orange => "Orange",
+            Self::Pear => "Pear",
+            Self::Lavender => "Lavender",
+            Self::Grey => "Grey",
+            Self::Violet => "Violet",
+            Self::Pistachio => "Pistachio",
+            Self::Gold => "Gold",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -189,15 +203,16 @@ impl From<WorldAbundance> for i16 {
     }
 }
 
-impl ToString for WorldAbundance {
-    fn to_string(&self) -> String {
-        match self {
-            Self::Rift => "Rift".to_string(),
-            Self::Sparse => "Sparse".to_string(),
-            Self::Nominal => "Nominal".to_string(),
-            Self::Dense => "Dense".to_string(),
-            Self::Abundant => "Abundant".to_string(),
-        }
+impl fmt::Display for WorldAbundance {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            Self::Rift => "Rift",
+            Self::Sparse => "Sparse",
+            Self::Nominal => "Nominal",
+            Self::Dense => "Dense",
+            Self::Abundant => "Abundant",
+        };
+        write!(f, "{}", s)
     }
 }
 

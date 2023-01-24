@@ -18,7 +18,6 @@ TODOs completed in this way should probably should still have an issue created a
 - More doc-comments where useful
 - Remove redundant serialization and deserializing code once GUI is in a good state
 - Fix up interface and module interdependencies to make things more usable externally and less monolithic
-- Refactor implementations of `ToString` to `std::fmt::Display`
 - Some kind of logging schema
 
 ### App/GUI TODOs
@@ -56,9 +55,10 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~When regenerating the subsector with an unsaved, no-file one already loaded, pressing "Cancel" on the save dialog still lets the regeneration continue when it should stop. Uncertain if this affects file loading in the same way.~~
 - ~~Pressing the revert button doesn't correctly reset the displayed diameter of the world. Reverting and changing away from the world and back makes it display the original value, so it's mostly likely just the text box not updating properly~~
 
-### General Issues
+### General TODOs
 - ~~Make this TODO list~~
 - ~~Rename `mod.rs` files~~
+- ~~Refactor implementations of `ToString` to `std::fmt::Display`~~
 
 ### App/GUI TODOs
 - ~~Finish adding displays for all `Subsector` fields~~
