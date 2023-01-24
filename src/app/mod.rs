@@ -1,6 +1,5 @@
 mod gui;
 mod pipe;
-mod popup;
 
 use std::{
     path::{Path, PathBuf},
@@ -19,7 +18,7 @@ use crate::astrography::{
     Point, Subsector,
 };
 
-use popup::{ButtonPopup, Popup, SubsectorRegenPopup, SubsectorRenamePopup};
+use gui::popup::Popup;
 
 // TODO: calls to `Subsector::generate_svg` using this variable need to have their logic of when to
 // have the svg colored updated once proper svg coloring has been implemented. This `const` is just
@@ -101,9 +100,9 @@ pub struct GeneratorApp {
     diameter: String,
     /// Index of selected [`Faction`]
     faction_idx: usize,
-    /// Receive messages from external GUI structs
+    /// Receive internal and external messages
     message_rx: pipe::Receiver<Message>,
-    /// [`pipe::Sender`] to be clone for use by external GUI structs (e.g. popups)
+    /// Send internal and external messages; cloned by external GUI structs (e.g. [`Popups`]s)
     message_tx: pipe::Sender<Message>,
     /// Currently selected [`Point`] on the hex grid
     point: Point,
@@ -204,7 +203,7 @@ impl GeneratorApp {
         }
     }
 
-    fn unsaved_changes(&self) -> bool {
+    fn has_unsaved_changes(&self) -> bool {
         self.subsector_edited || self.world_edited
     }
 
@@ -276,8 +275,7 @@ impl GeneratorApp {
             CancelUnsavedExit => self.can_exit = false,
 
             ConfigRegenSubsector => {
-                let popup = SubsectorRegenPopup::default();
-                self.add_popup(popup);
+                self.subsector_regen_popup();
             }
 
             ConfirmHexGridClicked { new_point } => {
@@ -437,25 +435,7 @@ impl GeneratorApp {
 
             HexGridClicked { new_point } => {
                 if self.world_edited {
-                    let mut popup = ButtonPopup::new(
-                        "Unapplied World Changes".to_string(),
-                        format!(
-                            "Do you want to apply your changes to '{}'?",
-                            self.world.name
-                        ),
-                    );
-
-                    popup.add_button(
-                        "Apply".to_string(),
-                        Message::ApplyConfirmHexGridClicked { new_point },
-                    );
-                    popup.add_button(
-                        "Don't Apply".to_string(),
-                        Message::ConfirmHexGridClicked { new_point },
-                    );
-                    popup.add_button("Cancel".to_string(), Message::CancelHexGridClicked);
-
-                    self.add_popup(popup);
+                    self.unapplied_world_popup(new_point);
                 } else {
                     self.message_immediate(Message::ConfirmHexGridClicked { new_point });
                 }
@@ -516,17 +496,8 @@ impl GeneratorApp {
             }
 
             Open => {
-                if self.unsaved_changes() {
-                    let popup = ButtonPopup::unsaved_changes_dialog(
-                        format!(
-                            "Do you want to save changes to Subsector {}?",
-                            self.subsector.name()
-                        ),
-                        Message::SaveConfirmImportJson,
-                        Message::ConfirmImportJson,
-                        Message::CancelImportJson,
-                    );
-                    self.add_popup(popup);
+                if self.has_unsaved_changes() {
+                    self.unsaved_subsector_reload_popup();
                 } else {
                     self.message(Message::ConfirmImportJson);
                 }
@@ -554,31 +525,12 @@ impl GeneratorApp {
             }
 
             RegenSelectedWorld => {
-                let mut popup = ButtonPopup::new(
-                    "Regenerating World".to_string(),
-                    format!(
-                        "Do you want to completely regenerate '{}'? This can not be undone.",
-                        self.world.name
-                    ),
-                );
-                popup.add_confirm_buttons(Message::ConfirmRegenWorld, Message::CancelRegenWorld);
-
-                self.add_popup(popup);
+                self.regen_world_popup();
             }
 
             RegenSubsector => {
-                if self.unsaved_changes() {
-                    let popup = ButtonPopup::unsaved_changes_dialog(
-                        format!(
-                            "Do you want to save changes to Subsector {}?",
-                            self.subsector.name()
-                        ),
-                        Message::SaveConfigRegenSubsector,
-                        Message::ConfigRegenSubsector,
-                        Message::CancelRegenSubsector,
-                    );
-
-                    self.add_popup(popup);
+                if self.has_unsaved_changes() {
+                    self.unsaved_subsector_regen_popup();
                 } else {
                     self.message(Message::ConfigRegenSubsector);
                 }
@@ -658,24 +610,11 @@ impl GeneratorApp {
             }
 
             RemoveSelectedWorld => {
-                let mut popup = ButtonPopup::new(
-                    "Removing World".to_string(),
-                    format!(
-                        "Do you want to completely remove '{}'? This can not be undone.",
-                        self.world.name
-                    ),
-                );
-                popup.add_confirm_buttons(
-                    Message::ConfirmRemoveWorld { point: self.point },
-                    Message::CancelRemoveWorld,
-                );
-
-                self.add_popup(popup);
+                self.remove_world_popup();
             }
 
             RenameSubsector => {
-                let popup = SubsectorRenamePopup::new(self.subsector.name());
-                self.add_popup(popup);
+                self.subsector_rename_popup();
             }
 
             RevertWorldChanges => {
@@ -804,19 +743,7 @@ impl GeneratorApp {
                 if let Ok(location) = location {
                     if location != self.point && Subsector::point_is_inbounds(&location) {
                         if let Some(world) = self.subsector.get_world(&location) {
-                            let mut popup = ButtonPopup::new(
-                                "Destination Hex Occupied".to_string(),
-                                format!(
-                                    "'{}' is already at {}.\nWould you like to overwrite it?",
-                                    world.name, location
-                                ),
-                            );
-                            popup.add_confirm_buttons(
-                                Message::ConfirmLocUpdate { location },
-                                Message::CancelLocUpdate,
-                            );
-
-                            self.add_popup(popup);
+                            self.occupied_hex_popup(world.name.clone(), location);
                         } else {
                             self.message_immediate(Message::ConfirmLocUpdate { location });
                         }
@@ -835,28 +762,6 @@ impl GeneratorApp {
         true
     }
 
-    /** Add a `Popup` to the queue to be shown and awaiting response. */
-    fn add_popup<T: 'static + Popup>(&mut self, popup: T) {
-        self.popup_queue.push(Box::new(popup));
-    }
-
-    /** Display all `Popup`'s in the queue and process any messages they return. */
-    fn show_popups(&mut self, ctx: &Context) {
-        let mut responded = Vec::new();
-        for (i, popup) in self.popup_queue.iter_mut().enumerate() {
-            if let Some(message) = popup.show(ctx) {
-                responded.push((i, message));
-            }
-        }
-
-        for (i, message) in responded {
-            if self.popup_queue.get(i).is_some() {
-                self.popup_queue.remove(i);
-            }
-            self.message(message);
-        }
-    }
-
     fn with_world_abundance(world_abundance_dm: i16) -> Self {
         let subsector = Subsector::new(world_abundance_dm);
         Self {
@@ -868,19 +773,9 @@ impl GeneratorApp {
 
 impl App for GeneratorApp {
     fn on_exit_event(&mut self) -> bool {
-        let can_exit = !self.unsaved_changes() || self.can_exit;
+        let can_exit = !self.has_unsaved_changes() || self.can_exit;
         if !can_exit {
-            let popup = ButtonPopup::unsaved_changes_dialog(
-                format!(
-                    "Do you want to save changes to Subsector {}?",
-                    self.subsector.name()
-                ),
-                Message::SaveExit,
-                Message::ConfirmUnsavedExit,
-                Message::CancelUnsavedExit,
-            );
-
-            self.add_popup(popup);
+            self.unsaved_exit_popup();
         }
         can_exit
     }
@@ -897,9 +792,7 @@ impl App for GeneratorApp {
             frame.set_window_title(&(self.subsector.name().to_string() + " Subsector"));
         }
 
-        // GUI elements
         self.show_gui(ctx);
-        self.show_popups(ctx);
     }
 }
 
@@ -1074,7 +967,7 @@ mod tests {
             assert_eq!(app.point, unoccupied_point);
             assert!(app.world_selected);
 
-            assert!(app.unsaved_changes());
+            assert!(app.has_unsaved_changes());
         }
 
         #[test]

@@ -16,7 +16,7 @@ TODOs completed in this way should probably should still have an issue created a
 - Remove redundant serialization and deserializing code once GUI is in a good state
 - Fix up interface and module interdependencies to make things more usable externally and less monolithic
 - Rename `mod.rs` files
-- Refactor implemenations of `ToString` to `std::fmt::Display`
+- Refactor implementations of `ToString` to `std::fmt::Display`
 
 ### App/GUI TODOs
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
@@ -26,15 +26,11 @@ TODOs completed in this way should probably should still have an issue created a
 - Tech level should have some indication of what the number means, not just a number
 - Size should have some comparison with Earth or list the gravity, not just a number
 - Refactor the player-safe gui into a separate binary rather than a feature
-- Refactor popups to use message pipes instead
-- Refactor popup processing into `gui` code
 - Add a way to reorder factions
 - Adjust faction tab GUI spacing
 - Rework whole-world-regeneration to allow reverting and get rid of warning popup
 - Refactor calls to `TextStyle::Heading.resolve(&Style::default())` into one `rich_text_heading` function; consider using lazy static for it
-- Refactor `ButtonPopup` to use builder-pattern `add_button` calls rather than requiring `ButtonPopup` to always be mut. Then `add_button` might be able to use the `must_call` tag
 - Remove `Message::Cancel*` messages that don't do anything anything and replace with `Message::NoOp`
-- Consider moving from `self.message(Message)` to using the `pipe` system to take advantage of non-mutable borrowing
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
@@ -52,6 +48,7 @@ TODOs completed in this way should probably should still have an issue created a
 ### Bugs
 - Pressing the revert button doesn't correctly reset the displayed diameter of the world. Reverting and changing away from the world and back makes it display the original value, so it's mostly likely just the text box not updating properly
 - Large world names overflow hex on a single line
+- When regenerating the subsector with an unsaved, no-file one already loaded, pressing "Cancel" on the save dialog still lets the regeneration continue when it should stop. Uncertain if this affects file loading in the same way.
 
 ### Refactoring
 
@@ -84,6 +81,10 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Refactor older "description saving" `Message`s to minimize cloning~~
 - ~~Break up GUI elements in `app/mod.rs` into multiple files similar to `polity_display.rs`~~
 - ~~Refactor all gui elements into different files~~
+- ~~Refactor popups to use message pipes instead~~
+- ~~Refactor popup processing into `gui` code~~
+- ~~Refactor `ButtonPopup` to use builder-pattern `add_button` calls rather than requiring `ButtonPopup` to always be mut. Then `add_button` might be able to use the `must_call` tag~~
+- ~~Consider moving from `self.message(Message)` to using the `pipe` system to take advantage of non-mutable borrowing~~
 
 ## Cancelled TODOs
 

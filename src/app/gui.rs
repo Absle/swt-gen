@@ -1,3 +1,4 @@
+pub(crate) mod popup;
 mod subsector_map_display;
 mod world_data_display;
 
@@ -36,7 +37,7 @@ impl GeneratorApp {
     If there is no `World` at the selected `Point`, it shows a button to add a new world at there.
     If there is a `World` there, displays the data associated with that `World`.
     */
-    fn central_panel(&mut self, ctx: &Context) {
+    fn show_central_panel(&mut self, ctx: &Context) {
         CentralPanel::default().show(ctx, |ui| {
             ui.add_enabled_ui(self.popup_queue.is_empty(), |ui| {
                 ui.horizontal_top(|ui| {
@@ -56,15 +57,34 @@ impl GeneratorApp {
 
     /** Render all GUI elements. */
     pub(crate) fn show_gui(&mut self, ctx: &Context) {
-        self.top_panel(ctx);
-        self.central_panel(ctx);
+        self.show_top_panel(ctx);
+        self.show_central_panel(ctx);
+        self.show_popups(ctx);
+    }
+
+    /** Display all `Popup`'s in the queue and process any messages they return. */
+    fn show_popups(&mut self, ctx: &Context) {
+        let mut done = Vec::new();
+        for (i, popup) in self.popup_queue.iter_mut().enumerate() {
+            if popup.is_done() {
+                done.push(i);
+            } else {
+                popup.show(ctx);
+            }
+        }
+
+        for i in done {
+            if self.popup_queue.get(i).is_some() {
+                self.popup_queue.remove(i);
+            }
+        }
     }
 
     /** Displays the top panel of the app.
 
     Currently just a menu bar.
     */
-    fn top_panel(&mut self, ctx: &Context) {
+    fn show_top_panel(&mut self, ctx: &Context) {
         TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.add_enabled_ui(self.popup_queue.is_empty(), |ui| {
                 menu::bar(ui, |ui| {
