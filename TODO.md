@@ -34,7 +34,6 @@ TODOs completed in this way should probably should still have an issue created a
 - Adjust faction tab GUI spacing
 - Rework whole-world-regeneration to allow reverting and get rid of warning popup
 - Refactor calls to `TextStyle::Heading.resolve(&Style::default())` into one `rich_text_heading` function; consider using lazy static for it
-- Remove `Message::Cancel*` messages that don't do anything anything and replace with `Message::NoOp`
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
@@ -86,6 +85,7 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Refactor `ButtonPopup` to use builder-pattern `add_button` calls rather than requiring `ButtonPopup` to always be mut. Then `add_button` might be able to use the `must_call` tag~~
 - ~~Refactor svg generation to use a proper xml editor~~
 - ~~Consider moving from `self.message(Message)` to using the `pipe` system to take advantage of non-mutable borrowing~~
+- ~~Remove `Message::Cancel*` messages that don't do anything anything and replace with `Message::NoOp`~~
 
 ### Bugs
 - ~~When regenerating the subsector with an unsaved, no-file one already loaded, pressing "Cancel" on the save dialog still lets the regeneration continue when it should stop. Uncertain if this affects file loading in the same way.~~

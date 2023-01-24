@@ -42,7 +42,7 @@ impl GeneratorApp {
             ),
             self.message_tx.clone(),
         )
-        .add_confirm_buttons(Message::ConfirmRegenWorld, Message::CancelRegenWorld);
+        .add_confirm_buttons(Message::ConfirmRegenWorld, Message::NoOp);
 
         self.add_popup(popup);
     }
@@ -58,7 +58,7 @@ impl GeneratorApp {
         )
         .add_confirm_buttons(
             Message::ConfirmRemoveWorld { point: self.point },
-            Message::CancelRemoveWorld,
+            Message::NoOp,
         );
 
         self.add_popup(popup);
@@ -92,7 +92,7 @@ impl GeneratorApp {
             "Don't Apply".to_string(),
             Message::ConfirmHexGridClicked { new_point },
         )
-        .add_button("Cancel".to_string(), Message::CancelHexGridClicked);
+        .add_button("Cancel".to_string(), Message::NoOp);
 
         self.add_popup(popup);
     }
@@ -120,7 +120,7 @@ impl GeneratorApp {
             ),
             Message::SaveConfigRegenSubsector,
             Message::ConfigRegenSubsector,
-            Message::CancelRegenSubsector,
+            Message::NoOp,
             self.message_tx.clone(),
         );
 
@@ -135,7 +135,7 @@ impl GeneratorApp {
             ),
             Message::SaveConfirmImportJson,
             Message::ConfirmImportJson,
-            Message::CancelImportJson,
+            Message::NoOp,
             self.message_tx.clone(),
         );
         self.add_popup(popup);
@@ -321,7 +321,7 @@ impl Popup for SubsectorRegenPopup {
 
                     ui.with_layout(Layout::right_to_left(), |ui| {
                         if ui.button("Cancel").clicked() {
-                            self.message_tx.send(Message::CancelRegenSubsector);
+                            self.message_tx.send(Message::NoOp);
                             self.is_done = true;
                         }
                     });
@@ -378,7 +378,7 @@ impl Popup for SubsectorRenamePopup {
 
                     ui.with_layout(Layout::right_to_left(), |ui| {
                         if ui.button("Cancel").clicked() {
-                            self.message_tx.send(Message::CancelRenameSubsector);
+                            self.message_tx.send(Message::NoOp);
                             self.is_done = true;
                         }
                     });

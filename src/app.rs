@@ -33,13 +33,7 @@ pub(crate) enum Message {
     AddNewWorld,
     ApplyConfirmHexGridClicked { new_point: Point },
     ApplyWorldChanges,
-    CancelHexGridClicked,
-    CancelImportJson,
     CancelLocUpdate,
-    CancelRegenSubsector,
-    CancelRegenWorld,
-    CancelRemoveWorld,
-    CancelRenameSubsector,
     CancelUnsavedExit,
     ConfigRegenSubsector,
     ConfirmHexGridClicked { new_point: Point },
@@ -59,6 +53,7 @@ pub(crate) enum Message {
     NewWorldCultureSelected { new_code: u16 },
     NewWorldGovSelected { new_code: u16 },
     NewWorldTagSelected { index: usize, new_code: u16 },
+    NoOp,
     OpenJson,
     RegenSelectedFaction,
     RegenSelectedWorld,
@@ -445,13 +440,7 @@ impl GeneratorApp {
             }
 
             ApplyWorldChanges => self.apply_world_changes(),
-            CancelHexGridClicked => Ok(None),
-            CancelImportJson => Ok(None),
             CancelLocUpdate => self.cancel_loc_update(),
-            CancelRegenSubsector => Ok(None),
-            CancelRegenWorld => Ok(None),
-            CancelRemoveWorld => Ok(None),
-            CancelRenameSubsector => Ok(None),
             CancelUnsavedExit => self.cancel_unsaved_exit(),
             ConfigRegenSubsector => self.config_regen_subsector(),
             ConfirmHexGridClicked { new_point } => self.confirm_hex_grid_clicked(new_point),
@@ -475,6 +464,7 @@ impl GeneratorApp {
             NewWorldCultureSelected { new_code } => self.new_world_culture_selected(new_code),
             NewWorldGovSelected { new_code } => self.new_world_gov_selected(new_code),
             NewWorldTagSelected { index, new_code } => self.new_world_tag_selected(index, new_code),
+            NoOp => Ok(None),
             OpenJson => self.open_json(),
             RegenSelectedFaction => self.regen_selected_faction(),
             RegenSelectedWorld => self.regen_selected_world(),
@@ -1226,8 +1216,7 @@ mod tests {
             app.popup_queue.remove(0);
 
             // Nothing should change if the "cancel" button was hit on the popup
-            app.message_immediate(Message::CancelHexGridClicked)
-                .unwrap();
+            app.message_immediate(Message::NoOp).unwrap();
             assert_eq!(app.point, point);
 
             // Repeat as if the user had pressed the "don't apply" button
