@@ -19,7 +19,6 @@ TODOs completed in this way should probably should still have an issue created a
 - More doc-comments where useful
 - Remove redundant serialization and deserializing code once GUI is in a good state
 - Fix up interface and module interdependencies to make things more usable externally and less monolithic
-- Rename `mod.rs` files
 - Refactor implementations of `ToString` to `std::fmt::Display`
 
 ### App/GUI TODOs
@@ -56,6 +55,7 @@ TODOs completed in this way should probably should still have an issue created a
 
 ### General Issues
 - ~~Make this TODO list~~
+- ~~Rename `mod.rs` files~~
 
 ### App/GUI TODOs
 - ~~Finish adding displays for all `Subsector` fields~~

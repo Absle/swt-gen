@@ -209,7 +209,7 @@ pub(crate) struct Subsector {
 
 #[allow(dead_code)]
 const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population,Notes";
-const TEMPLATE_SVG: &str = include_str!("../../resources/traveller_subsector_grid.svg");
+const TEMPLATE_SVG: &str = include_str!("../resources/traveller_subsector_grid.svg");
 
 lazy_static! {
     static ref CENTER_MARKERS: BTreeMap<Point, Translation> = center_markers();
@@ -349,13 +349,11 @@ impl Subsector {
         Ok(Self { name, map })
     }
 
-    #[allow(dead_code)]
     pub fn to_json(&self) -> String {
         let jsonable = JsonableSubsector::from(self.clone());
         serde_json::to_string_pretty(&jsonable).unwrap()
     }
 
-    #[allow(dead_code)]
     pub fn try_from_json(json: &str) -> Result<Self, Box<dyn Error>> {
         let jsonable: JsonableSubsector = serde_json::from_str(json)?;
         let subsector = Self::try_from(jsonable)?;
