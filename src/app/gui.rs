@@ -100,7 +100,7 @@ impl GeneratorApp {
 
                         if ui.button("Open...              Ctrl-O").clicked() {
                             ui.close_menu();
-                            self.message(Message::Open);
+                            self.message(Message::OpenJson);
                         }
 
                         if ui.button("Save                   Ctrl-S").clicked() {

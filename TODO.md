@@ -20,6 +20,7 @@ TODOs completed in this way should probably should still have an issue created a
 - Remove redundant serialization and deserializing code once GUI is in a good state
 - Fix up interface and module interdependencies to make things more usable externally and less monolithic
 - Refactor implementations of `ToString` to `std::fmt::Display`
+- Some kind of logging schema
 
 ### App/GUI TODOs
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it

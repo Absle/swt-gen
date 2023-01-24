@@ -772,7 +772,7 @@ impl GeneratorApp {
                 // Diameter
                 if ui
                     .add(
-                        TextEdit::singleline(&mut self.diameter)
+                        TextEdit::singleline(&mut self.diameter_str)
                             .desired_width(SHORT_SELECTION_WIDTH),
                     )
                     .lost_focus()
@@ -841,7 +841,7 @@ impl GeneratorApp {
 
                 if ui
                     .add(
-                        TextEdit::singleline(&mut self.berthing_cost)
+                        TextEdit::singleline(&mut self.berthing_cost_str)
                             .desired_width(SHORT_SELECTION_WIDTH),
                     )
                     .lost_focus()
