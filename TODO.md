@@ -19,6 +19,8 @@ TODOs completed in this way should probably should still have an issue created a
 - Remove redundant serialization and deserializing code once GUI is in a good state
 - Fix up interface and module interdependencies to make things more usable externally and less monolithic
 - Some kind of logging schema
+- Auto saving, probably to some `*.json~` backup files
+- Some kind of user preference saving
 
 ### App/GUI TODOs
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
@@ -32,6 +34,7 @@ TODOs completed in this way should probably should still have an issue created a
 - Adjust faction tab GUI spacing
 - Rework whole-world-regeneration to allow reverting and get rid of warning popup
 - Refactor calls to `TextStyle::Heading.resolve(&Style::default())` into one `rich_text_heading` function; consider using lazy static for it
+- Add a "TAS Description" or "GM Description" that is viewable but not editable in player-safe GUI
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
@@ -41,6 +44,7 @@ TODOs completed in this way should probably should still have an issue created a
     - Update svg generation to display these
 
 ### Far Future TODOs
+- Some kind of search/query/filtering system
 - Create a web-app version
 - Create a demo website using the web-app
 - Create an Obsidian plugin; this is ***only worth doing if*** making the web-app takes you 95% of the way towards to displaying the GUI in an Electron application like Obsidian

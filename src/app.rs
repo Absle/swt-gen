@@ -78,7 +78,6 @@ pub(crate) enum Message {
     SaveConfigRegenSubsector,
     SaveConfirmImportJson,
     SaveExit,
-    SubsectorModelUpdated,
     WorldBerthingCostsUpdated,
     WorldDiameterUpdated,
     WorldLocUpdated,
@@ -143,7 +142,7 @@ impl GeneratorApp {
         match self.subsector.insert_random_world(&self.point) {
             Ok(_) => {
                 self.confirm_hex_grid_clicked(self.point)?;
-                self.message_immediate(Message::SubsectorModelUpdated)?;
+                self.subsector_model_updated()?;
                 Ok(Some(()))
             }
             Err(e) => Err(e),
@@ -489,7 +488,6 @@ impl GeneratorApp {
             SaveConfigRegenSubsector => self.save_config_regen_subsector(),
             SaveConfirmImportJson => self.save_confirm_import_json(),
             SaveExit => self.save_exit(),
-            SubsectorModelUpdated => self.subsector_model_updated(),
             WorldBerthingCostsUpdated => self.world_berthing_costs_updated(),
             WorldDiameterUpdated => self.world_diameter_updated(),
             WorldLocUpdated => self.world_loc_updated(),

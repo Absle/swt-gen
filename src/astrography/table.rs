@@ -171,7 +171,7 @@ impl WorldTagRecord {
             description: new_desc,
         } = other;
 
-        if self.description == TABLES.culture_table[self.code as usize].description {
+        if self.description == TABLES.world_tag_table[self.code as usize].description {
             self.description = new_desc.clone();
         }
 
