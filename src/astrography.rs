@@ -5,12 +5,13 @@ use std::{
     collections::BTreeMap,
     convert::TryFrom,
     error::Error,
-    fmt, fs,
+    fmt, fs, io,
     ops::{Add, Sub},
     str,
 };
 
 use lazy_static::lazy_static;
+use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
@@ -376,11 +377,8 @@ impl Subsector {
     }
 
     pub fn generate_svg(&self, colored: bool) -> String {
-        use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
-        use std::io::Cursor;
-
         let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
-        let mut writer = quick_xml::Writer::new(Cursor::new(Vec::new()));
+        let mut writer = quick_xml::Writer::new(io::Cursor::new(Vec::new()));
         loop {
             match reader.read_event() {
                 Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -772,8 +770,6 @@ impl From<Subsector> for JsonableSubsector {
 }
 
 fn center_markers() -> BTreeMap<Point, Translation> {
-    use quick_xml::events::Event;
-
     let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
     let mut column_translations: [Translation; Subsector::COLUMNS] =
         [Translation::default(); Subsector::COLUMNS];
@@ -890,8 +886,6 @@ fn center_markers() -> BTreeMap<Point, Translation> {
 }
 
 fn map_legend_translation(id: &str) -> Translation {
-    use quick_xml::events::Event;
-
     let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
     loop {
         match reader.read_event() {

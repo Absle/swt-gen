@@ -1,5 +1,7 @@
 #![warn(clippy::todo)]
-pub mod app;
+mod app;
 mod astrography;
 mod dice;
 mod histogram;
+
+pub use app::GeneratorApp;

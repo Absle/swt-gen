@@ -4,7 +4,7 @@
 
 use egui::vec2;
 
-use traveller_generator::*;
+use traveller_generator::GeneratorApp;
 
 fn main() {
     let options = eframe::NativeOptions {
@@ -15,6 +15,6 @@ fn main() {
     eframe::run_native(
         "Subsector Generator",
         options,
-        Box::new(|_cc| Box::new(app::GeneratorApp::default())),
+        Box::new(|_cc| Box::<GeneratorApp>::default()),
     );
 }
