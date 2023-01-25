@@ -1,5 +1,8 @@
-pub(crate) mod table;
-pub(crate) mod world;
+mod table;
+mod world;
+
+pub(crate) use table::*;
+pub(crate) use world::{Faction, TravelCode, World};
 
 use std::{
     collections::BTreeMap,
@@ -15,8 +18,9 @@ use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
-use super::dice;
-use world::{World, WorldRecord};
+use crate::dice;
+
+use world::WorldRecord;
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) struct Point {

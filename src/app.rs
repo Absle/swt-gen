@@ -12,13 +12,9 @@ use egui::{Context, Key, Modifiers};
 use egui_extras::RetainedImage;
 use native_dialog::{FileDialog, MessageDialog, MessageType};
 
-use crate::astrography::{
-    table::TABLES,
-    world::{Faction, World},
-    Point, Subsector,
-};
+use crate::astrography::{Faction, Point, Subsector, World, TABLES};
 
-use gui::popup::Popup;
+use gui::Popup;
 
 // TODO: calls to `Subsector::generate_svg` using this variable need to have their logic of when to
 // have the svg colored updated once proper svg coloring has been implemented. This `const` is just
@@ -26,7 +22,12 @@ use gui::popup::Popup;
 // colored. Make sure to commit only with this set to `false`.
 const COLORED: bool = false;
 
-/** Set of messages respresenting all non-trivial GUI events. */
+/** Set of messages respresenting all non-trivial GUI events.
+
+The definition of "non-trivial" is "not just a straightforward value change"; many widgets in `egui`
+are directly linked to a variable and update them directly. There would be no point in triggering a
+`Message` that just updates it again.
+*/
 #[derive(Clone)]
 pub(crate) enum Message {
     AddNewFaction,
@@ -1339,7 +1340,7 @@ mod tests {
 
         #[test]
         fn new_starport_class_selected() {
-            use crate::astrography::table::StarportClass;
+            use crate::astrography::StarportClass;
 
             let mut app = empty_app();
             let point = Point { x: 1, y: 1 };

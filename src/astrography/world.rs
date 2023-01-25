@@ -3,11 +3,10 @@ use std::error::Error;
 
 use serde::{Deserialize, Serialize};
 
-use super::table::{
-    AtmoRecord, CulturalDiffRecord, GovRecord, HydroRecord, LawRecord, PopRecord, StarportClass,
-    StarportRecord, Table, TempRecord, WorldTagRecord, TABLES,
+use crate::astrography::{
+    AtmoRecord, CulturalDiffRecord, GovRecord, HydroRecord, LawRecord, Point, PopRecord,
+    StarportClass, StarportRecord, Table, TempRecord, WorldTagRecord, TABLES,
 };
-use super::Point;
 use crate::dice;
 use crate::histogram::Histogram;
 
@@ -937,6 +936,11 @@ impl TryFrom<WorldRecord> for World {
     }
 }
 
+/** Alternate form of a [`World`] that can be exported as a kludgy CSV file.
+
+Currently can only grab the first four of any world's faction list, which may be a significant
+downside depending on the usecase.
+*/
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub(crate) struct WorldRecord {
     subsector_name: String,

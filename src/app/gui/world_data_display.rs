@@ -15,8 +15,7 @@ use crate::{
         GeneratorApp, Message,
     },
     astrography::{
-        table::{CulturalDiffRecord, GovRecord, StarportClass, TABLES},
-        world::{Faction, TravelCode, World},
+        CulturalDiffRecord, Faction, GovRecord, StarportClass, TravelCode, World, TABLES,
     },
 };
 

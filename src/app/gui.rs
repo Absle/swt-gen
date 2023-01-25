@@ -1,4 +1,4 @@
-pub(crate) mod popup;
+mod popup;
 mod subsector_map_display;
 mod world_data_display;
 
@@ -6,6 +6,7 @@ use egui::{menu, Button, CentralPanel, Color32, Context, FontId, TopBottomPanel}
 
 use crate::app::{GeneratorApp, Message};
 
+pub(crate) use popup::Popup;
 pub(crate) use subsector_map_display::generate_subsector_image;
 pub(crate) use world_data_display::TabLabel;
 
