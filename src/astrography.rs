@@ -519,7 +519,7 @@ impl Subsector {
                                             ("x", &format!("{}", trans.x)),
                                             ("y", &format!("{}", trans.y)),
                                         ])
-                                        .write_text_content(BytesText::new(&world.profile()))
+                                        .write_text_content(BytesText::new(&world.profile_str()))
                                         .unwrap();
                                     Ok(())
                                 })

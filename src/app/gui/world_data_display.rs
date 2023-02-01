@@ -1,8 +1,8 @@
 use std::fmt;
 
 use egui::{
-    vec2, Align, Button, ComboBox, FontId, Grid, Key, Label, Layout, RichText, ScrollArea, Sense,
-    Style, TextEdit, TextStyle, Ui,
+    vec2, Align, Button, ComboBox, FontId, Grid, Key, Layout, RichText, ScrollArea, Style,
+    TextEdit, TextStyle, Ui,
 };
 
 use crate::{
@@ -704,18 +704,13 @@ impl GeneratorApp {
                 }
 
                 // World profile
-                let profile = self.world.profile();
-                if ui.add(Label::new(&profile).sense(Sense::click())).clicked() {
-                    ui.output().copied_text = profile;
-                }
+                ui.label(self.world.profile_str());
 
                 // Trade codes
-                let trade_codes = self.world.trade_code_str();
-                if ui
-                    .add(Label::new(&trade_codes).sense(Sense::click()))
-                    .clicked()
-                {
-                    ui.output().copied_text = trade_codes;
+                let response = ui.label(self.world.trade_code_str());
+                let trade_code_long_str = self.world.trade_code_long_str();
+                if !trade_code_long_str.is_empty() {
+                    response.on_hover_text(trade_code_long_str);
                 }
 
                 // Travel Code

@@ -116,24 +116,68 @@ impl TryFrom<&str> for TravelCode {
 
 #[derive(Clone, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) enum TradeCode {
+    /// Agricultural
     Ag,
+    /// Asteroid
     As,
+    /// Barren
     Ba,
+    /// Desert
     De,
+    /// Fluid Oceans
     Fl,
+    /// Garden
     Ga,
+    /// High Population
     Hi,
+    /// High Tech
     Ht,
+    /// Ice-Capped
     Ie,
+    /// Industrial
     In,
+    /// Low Population
     Lo,
+    /// Low Tech
     Lt,
+    /// Non-Agricultural
     Na,
+    /// Non-Industrial
     Ni,
+    /// Poor
     Po,
+    /// Rich
     Ri,
+    /// Vacuum
     Va,
+    /// Water World
     Wa,
+}
+
+impl TradeCode {
+    fn to_long_str(&self) -> String {
+        use TradeCode::*;
+        match self {
+            Ag => "Agricultural".to_string(),
+            As => "Asteroid".to_string(),
+            Ba => "Barren".to_string(),
+            De => "Desert".to_string(),
+            Fl => "Fluid Oceans".to_string(),
+            Ga => "Garden".to_string(),
+            Hi => "High Population".to_string(),
+            Ht => "High Tech".to_string(),
+            Ie => "Ice-Capped".to_string(),
+            In => "Industrial".to_string(),
+            Lo => "Low Population".to_string(),
+            Lt => "Low Tech".to_string(),
+            Na => "Non-Agricultural".to_string(),
+            Ni => "Non-Industrial".to_string(),
+            Po => "Poor".to_string(),
+            Ri => "Rich".to_string(),
+            Va => "Vacuum".to_string(),
+            Wa => "Water World".to_string(),
+        }
+    }
 }
 
 impl TryFrom<&str> for TradeCode {
@@ -205,7 +249,7 @@ impl World {
         self.factions.len() - 1
     }
 
-    pub fn profile(&self) -> String {
+    pub fn profile_str(&self) -> String {
         format!(
             "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
             starport = self.starport.class,
@@ -236,12 +280,20 @@ impl World {
         bases.join(" ")
     }
 
+    pub fn trade_code_long_str(&self) -> String {
+        self.trade_codes
+            .iter()
+            .map(|code| code.to_long_str())
+            .collect::<Vec<String>>()
+            .join(", ")
+    }
+
     pub fn trade_code_str(&self) -> String {
         self.trade_codes
             .iter()
             .map(|code| format!("{:?}", code))
             .collect::<Vec<String>>()
-            .join(" ")
+            .join(", ")
     }
 
     pub fn travel_code_str(&self) -> String {
@@ -897,14 +949,6 @@ impl TryFrom<WorldRecord> for World {
         let has_research_base = record.bases.contains('R');
         let has_tas = record.bases.contains('T');
 
-        let mut trade_codes = BTreeSet::new();
-        for code in record.trade_codes.split(' ') {
-            if code.is_empty() {
-                continue;
-            }
-            trade_codes.insert(TradeCode::try_from(code)?);
-        }
-
         let mut world = Self {
             name: record.name,
             has_gas_giant: &record.gas_giant == "G",
@@ -928,7 +972,7 @@ impl TryFrom<WorldRecord> for World {
             has_research_base,
             has_tas,
             travel_code: TravelCode::try_from(&record.travel_code[..])?,
-            trade_codes,
+            trade_codes: BTreeSet::new(),
             notes: record.notes,
         };
         world.resolve_trade_codes();
@@ -1023,7 +1067,7 @@ impl From<World> for WorldRecord {
         // The '_' prefix is to prevent any csv editor from treating the location string as a number
         // and truncating the leading '0'
         let location = "_0000".to_string();
-        let profile = world.profile();
+        let profile = world.profile_str();
         let bases = world.base_str();
         let trade_codes = world.trade_code_str();
         let travel_code = world.travel_code_str();
