@@ -188,8 +188,8 @@ fn determine_click_kind(pointer_pos: Pos2, rect: &Rect) -> ClickKind {
             if distance < smallest_distance {
                 smallest_distance = distance;
                 point = Point {
-                    x: x as u16,
-                    y: y as u16,
+                    x: x as i32,
+                    y: y as i32,
                 };
             }
         }

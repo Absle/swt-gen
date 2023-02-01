@@ -24,8 +24,8 @@ use world::WorldRecord;
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) struct Point {
-    pub x: u16,
-    pub y: u16,
+    pub x: i32,
+    pub y: i32,
 }
 
 impl fmt::Display for Point {
@@ -60,8 +60,8 @@ impl TryFrom<&str> for Point {
             return Err("World location string too long".into());
         }
 
-        let x: u16 = x_str.parse()?;
-        let y: u16 = y_str.parse()?;
+        let x: i32 = x_str.parse()?;
+        let y: i32 = y_str.parse()?;
         Ok(Self { x, y })
     }
 }
@@ -268,8 +268,8 @@ impl Subsector {
                 let roll = dice::roll_1d(6) + world_abundance_dm;
                 if roll >= 4 {
                     let point = Point {
-                        x: x as u16,
-                        y: y as u16,
+                        x: x as i32,
+                        y: y as i32,
                     };
 
                     let name = names.next().unwrap();
@@ -290,8 +290,8 @@ impl Subsector {
             for y in 1..=Subsector::ROWS {
                 let marker = format!(".{}", 100 * x + y);
                 let point = Point {
-                    x: x as u16,
-                    y: y as u16,
+                    x: x as i32,
+                    y: y as i32,
                 };
 
                 if let Some(world) = &self.map.get(&point) {
@@ -875,8 +875,8 @@ fn center_markers() -> BTreeMap<Point, Translation> {
         let column_translation = column_translations[column_idx];
         for y in 1..=Subsector::ROWS {
             let point = Point {
-                x: x as u16,
-                y: y as u16,
+                x: x as i32,
+                y: y as i32,
             };
 
             let center_mark = circle_translations

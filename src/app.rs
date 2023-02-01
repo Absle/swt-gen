@@ -1152,8 +1152,8 @@ mod tests {
             for x in 1..=Subsector::COLUMNS {
                 for y in 1..=Subsector::ROWS {
                     let point = Point {
-                        x: x as u16,
-                        y: y as u16,
+                        x: x as i32,
+                        y: y as i32,
                     };
 
                     app.message_immediate(Message::HexGridClicked { new_point: point })
@@ -1185,13 +1185,13 @@ mod tests {
             let point = occupied_points[0];
             assert!(app.subsector.get_world(&point).is_some());
 
-            let other_x = if point.x == Subsector::COLUMNS as u16 {
+            let other_x = if point.x == Subsector::COLUMNS as i32 {
                 point.x - 1
             } else {
                 point.x + 1
             };
 
-            let other_y = if point.y == Subsector::ROWS as u16 {
+            let other_y = if point.y == Subsector::ROWS as i32 {
                 point.y - 1
             } else {
                 point.y + 1
