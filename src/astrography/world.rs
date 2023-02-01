@@ -249,20 +249,6 @@ impl World {
         self.factions.len() - 1
     }
 
-    pub fn profile_str(&self) -> String {
-        format!(
-            "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
-            starport = self.starport.class,
-            size = self.size,
-            atmo = self.atmosphere.code,
-            hydro = self.hydrographics.code,
-            pop = self.population.code,
-            gov = self.government.code,
-            law = self.law_level.code,
-            tech = self.tech_level
-        )
-    }
-
     pub fn base_str(&self) -> String {
         let mut bases = Vec::new();
         if self.has_naval_base {
@@ -278,53 +264,6 @@ impl World {
             bases.push(String::from("T"));
         }
         bases.join(" ")
-    }
-
-    pub fn trade_code_long_str(&self) -> String {
-        self.trade_codes
-            .iter()
-            .map(|code| code.to_long_str())
-            .collect::<Vec<String>>()
-            .join(", ")
-    }
-
-    pub fn trade_code_str(&self) -> String {
-        self.trade_codes
-            .iter()
-            .map(|code| format!("{:?}", code))
-            .collect::<Vec<String>>()
-            .join(", ")
-    }
-
-    pub fn travel_code_str(&self) -> String {
-        format!("{:?}", self.travel_code)
-    }
-
-    /** Create a randomized `World` named `name` at `location`. */
-    pub fn new(name: String) -> Self {
-        let mut world = Self::empty();
-        world.name = name;
-
-        // Generation *must* happen in this order, many fields depend on the value
-        // of other fields when making their rolls
-        world.generate_gas_giant();
-        world.generate_size();
-        world.generate_atmosphere();
-        world.generate_temperature();
-        world.generate_hydrographics();
-        world.generate_population();
-        world.generate_government();
-        world.generate_law_level();
-        world.generate_factions();
-        world.generate_culture();
-        world.generate_world_tags();
-        world.generate_starport();
-        world.generate_tech_level();
-        world.generate_bases();
-        world.resolve_travel_code();
-        world.resolve_trade_codes();
-
-        world
     }
 
     pub(crate) fn empty() -> Self {
@@ -358,6 +297,85 @@ impl World {
         }
     }
 
+    pub(crate) fn generate_atmosphere(&mut self) {
+        let modifier = self.size as i32 - 7;
+        self.atmosphere = TABLES.atmo_table.roll_normal_2d6(modifier).clone();
+    }
+
+    fn generate_bases(&mut self) {
+        let naval_target;
+        let scout_target;
+        let research_target;
+        let tas_target;
+        match self.starport.class {
+            StarportClass::A => {
+                naval_target = 8;
+                scout_target = 10;
+                research_target = 8;
+                tas_target = 0; // Guaranteed
+            }
+
+            StarportClass::B => {
+                naval_target = 8;
+                scout_target = 8;
+                research_target = 10;
+                tas_target = 0; // Guaranteed
+            }
+
+            StarportClass::C => {
+                naval_target = i32::MAX; // Impossible
+                scout_target = 8;
+                research_target = 10;
+                tas_target = 10;
+            }
+
+            StarportClass::D => {
+                naval_target = i32::MAX; // Impossible
+                scout_target = 7;
+                research_target = i32::MAX; // Impossible
+                tas_target = i32::MAX; // Impossible
+            }
+
+            _ => {
+                naval_target = i32::MAX; // Impossible
+                scout_target = i32::MAX; // Impossible
+                research_target = i32::MAX; // Impossible
+                tas_target = i32::MAX; // Impossible
+            }
+        }
+
+        self.has_naval_base = dice::roll_2d(6) >= naval_target;
+        self.has_scout_base = dice::roll_2d(6) >= scout_target;
+        self.has_research_base = dice::roll_2d(6) >= research_target;
+        self.has_tas = dice::roll_2d(6) >= tas_target;
+    }
+
+    pub(crate) fn generate_berthing_cost(&mut self) {
+        let index = self.starport.code as usize;
+        self.starport.berthing_cost = dice::roll_1d(6) * TABLES.starport_table[index].berthing_cost;
+    }
+
+    pub(crate) fn generate_culture(&mut self) {
+        self.culture = TABLES.culture_table.roll_uniform().clone();
+    }
+
+    fn generate_factions(&mut self) {
+        if self.population.code == 0 {
+            return;
+        }
+
+        let faction_count = dice::roll_1d(3)
+            + match self.government.code {
+                0 | 7 => 1,
+                x if x >= 10 => -1,
+                _ => 0,
+            };
+
+        for _ in 0..faction_count {
+            self.factions.push(Faction::random());
+        }
+    }
+
     fn generate_gas_giant(&mut self) {
         match dice::roll_2d(6) {
             0..=9 => self.has_gas_giant = true,
@@ -365,35 +383,13 @@ impl World {
         }
     }
 
-    pub(crate) fn generate_size(&mut self) {
-        self.size = (dice::roll_2d(6) - 2).clamp(Self::SIZE_MIN, Self::SIZE_MAX);
-
-        let median: u32 = match self.size {
-            0 => 700,
-            _ => (1600 * self.size).into(),
-        };
-        let min = median - 200;
-        let max = median + 200;
-        self.diameter = dice::roll_range(min..=max);
-    }
-
-    pub(crate) fn generate_atmosphere(&mut self) {
-        let modifier = self.size as i32 - 7;
-        self.atmosphere = TABLES.atmo_table.roll_normal_2d6(modifier).clone();
-    }
-
-    pub(crate) fn generate_temperature(&mut self) {
-        let modifier: i32 = match self.atmosphere.code {
-            0 | 1 => 0,
-            2 | 3 => -2,
-            4 | 5 | 14 => -1,
-            6 | 7 => 0,
-            8 | 9 => 1,
-            10 | 13 | 15 => 2,
-            11 | 12 => 6,
-            _ => unreachable!("The atmosphere should always be in the range 0..=12"),
-        };
-        self.temperature = TABLES.temp_table.roll_normal_2d6(modifier).clone();
+    pub(crate) fn generate_government(&mut self) {
+        if self.population.code == 0 {
+            self.government = TABLES.gov_table[0].clone();
+            return;
+        }
+        let modifier = self.unmodified_pop as i32 - 7;
+        self.government = TABLES.gov_table.roll_normal_2d6(modifier).clone();
     }
 
     pub(crate) fn generate_hydrographics(&mut self) {
@@ -419,6 +415,15 @@ impl World {
 
         let modifier = atmo_modifier + temp_modifier;
         self.hydrographics = TABLES.hydro_table.roll_normal_2d6(modifier).clone();
+    }
+
+    pub(crate) fn generate_law_level(&mut self) {
+        if self.government.code == 0 {
+            self.law_level = TABLES.law_table[0].clone();
+            return;
+        }
+        let modifier = self.government.code as i32 - 7;
+        self.law_level = TABLES.law_table.roll_normal_2d6(modifier).clone();
     }
 
     pub(crate) fn generate_population(&mut self) {
@@ -461,69 +466,16 @@ impl World {
         self.population = TABLES.pop_table[index].clone();
     }
 
-    pub(crate) fn generate_government(&mut self) {
-        if self.population.code == 0 {
-            self.government = TABLES.gov_table[0].clone();
-            return;
-        }
-        let modifier = self.unmodified_pop as i32 - 7;
-        self.government = TABLES.gov_table.roll_normal_2d6(modifier).clone();
-    }
+    pub(crate) fn generate_size(&mut self) {
+        self.size = (dice::roll_2d(6) - 2).clamp(Self::SIZE_MIN, Self::SIZE_MAX);
 
-    pub(crate) fn generate_law_level(&mut self) {
-        if self.government.code == 0 {
-            self.law_level = TABLES.law_table[0].clone();
-            return;
-        }
-        let modifier = self.government.code as i32 - 7;
-        self.law_level = TABLES.law_table.roll_normal_2d6(modifier).clone();
-    }
-
-    fn generate_factions(&mut self) {
-        if self.population.code == 0 {
-            return;
-        }
-
-        let faction_count = dice::roll_1d(3)
-            + match self.government.code {
-                0 | 7 => 1,
-                x if x >= 10 => -1,
-                _ => 0,
-            };
-
-        for _ in 0..faction_count {
-            self.factions.push(Faction::random());
-        }
-    }
-
-    pub(crate) fn generate_culture(&mut self) {
-        self.culture = TABLES.culture_table.roll_uniform().clone();
-    }
-
-    /** Regenerate all of the world's world tags. */
-    fn generate_world_tags(&mut self) {
-        for index in 0..self.world_tags.len() {
-            self.generate_world_tag(index);
-        }
-    }
-
-    /** Mutate the world tag at `index` to a random one on the `world_tag_table`.
-
-    Currently each world only has two world tags, so the only valid indices are `0` and `1`.
-
-    # Returns
-    - `Some(world_tag)` with the old, displaced world tag if `index` is valid, or
-    - `None` otherwise
-    */
-    pub(crate) fn generate_world_tag(&mut self, index: usize) -> Option<WorldTagRecord> {
-        match self.world_tags.get_mut(index) {
-            Some(world_tag) => {
-                let old_tag = world_tag.clone();
-                *world_tag = TABLES.world_tag_table.roll_uniform().clone();
-                Some(old_tag)
-            }
-            None => None,
-        }
+        let median: u32 = match self.size {
+            0 => 700,
+            _ => (1600 * self.size).into(),
+        };
+        let min = median - 200;
+        let max = median + 200;
+        self.diameter = dice::roll_range(min..=max);
     }
 
     pub(crate) fn generate_starport(&mut self) {
@@ -537,11 +489,6 @@ impl World {
 
         self.starport = TABLES.starport_table.roll_normal_2d6(pop_mod).clone();
         self.generate_berthing_cost();
-    }
-
-    pub(crate) fn generate_berthing_cost(&mut self) {
-        let index = self.starport.code as usize;
-        self.starport.berthing_cost = dice::roll_1d(6) * TABLES.starport_table[index].berthing_cost;
     }
 
     pub(crate) fn generate_tech_level(&mut self) {
@@ -593,71 +540,126 @@ impl World {
         self.tech_level = roll.clamp(Self::TECH_MIN, Self::TECH_MAX) as u16;
     }
 
-    fn generate_bases(&mut self) {
-        let naval_target;
-        let scout_target;
-        let research_target;
-        let tas_target;
-        match self.starport.class {
-            StarportClass::A => {
-                naval_target = 8;
-                scout_target = 10;
-                research_target = 8;
-                tas_target = 0; // Guaranteed
-            }
-
-            StarportClass::B => {
-                naval_target = 8;
-                scout_target = 8;
-                research_target = 10;
-                tas_target = 0; // Guaranteed
-            }
-
-            StarportClass::C => {
-                naval_target = i32::MAX; // Impossible
-                scout_target = 8;
-                research_target = 10;
-                tas_target = 10;
-            }
-
-            StarportClass::D => {
-                naval_target = i32::MAX; // Impossible
-                scout_target = 7;
-                research_target = i32::MAX; // Impossible
-                tas_target = i32::MAX; // Impossible
-            }
-
-            _ => {
-                naval_target = i32::MAX; // Impossible
-                scout_target = i32::MAX; // Impossible
-                research_target = i32::MAX; // Impossible
-                tas_target = i32::MAX; // Impossible
-            }
-        }
-
-        self.has_naval_base = dice::roll_2d(6) >= naval_target;
-        self.has_scout_base = dice::roll_2d(6) >= scout_target;
-        self.has_research_base = dice::roll_2d(6) >= research_target;
-        self.has_tas = dice::roll_2d(6) >= tas_target;
+    pub(crate) fn generate_temperature(&mut self) {
+        let modifier: i32 = match self.atmosphere.code {
+            0 | 1 => 0,
+            2 | 3 => -2,
+            4 | 5 | 14 => -1,
+            6 | 7 => 0,
+            8 | 9 => 1,
+            10 | 13 | 15 => 2,
+            11 | 12 => 6,
+            _ => unreachable!("The atmosphere should always be in the range 0..=12"),
+        };
+        self.temperature = TABLES.temp_table.roll_normal_2d6(modifier).clone();
     }
 
-    pub(crate) fn resolve_travel_code(&mut self) {
-        self.travel_code = TravelCode::Safe;
+    /** Mutate the world tag at `index` to a random one on the `world_tag_table`.
 
-        match self.atmosphere.code {
-            x if x >= 10 => self.travel_code = TravelCode::Amber,
-            _ => (),
+    Currently each world only has two world tags, so the only valid indices are `0` and `1`.
+
+    # Returns
+    - `Some(world_tag)` with the old, displaced world tag if `index` is valid, or
+    - `None` otherwise
+    */
+    pub(crate) fn generate_world_tag(&mut self, index: usize) -> Option<WorldTagRecord> {
+        match self.world_tags.get_mut(index) {
+            Some(world_tag) => {
+                let old_tag = world_tag.clone();
+                *world_tag = TABLES.world_tag_table.roll_uniform().clone();
+                Some(old_tag)
+            }
+            None => None,
+        }
+    }
+
+    /** Regenerate all of the world's world tags. */
+    fn generate_world_tags(&mut self) {
+        for index in 0..self.world_tags.len() {
+            self.generate_world_tag(index);
+        }
+    }
+
+    /** Attempts to mutate the `World` into a "player-safe" state.
+
+    To do so, it defaults all of the fields that are likely to have spoilers to the zeroth index of
+    their respective roll tables or completely blanks them where possible.
+    These likely fields are:
+
+    1. Factions
+    2. Culture
+    3. World Tags
+    4. Notes
+
+    This is intended to work alongside a player-safe version of the GUI that has the defaulted
+    fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
+    */
+    pub(crate) fn make_player_safe(&mut self) {
+        self.factions.clear();
+        self.culture = TABLES.culture_table[0].clone();
+        for world_tag in self.world_tags.iter_mut() {
+            *world_tag = TABLES.world_tag_table[0].clone();
+        }
+        self.notes = String::new();
+    }
+
+    /** Create a randomized `World` named `name` at `location`. */
+    pub fn new(name: String) -> Self {
+        let mut world = Self::empty();
+        world.name = name;
+
+        // Generation *must* happen in this order, many fields depend on the value
+        // of other fields when making their rolls
+        world.generate_gas_giant();
+        world.generate_size();
+        world.generate_atmosphere();
+        world.generate_temperature();
+        world.generate_hydrographics();
+        world.generate_population();
+        world.generate_government();
+        world.generate_law_level();
+        world.generate_factions();
+        world.generate_culture();
+        world.generate_world_tags();
+        world.generate_starport();
+        world.generate_tech_level();
+        world.generate_bases();
+        world.resolve_travel_code();
+        world.resolve_trade_codes();
+
+        world
+    }
+
+    pub fn profile_str(&self) -> String {
+        format!(
+            "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
+            starport = self.starport.class,
+            size = self.size,
+            atmo = self.atmosphere.code,
+            hydro = self.hydrographics.code,
+            pop = self.population.code,
+            gov = self.government.code,
+            law = self.law_level.code,
+            tech = self.tech_level
+        )
+    }
+
+    /** Remove the [`Faction`] at `idx` and return the nearest valid index to `idx`.
+
+    Does nothing and returns 0 if `idx` is out of bounds.
+    */
+    pub(crate) fn remove_faction(&mut self, idx: usize) -> usize {
+        if idx >= self.factions.len() {
+            return 0;
         }
 
-        match self.government.code {
-            0 | 7 | 10 => self.travel_code = TravelCode::Amber,
-            _ => (),
-        }
-
-        match self.law_level.code {
-            0 => self.travel_code = TravelCode::Amber,
-            x if x >= 9 => self.travel_code = TravelCode::Amber,
-            _ => (),
+        self.factions.remove(idx);
+        if self.factions.is_empty() {
+            0
+        } else if idx >= self.factions.len() {
+            self.factions.len() - 1
+        } else {
+            idx
         }
     }
 
@@ -769,46 +771,44 @@ impl World {
         }
     }
 
-    /** Attempts to mutate the `World` into a "player-safe" state.
+    pub(crate) fn resolve_travel_code(&mut self) {
+        self.travel_code = TravelCode::Safe;
 
-    To do so, it defaults all of the fields that are likely to have spoilers to the zeroth index of
-    their respective roll tables or completely blanks them where possible.
-    These likely fields are:
-
-    1. Factions
-    2. Culture
-    3. World Tags
-    4. Notes
-
-    This is intended to work alongside a player-safe version of the GUI that has the defaulted
-    fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
-    */
-    pub(crate) fn make_player_safe(&mut self) {
-        self.factions.clear();
-        self.culture = TABLES.culture_table[0].clone();
-        for world_tag in self.world_tags.iter_mut() {
-            *world_tag = TABLES.world_tag_table[0].clone();
+        match self.atmosphere.code {
+            x if x >= 10 => self.travel_code = TravelCode::Amber,
+            _ => (),
         }
-        self.notes = String::new();
+
+        match self.government.code {
+            0 | 7 | 10 => self.travel_code = TravelCode::Amber,
+            _ => (),
+        }
+
+        match self.law_level.code {
+            0 => self.travel_code = TravelCode::Amber,
+            x if x >= 9 => self.travel_code = TravelCode::Amber,
+            _ => (),
+        }
     }
 
-    /** Remove the [`Faction`] at `idx` and return the nearest valid index to `idx`.
+    pub fn trade_code_long_str(&self) -> String {
+        self.trade_codes
+            .iter()
+            .map(|code| code.to_long_str())
+            .collect::<Vec<String>>()
+            .join(", ")
+    }
 
-    Does nothing and returns 0 if `idx` is out of bounds.
-    */
-    pub(crate) fn remove_faction(&mut self, idx: usize) -> usize {
-        if idx >= self.factions.len() {
-            return 0;
-        }
+    pub fn trade_code_str(&self) -> String {
+        self.trade_codes
+            .iter()
+            .map(|code| format!("{:?}", code))
+            .collect::<Vec<String>>()
+            .join(", ")
+    }
 
-        self.factions.remove(idx);
-        if self.factions.is_empty() {
-            0
-        } else if idx >= self.factions.len() {
-            self.factions.len() - 1
-        } else {
-            idx
-        }
+    pub fn travel_code_str(&self) -> String {
+        format!("{:?}", self.travel_code)
     }
 }
 
