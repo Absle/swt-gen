@@ -317,7 +317,7 @@ impl GeneratorApp {
         let (boss_tx, worker_rx) = mpsc::channel::<RetainedImage>();
 
         // Spawn worker thread to process SVG asynchronously
-        thread::spawn(move || loop {
+        thread::spawn(move || {
             while let Ok(svg) = boss_rx.recv() {
                 match boss_tx.send(gui::generate_subsector_image(svg)) {
                     Ok(_) => (),
