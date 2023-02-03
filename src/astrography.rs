@@ -229,7 +229,7 @@ pub(crate) struct Subsector {
 
 #[allow(dead_code)]
 const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population,Notes";
-const TEMPLATE_SVG: &str = include_str!("../resources/traveller_subsector_grid.svg");
+const TEMPLATE_SVG: &str = include_str!("../resources/subsector_grid_template.svg");
 
 lazy_static! {
     static ref CENTER_MARKERS: BTreeMap<Point, Translation> = center_markers();

@@ -4,7 +4,7 @@
 
 use egui::vec2;
 
-use traveller_generator::GeneratorApp;
+use swt_gen::GeneratorApp;
 
 fn main() {
     let options = eframe::NativeOptions {
