@@ -1,5 +1,4 @@
 use std::collections::BTreeSet;
-use std::error::Error;
 
 use serde::{Deserialize, Serialize};
 
@@ -53,18 +52,6 @@ impl TravelCode {
             TravelCode::Safe => "".to_string(),
             TravelCode::Amber => "A".to_string(),
             TravelCode::Red => "R".to_string(),
-        }
-    }
-}
-
-impl TryFrom<&str> for TravelCode {
-    type Error = Box<dyn Error>;
-    fn try_from(string: &str) -> Result<Self, Self::Error> {
-        match string {
-            "Safe" => Ok(TravelCode::Safe),
-            "Amber" => Ok(TravelCode::Amber),
-            "Red" => Ok(TravelCode::Red),
-            _ => Err(format!("Could not parse travel code '{}'", string).into()),
         }
     }
 }
@@ -131,33 +118,6 @@ impl TradeCode {
             Ri => "Rich".to_string(),
             Va => "Vacuum".to_string(),
             Wa => "Water World".to_string(),
-        }
-    }
-}
-
-impl TryFrom<&str> for TradeCode {
-    type Error = Box<dyn Error>;
-    fn try_from(string: &str) -> Result<Self, Self::Error> {
-        match string {
-            "Ag" => Ok(TradeCode::Ag),
-            "As" => Ok(TradeCode::As),
-            "Ba" => Ok(TradeCode::Ba),
-            "De" => Ok(TradeCode::De),
-            "Fl" => Ok(TradeCode::Fl),
-            "Ga" => Ok(TradeCode::Ga),
-            "Hi" => Ok(TradeCode::Hi),
-            "Ht" => Ok(TradeCode::Ht),
-            "Ie" => Ok(TradeCode::Ic),
-            "In" => Ok(TradeCode::In),
-            "Lo" => Ok(TradeCode::Lo),
-            "Lt" => Ok(TradeCode::Lt),
-            "Na" => Ok(TradeCode::Na),
-            "Ni" => Ok(TradeCode::Ni),
-            "Po" => Ok(TradeCode::Po),
-            "Ri" => Ok(TradeCode::Ri),
-            "Va" => Ok(TradeCode::Va),
-            "Wa" => Ok(TradeCode::Wa),
-            _ => Err(format!("Could not parse trade code '{}'", string).into()),
         }
     }
 }
