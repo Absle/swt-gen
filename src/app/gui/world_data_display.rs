@@ -673,16 +673,30 @@ impl GeneratorApp {
                         .font(LABEL_FONT)
                         .color(LABEL_COLOR),
                 );
-                ui.label(
-                    RichText::new("World Profile")
-                        .font(LABEL_FONT)
-                        .color(LABEL_COLOR),
-                );
-                ui.label(
-                    RichText::new("Trade Codes")
-                        .font(LABEL_FONT)
-                        .color(LABEL_COLOR),
-                );
+                ui.add_enabled_ui(true, |ui| {
+                    ui.label(
+                        RichText::new("World Profile")
+                            .font(LABEL_FONT)
+                            .color(LABEL_COLOR),
+                    );
+
+                    if ui.button("📋").on_hover_text("Click to copy").clicked() {
+                        ui.output().copied_text = self.world.profile_str();
+                    }
+                });
+
+                ui.add_enabled_ui(true, |ui| {
+                    ui.label(
+                        RichText::new("Trade Codes")
+                            .font(LABEL_FONT)
+                            .color(LABEL_COLOR),
+                    );
+
+                    if ui.button("📋").on_hover_text("Click to copy").clicked() {
+                        ui.output().copied_text = self.world.trade_code_str();
+                    }
+                });
+
                 ui.label(
                     RichText::new("Travel Code")
                         .font(LABEL_FONT)
@@ -704,13 +718,12 @@ impl GeneratorApp {
                 }
 
                 // World profile
-                ui.label(self.world.profile_str());
+                ui.label(&self.world.profile_str());
 
                 // Trade codes
                 let response = ui.label(self.world.trade_code_str());
-                let trade_code_long_str = self.world.trade_code_long_str();
-                if !trade_code_long_str.is_empty() {
-                    response.on_hover_text(trade_code_long_str);
+                if !self.world.trade_codes.is_empty() {
+                    response.on_hover_text(self.world.trade_code_long_str());
                 }
 
                 // Travel Code
