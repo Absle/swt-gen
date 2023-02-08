@@ -1,3 +1,4 @@
+mod serialize;
 mod table;
 mod world;
 
@@ -20,7 +21,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::dice;
 
-use world::WorldRecord;
+use serialize::T5Table;
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) struct Point {
@@ -227,8 +228,6 @@ pub(crate) struct Subsector {
     map: BTreeMap<Point, World>,
 }
 
-#[allow(dead_code)]
-const CSV_HEADERS: &str = "Subsector,Name,Location,Profile,Bases,Trade Codes,Travel Code,Gas Giant,Berthing Cost,,,,Government,Contraband,Culture,World Tag 1,World Tag 2,,,,Faction 1,Strength 1,Government 1,Faction 2,Strength 2,Government 2,Faction 3,Strength 3,Government 3,Faction 4,Strength 4,Government 4,,,,Diameter (km),Atmosphere,Temperature,Hydrographics,Population,Notes";
 const TEMPLATE_SVG: &str = include_str!("../resources/subsector_grid_template.svg");
 
 lazy_static! {
@@ -309,66 +308,6 @@ impl Subsector {
         println!("{}\n", hex_grid);
     }
 
-    #[allow(dead_code)]
-    pub fn to_csv(&self) -> String {
-        let mut writer = csv::WriterBuilder::new()
-            .has_headers(false)
-            .from_writer(Vec::new());
-
-        for (point, world) in &self.map {
-            let mut record = WorldRecord::from(world.clone());
-            record.set_subsector_name(&self.name[..]);
-            record.set_location(point);
-            writer.serialize(record).unwrap();
-        }
-
-        let table = String::from_utf8(writer.into_inner().unwrap()).unwrap();
-
-        [String::from(CSV_HEADERS), table].join("\n")
-    }
-
-    #[allow(dead_code)]
-    pub fn from_csv(csv: &str) -> Result<Self, Box<dyn Error>> {
-        let mut rows = csv.lines();
-
-        match rows.next().ok_or("Ran out of rows while parsing header")? {
-            CSV_HEADERS => (),
-            _ => return Err("Could not find column headers".into()),
-        }
-
-        let world_table = rows.collect::<Vec<_>>().join("\n");
-        let mut reader = csv::ReaderBuilder::new()
-            .has_headers(false)
-            .from_reader(world_table.as_bytes());
-
-        let mut name = String::new();
-        let mut map = BTreeMap::new();
-        for result in reader.deserialize() {
-            let world_record: WorldRecord = result?;
-
-            if name.is_empty() {
-                name = world_record.subsector_name().to_string();
-            }
-
-            let world_name = String::from(world_record.name());
-            let maybe_location = Point::try_from(world_record.location());
-            if let Err(err) = maybe_location {
-                return Err(format!("Error while parsing world '{}': {}", world_name, err).into());
-            }
-            let location = maybe_location.unwrap();
-
-            let maybe_world = World::try_from(world_record);
-            if let Err(err) = maybe_world {
-                return Err(format!("Error while parsing world '{}': {}", world_name, err).into());
-            }
-            let world = maybe_world.unwrap();
-
-            map.insert(location, world);
-        }
-
-        Ok(Self { name, map })
-    }
-
     pub fn to_json(&self) -> String {
         let jsonable = JsonableSubsector::from(self.clone());
         serde_json::to_string_pretty(&jsonable).unwrap()
@@ -380,8 +319,15 @@ impl Subsector {
         Ok(subsector)
     }
 
+    pub fn to_sec_table(&self) -> String {
+        T5Table::from(self).to_string()
+    }
+
     pub fn generate_svg(&self, colored: bool) -> String {
         let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
+        // TODO: indented SVG writing would be better but for some reason it causes the UWP and hex
+        // strings to be misaligned
+        // let mut writer = quick_xml::Writer::new_with_indent(io::Cursor::new(Vec::new()), b' ', 2);
         let mut writer = quick_xml::Writer::new(io::Cursor::new(Vec::new()));
         loop {
             match reader.read_event() {
@@ -1040,17 +986,6 @@ mod tests {
         const ATTEMPTS: usize = 1000;
         for _ in 0..ATTEMPTS {
             Subsector::default();
-        }
-    }
-
-    #[test]
-    fn subsector_csv_serde() {
-        const ATTEMPTS: usize = 100;
-        for _ in 0..ATTEMPTS {
-            let subsector = Subsector::default();
-            let csv = subsector.to_csv();
-            let deserialized = Subsector::from_csv(&csv[..]).unwrap();
-            assert_eq!(deserialized, subsector);
         }
     }
 

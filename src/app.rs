@@ -47,6 +47,7 @@ pub(crate) enum Message {
     ConfirmUnsavedExit,
     ExportPlayerSafeSubsectorJson,
     ExportSubsectorMapSvg,
+    ExportSummaryTable,
     HexGridClicked { new_point: Point },
     NewFactionGovSelected { new_code: u16 },
     NewFactionStrengthSelected { new_code: u16 },
@@ -402,6 +403,31 @@ impl GeneratorApp {
         }
     }
 
+    fn export_summary_table(&self) -> MessageResult {
+        let filename = format!("{} Subsector Table.txt", self.subsector.name());
+        let result = save_file_dialog(
+            &self.save_directory,
+            &filename,
+            "Plain Text",
+            &["txt"],
+            self.subsector.to_sec_table(),
+        );
+
+        match result {
+            Ok(Some(_)) => Ok(Some(())),
+            Ok(None) => Ok(None),
+            Err(e) => {
+                MessageDialog::new()
+                    .set_type(MessageType::Error)
+                    .set_title("Error: Failed to Save Summary Table")
+                    .set_text(&format!("{}", e)[..])
+                    .show_alert()
+                    .unwrap();
+                Err(e.to_string())
+            }
+        }
+    }
+
     fn has_unsaved_changes(&self) -> bool {
         self.subsector_edited || self.world_edited
     }
@@ -457,6 +483,7 @@ impl GeneratorApp {
             ConfirmUnsavedExit => self.confirm_unsaved_exit(),
             ExportPlayerSafeSubsectorJson => self.export_player_safe_subsector_json(),
             ExportSubsectorMapSvg => self.export_subsector_map_svg(),
+            ExportSummaryTable => self.export_summary_table(),
             HexGridClicked { new_point } => self.hex_grid_clicked(new_point),
             NewFactionGovSelected { new_code } => self.new_faction_gov_selected(new_code),
             NewFactionStrengthSelected { new_code } => self.new_faction_strength_selected(new_code),

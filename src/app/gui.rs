@@ -126,6 +126,11 @@ impl GeneratorApp {
                             if ui.add(button).clicked() {
                                 self.message(Message::ExportPlayerSafeSubsectorJson);
                             }
+
+                            let button = Button::new("Summary Table SEC...").wrap(false);
+                            if ui.add(button).clicked() {
+                                self.message(Message::ExportSummaryTable);
+                            }
                         });
                     });
 

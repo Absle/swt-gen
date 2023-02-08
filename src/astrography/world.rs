@@ -4,8 +4,8 @@ use std::error::Error;
 use serde::{Deserialize, Serialize};
 
 use crate::astrography::{
-    AtmoRecord, CulturalDiffRecord, GovRecord, HydroRecord, LawRecord, Point, PopRecord,
-    StarportClass, StarportRecord, Table, TempRecord, WorldTagRecord, TABLES,
+    AtmoRecord, CulturalDiffRecord, GovRecord, HydroRecord, LawRecord, PopRecord, StarportClass,
+    StarportRecord, Table, TempRecord, WorldTagRecord, TABLES,
 };
 use crate::dice;
 use crate::histogram::Histogram;
@@ -40,66 +40,21 @@ impl PartialEq for Faction {
     }
 }
 
-impl TryFrom<SimpleFaction> for Faction {
-    type Error = Box<dyn Error>;
-    fn try_from(simple: SimpleFaction) -> Result<Self, Self::Error> {
-        let name = simple.name;
-
-        // Because multiple rolls can yield the same factions,
-        // we can not save this value
-        let code = TABLES
-            .faction_table
-            .iter()
-            .find(|fac| fac.strength == simple.strength)
-            .ok_or(format!(
-                "Could not parse faction strength '{}'",
-                simple.strength
-            ))?
-            .code;
-
-        let strength = simple.strength;
-
-        let government = TABLES
-            .gov_table
-            .iter()
-            .find(|gov| gov.kind == simple.government)
-            .ok_or(format!(
-                "Could not parse faction government '{}'",
-                simple.government
-            ))?
-            .clone();
-
-        Ok(Self {
-            name,
-            code,
-            strength,
-            government,
-        })
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
-struct SimpleFaction {
-    name: String,
-    strength: String,
-    government: String,
-}
-
-impl SimpleFaction {
-    fn empty() -> Self {
-        Self {
-            name: String::new(),
-            strength: String::new(),
-            government: String::new(),
-        }
-    }
-}
-
 #[derive(Copy, Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) enum TravelCode {
     Safe,
     Amber,
     Red,
+}
+
+impl TravelCode {
+    pub(crate) fn as_short_string(&self) -> String {
+        match self {
+            TravelCode::Safe => "".to_string(),
+            TravelCode::Amber => "A".to_string(),
+            TravelCode::Red => "R".to_string(),
+        }
+    }
 }
 
 impl TryFrom<&str> for TravelCode {
@@ -804,7 +759,7 @@ impl World {
             .iter()
             .map(|code| format!("{:?}", code))
             .collect::<Vec<String>>()
-            .join(", ")
+            .join(" ")
     }
 
     pub fn travel_code_str(&self) -> String {
@@ -842,346 +797,6 @@ impl PartialEq for World {
             && self.travel_code == other.travel_code
             && self.trade_codes == other.trade_codes
             && self.notes == other.notes
-    }
-}
-
-impl TryFrom<WorldRecord> for World {
-    type Error = Box<dyn Error>;
-    fn try_from(record: WorldRecord) -> Result<Self, Self::Error> {
-        let profile = record.profile.split('-').collect::<Vec<_>>().join("");
-        let mut chars = profile.chars();
-
-        // Parsing profile string
-        let starport_err = "Failed parse starport class";
-        let maybe_starport: Result<StarportClass, Self::Error> =
-            match chars.next().ok_or("Empty world profile")? {
-                'A' => Ok(StarportClass::A),
-                'B' => Ok(StarportClass::B),
-                'C' => Ok(StarportClass::C),
-                'D' => Ok(StarportClass::D),
-                'E' => Ok(StarportClass::E),
-                'X' => Ok(StarportClass::X),
-                _ => Err(starport_err.into()),
-            };
-        let starport_class = maybe_starport?;
-        let mut starport = TABLES
-            .starport_table
-            .iter()
-            .find(|item| item.class == starport_class)
-            .ok_or(starport_err)?
-            .clone();
-        starport.berthing_cost = record.berthing_cost;
-
-        let mut size = 0;
-        let mut atmo = 0;
-        let mut hydro = 0;
-        let mut pop = 0;
-        let mut gov = 0;
-        let mut law = 0;
-        let mut tech = 0;
-        for (c, field) in chars.zip([
-            &mut size, &mut atmo, &mut hydro, &mut pop, &mut gov, &mut law, &mut tech,
-        ]) {
-            *field = match c {
-                'A' => 10,
-                'B' => 11,
-                'C' => 12,
-                'D' => 13,
-                'E' => 14,
-                'F' => 15,
-                _ => c.to_string().parse()?,
-            };
-        }
-
-        let temperature = TABLES
-            .temp_table
-            .iter()
-            .find(|item| item.kind == record.temperature)
-            .ok_or(format!(
-                "Failed to parse temperature '{}'",
-                record.temperature
-            ))?
-            .clone();
-
-        let mut factions = Vec::new();
-        for faction_record in [
-            record.faction_1,
-            record.faction_2,
-            record.faction_3,
-            record.faction_4,
-        ] {
-            if faction_record == SimpleFaction::empty() {
-                break;
-            }
-            factions.push(Faction::try_from(faction_record)?);
-        }
-
-        let culture = TABLES
-            .culture_table
-            .iter()
-            .find(|item| item.cultural_difference == record.culture)
-            .ok_or(format!("Failed to parse culture '{}'", record.culture))?
-            .clone();
-
-        let mut world_tags = [
-            WorldTagRecord {
-                code: 0,
-                tag: String::new(),
-                description: String::new(),
-            },
-            WorldTagRecord {
-                code: 0,
-                tag: String::new(),
-                description: String::new(),
-            },
-        ];
-        for (i, tag) in [record.world_tag_1, record.world_tag_2].iter().enumerate() {
-            world_tags[i] = TABLES
-                .world_tag_table
-                .iter()
-                .find(|item| item.tag == *tag)
-                .ok_or(format!("Failed to parse world tag '{}'", tag))?
-                .clone();
-        }
-
-        let has_naval_base = record.bases.contains('N');
-        let has_scout_base = record.bases.contains('S');
-        let has_research_base = record.bases.contains('R');
-        let has_tas = record.bases.contains('T');
-
-        let mut world = Self {
-            name: record.name,
-            has_gas_giant: &record.gas_giant == "G",
-            size: size as u16,
-            diameter: record.diameter,
-            atmosphere: TABLES.atmo_table[atmo].clone(),
-            temperature,
-            hydrographics: TABLES.hydro_table[hydro].clone(),
-            population: TABLES.pop_table[pop].clone(),
-            // The true value of this is lost, but it's not needed after generation
-            unmodified_pop: pop as u16,
-            government: TABLES.gov_table[gov].clone(),
-            law_level: TABLES.law_table[law].clone(),
-            factions,
-            culture,
-            world_tags,
-            starport,
-            tech_level: tech as u16,
-            has_naval_base,
-            has_scout_base,
-            has_research_base,
-            has_tas,
-            travel_code: TravelCode::try_from(&record.travel_code[..])?,
-            trade_codes: BTreeSet::new(),
-            notes: record.notes,
-        };
-        world.resolve_trade_codes();
-        Ok(world)
-    }
-}
-
-/** Alternate form of a [`World`] that can be exported as a kludgy CSV file.
-
-Currently can only grab the first four of any world's faction list, which may be a significant
-downside depending on the usecase.
-*/
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub(crate) struct WorldRecord {
-    subsector_name: String,
-    // Summary
-    name: String,
-    location: String,
-    profile: String,
-    bases: String,
-    trade_codes: String,
-    travel_code: String,
-    gas_giant: String,
-    berthing_cost: u32,
-
-    empty_column_1: String,
-
-    // Societal
-    soc_name: String,
-    soc_location: String,
-    government: String,
-    contraband: String,
-    culture: String,
-    world_tag_1: String,
-    world_tag_2: String,
-
-    empty_column_2: String,
-
-    fac_name: String,
-    fac_location: String,
-    faction_1: SimpleFaction,
-    faction_2: SimpleFaction,
-    faction_3: SimpleFaction,
-    faction_4: SimpleFaction,
-
-    empty_column_3: String,
-
-    // Physical details
-    det_name: String,
-    det_location: String,
-    diameter: u32,
-    atmosphere: String,
-    temperature: String,
-    hydrographics: String,
-    population: String,
-
-    notes: String,
-}
-
-impl WorldRecord {
-    pub fn name(&self) -> &str {
-        &self.name[..]
-    }
-
-    pub fn subsector_name(&self) -> &str {
-        &self.subsector_name[..]
-    }
-
-    pub fn location(&self) -> &str {
-        &self.location[..]
-    }
-
-    pub fn set_subsector_name(&mut self, subsector_name: &str) {
-        self.subsector_name = subsector_name.to_string();
-    }
-
-    pub fn set_location(&mut self, point: &Point) {
-        // The '_' prefix is to prevent any csv editor from treating the location string as a number
-        // and truncating the leading '0'
-        self.location = format!("_{}", point);
-    }
-}
-
-impl From<World> for WorldRecord {
-    fn from(world: World) -> Self {
-        // This will be filled with a proper value by the containing subsector
-        let subsector_name = String::new();
-
-        // Summary
-        let name = world.name.clone();
-        // This will be filled with a proper value by the containing subsector
-        // The '_' prefix is to prevent any csv editor from treating the location string as a number
-        // and truncating the leading '0'
-        let location = "_0000".to_string();
-        let profile = world.profile_str();
-        let bases = world.base_str();
-        let trade_codes = world.trade_code_str();
-        let travel_code = world.travel_code_str();
-
-        let gas_giant = match world.has_gas_giant {
-            true => String::from("G"),
-            false => String::new(),
-        };
-
-        let berthing_cost = world.starport.berthing_cost;
-
-        // Societal
-        let soc_name = name.clone();
-        let soc_location = location.clone();
-        let government = world.government.kind;
-        let contraband = world.government.contraband;
-        let culture = world.culture.cultural_difference;
-        let world_tag_1 = world.world_tags[0].tag.clone();
-        let world_tag_2 = world.world_tags[1].tag.clone();
-
-        let fac_name = name.clone();
-        let fac_location = location.clone();
-
-        let faction_1 = match world.factions.get(0) {
-            Some(faction) => SimpleFaction {
-                name: faction.name.clone(),
-                strength: faction.strength.clone(),
-                government: faction.government.kind.clone(),
-            },
-            None => SimpleFaction::empty(),
-        };
-
-        let faction_2 = match world.factions.get(1) {
-            Some(faction) => SimpleFaction {
-                name: faction.name.clone(),
-                strength: faction.strength.clone(),
-                government: faction.government.kind.clone(),
-            },
-            None => SimpleFaction::empty(),
-        };
-
-        let faction_3 = match world.factions.get(2) {
-            Some(faction) => SimpleFaction {
-                name: faction.name.clone(),
-                strength: faction.strength.clone(),
-                government: faction.government.kind.clone(),
-            },
-            None => SimpleFaction::empty(),
-        };
-
-        let faction_4 = match world.factions.get(3) {
-            Some(faction) => SimpleFaction {
-                name: faction.name.clone(),
-                strength: faction.strength.clone(),
-                government: faction.government.kind.clone(),
-            },
-            None => SimpleFaction::empty(),
-        };
-
-        // Physical details
-        let det_name = name.clone();
-        let det_location = location.clone();
-        let diameter = world.diameter;
-        let atmosphere = world.atmosphere.composition;
-        let temperature = world.temperature.kind;
-        let hydrographics = world.hydrographics.description;
-        let population = world.population.inhabitants;
-
-        let empty_column_1 = String::new();
-        let empty_column_2 = String::new();
-        let empty_column_3 = String::new();
-
-        WorldRecord {
-            subsector_name,
-            name,
-            location,
-            profile,
-            bases,
-            trade_codes,
-            travel_code,
-            gas_giant,
-            berthing_cost,
-
-            empty_column_1,
-
-            soc_name,
-            soc_location,
-            government,
-            contraband,
-            culture,
-            world_tag_1,
-            world_tag_2,
-
-            empty_column_2,
-
-            fac_name,
-            fac_location,
-            faction_1,
-            faction_2,
-            faction_3,
-            faction_4,
-
-            empty_column_3,
-
-            det_name,
-            det_location,
-            diameter,
-            atmosphere,
-            temperature,
-            hydrographics,
-            population,
-
-            notes: world.notes,
-        }
     }
 }
 
@@ -1252,24 +867,6 @@ pub fn histograms(n: usize) {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn world_record_csv_serde() {
-        let original = WorldRecord::from(World::new(String::from("Test")));
-
-        let mut writer = csv::WriterBuilder::new()
-            .has_headers(false)
-            .from_writer(Vec::new());
-        writer.serialize(original.clone()).unwrap();
-        let data = String::from_utf8(writer.into_inner().unwrap()).unwrap();
-
-        let mut reader = csv::ReaderBuilder::new()
-            .has_headers(false)
-            .from_reader(data.as_bytes());
-        let deserialized: WorldRecord = reader.deserialize().next().unwrap().unwrap();
-
-        assert_eq!(deserialized, original);
-    }
 
     // TODO: this, and other statistical analysis functions, should probably be moved into a
     // separate bin or something at some point
