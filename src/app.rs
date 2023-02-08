@@ -22,6 +22,8 @@ use gui::Popup;
 // colored. Make sure to commit only with this set to `false`.
 const COLORED: bool = false;
 
+const DEFAULT_DIRECTORY: &str = "~";
+
 /** Set of messages respresenting all non-trivial GUI events.
 
 The definition of "non-trivial" is "not just a straightforward value change"; many widgets in `egui`
@@ -116,8 +118,6 @@ pub struct GeneratorApp {
     subsector_edited: bool,
     /// Image of the subsector map, rasterized from the generated svg
     subsector_image: Option<RetainedImage>,
-    /// Whether the loaded [`Subsector`]'s name changed and the app window needs a title update
-    subsector_name_changed: bool,
     /// Selected display [`TabLabel`]
     tab: gui::TabLabel,
     /// `Receiver` for the subsector image worker thread
@@ -300,7 +300,6 @@ impl GeneratorApp {
 
     fn confirm_rename_subsector(&mut self, new_name: String) -> MessageResult {
         self.subsector.set_name(new_name);
-        self.subsector_name_changed = true;
         self.subsector_model_updated()?;
         Ok(Some(()))
     }
@@ -338,12 +337,11 @@ impl GeneratorApp {
             point_selected: false,
             point_str: String::new(),
             popup_queue: Vec::new(),
-            save_directory: "~".to_string(),
+            save_directory: DEFAULT_DIRECTORY.to_string(),
             save_filename: String::new(),
             subsector,
             subsector_edited: false,
             subsector_image: None,
-            subsector_name_changed: true,
             tab: gui::TabLabel::WorldSurvey,
             worker_rx,
             worker_tx,
@@ -780,6 +778,7 @@ impl GeneratorApp {
         let path = directory.join(filename);
 
         if self.save_filename.is_empty() || !path.exists() {
+            // This is our first time saving or the path has been invalidated underneath us
             self.save_as()
         } else {
             let result = save_file(
@@ -813,11 +812,20 @@ impl GeneratorApp {
         let filename = if !self.save_filename.is_empty() {
             &self.save_filename
         } else {
+            // This is our first time saving
             &default_filename
         };
 
+        let default_directory = DEFAULT_DIRECTORY.to_string();
+        let directory = if <String as AsRef<Path>>::as_ref(&self.save_directory).is_dir() {
+            &self.save_directory
+        } else {
+            // The directory has been invalidated underneath us
+            &default_directory
+        };
+
         let result = save_file_dialog(
-            &self.save_directory,
+            directory,
             filename,
             "JSON",
             &["json"],
@@ -962,9 +970,13 @@ impl App for GeneratorApp {
         self.check_world_edited();
         self.process_hotkeys(ctx);
         self.process_message_queue();
-        if self.subsector_name_changed {
-            frame.set_window_title(&(self.subsector.name().to_string() + " Subsector"));
-        }
+
+        let unsaved_indicator = if self.has_unsaved_changes() { "*" } else { "" };
+        frame.set_window_title(&format!(
+            "{}{} Subsector",
+            unsaved_indicator,
+            self.subsector.name()
+        ));
 
         self.show_gui(ctx);
     }
