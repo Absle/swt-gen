@@ -21,7 +21,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::dice;
 
-use serialize::T5Table;
+use serialize::{JsonableSubsector, T5Table};
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) struct Point {
@@ -309,8 +309,7 @@ impl Subsector {
     }
 
     pub fn to_json(&self) -> String {
-        let jsonable = JsonableSubsector::from(self.clone());
-        serde_json::to_string_pretty(&jsonable).unwrap()
+        JsonableSubsector::from(self).to_string()
     }
 
     pub fn try_from_json(json: &str) -> Result<Self, Box<dyn Error>> {
@@ -673,49 +672,6 @@ impl Subsector {
 impl Default for Subsector {
     fn default() -> Self {
         Subsector::new(0)
-    }
-}
-
-impl TryFrom<JsonableSubsector> for Subsector {
-    type Error = Box<dyn Error>;
-    fn try_from(jsonable: JsonableSubsector) -> Result<Self, Self::Error> {
-        let JsonableSubsector { name, map } = jsonable;
-        let mut point_map: BTreeMap<Point, World> = BTreeMap::new();
-        for (point_str, world) in map {
-            let point = Point::try_from(&point_str[..])?;
-            point_map.insert(point, world);
-        }
-
-        Ok(Self {
-            name,
-            map: point_map,
-        })
-    }
-}
-
-/** Representation of a `Subsector` that can be easily serialized to JSON.
-
-Specifically, `serde_json` requires all maps use `String` keys, so to accomodate this we create this
-representation using the result of `Point::to_string` as the key for `Subsector::map`.
-*/
-#[derive(Debug, Deserialize, Serialize)]
-struct JsonableSubsector {
-    name: String,
-    map: BTreeMap<String, World>,
-}
-
-impl From<Subsector> for JsonableSubsector {
-    fn from(subsector: Subsector) -> Self {
-        let Subsector { name, map } = subsector;
-        let mut json_map: BTreeMap<String, World> = BTreeMap::new();
-        for (point, world) in map {
-            json_map.insert(point.to_string(), world);
-        }
-
-        Self {
-            name,
-            map: json_map,
-        }
     }
 }
 

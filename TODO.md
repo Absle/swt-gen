@@ -12,11 +12,9 @@ TODOs completed in this way should probably should still have an issue created a
 - Large world names overflow hex on a single line
 
 ### General TODOs
-- Update project name
 - Make executable portable by using `include_str!` and `include!` macros
 - Improve unit test coverage
 - More doc-comments where useful
-- Remove redundant serialization and deserializing code once GUI is in a good state
 - Fix up interface and module interdependencies to make things more usable externally and less monolithic
 - Some kind of logging schema
 - Auto saving, probably to some `*.json~` backup files
@@ -38,7 +36,6 @@ TODOs completed in this way should probably should still have an issue created a
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
-- Rename project and repo to "Stars With Travellers Generator" (swt-gen) or something like that
 - Add a background color to the subsector grid svg template, rather than just transparent and unreadable on renderers with a dark background
 - Add support for colored "stellar alliances" and trade/diplomatic connection lines; ***actually creating these alliances and connections*** will be done by the user in the GUI
     - Update svg generation to display these
@@ -63,6 +60,8 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Make this TODO list~~
 - ~~Rename `mod.rs` files~~
 - ~~Refactor implementations of `ToString` to `std::fmt::Display`~~
+- ~~Update project name~~
+- ~~Remove redundant serialization and deserializing code once GUI is in a good state~~
 
 ### App/GUI TODOs
 - ~~Finish adding displays for all `Subsector` fields~~
