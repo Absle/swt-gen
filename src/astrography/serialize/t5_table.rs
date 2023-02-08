@@ -3,6 +3,20 @@ use std::fmt;
 
 use crate::astrography::{Point, Subsector, World};
 
+const UWP_REFERENCE: &str = r"# UWP Reference Diagram:
+#
+#      ,- Starport
+#     |  ,- Atmosphere
+#     | |  ,- Population
+#     | | |  ,- Law Level
+#     | | | |
+#     CA6A643-9
+#      | | |  |
+#      | | |   `- Tech Level
+#      | |  `- Government
+#      |  `- Hydrographics
+#       `- Size";
+
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 enum Header {
     Name,
@@ -110,7 +124,7 @@ impl fmt::Display for T5Table {
         writeln!(f, "{}", header_row)?;
         writeln!(f, "{}", separator_row)?;
 
-        for (i, row) in self.rows.iter().enumerate() {
+        for row in self.rows.iter() {
             let header = &Header::ALL_VALUES[0];
             let width = widths[header];
             let mut row_str = format!("{:width$}", row.columns[header]);
@@ -120,14 +134,10 @@ impl fmt::Display for T5Table {
             }
             let trimmed = row_str.trim();
 
-            if i != self.rows.len() - 1 {
-                writeln!(f, "{}", trimmed)?;
-            } else {
-                write!(f, "{}", trimmed)?;
-            }
+            writeln!(f, "{}", trimmed)?;
         }
 
-        Ok(())
+        write!(f, "\n{}", UWP_REFERENCE)
     }
 }
 
