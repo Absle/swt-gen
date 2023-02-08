@@ -88,7 +88,7 @@ pub(crate) enum TradeCode {
     /// High Tech
     Ht,
     /// Ice-Capped
-    Ie,
+    Ic,
     /// Industrial
     In,
     /// Low Population
@@ -121,7 +121,7 @@ impl TradeCode {
             Ga => "Garden".to_string(),
             Hi => "High Population".to_string(),
             Ht => "High Tech".to_string(),
-            Ie => "Ice-Capped".to_string(),
+            Ic => "Ice-Capped".to_string(),
             In => "Industrial".to_string(),
             Lo => "Low Population".to_string(),
             Lt => "Low Tech".to_string(),
@@ -147,7 +147,7 @@ impl TryFrom<&str> for TradeCode {
             "Ga" => Ok(TradeCode::Ga),
             "Hi" => Ok(TradeCode::Hi),
             "Ht" => Ok(TradeCode::Ht),
-            "Ie" => Ok(TradeCode::Ie),
+            "Ie" => Ok(TradeCode::Ic),
             "In" => Ok(TradeCode::In),
             "Lo" => Ok(TradeCode::Lo),
             "Lt" => Ok(TradeCode::Lt),
@@ -669,7 +669,7 @@ impl World {
 
         // Ice-capped
         if (0..=1).contains(&self.atmosphere.code) && self.hydrographics.code >= 1 {
-            self.trade_codes.insert(TradeCode::Ie);
+            self.trade_codes.insert(TradeCode::Ic);
         }
 
         // Industrial
