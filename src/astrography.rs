@@ -324,10 +324,7 @@ impl Subsector {
 
     pub fn generate_svg(&self, colored: bool) -> String {
         let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
-        // TODO: indented SVG writing would be better but for some reason it causes the UWP and hex
-        // strings to be misaligned
-        // let mut writer = quick_xml::Writer::new_with_indent(io::Cursor::new(Vec::new()), b' ', 2);
-        let mut writer = quick_xml::Writer::new(io::Cursor::new(Vec::new()));
+        let mut writer = quick_xml::Writer::new_with_indent(io::Cursor::new(Vec::new()), b' ', 2);
         loop {
             match reader.read_event() {
                 Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -335,7 +332,18 @@ impl Subsector {
                 Ok(Event::Comment(_)) => (),
 
                 Ok(Event::Start(element)) => {
-                    writer.write_event(Event::Start(element)).unwrap();
+                    if let Ok(Some(id_attr)) = element.try_get_attribute("id") {
+                        let id = str::from_utf8(&id_attr.value).unwrap();
+                        if id == "CenterMarkers" {
+                            // Skip past all the center markers; they're invisible so we don't want
+                            // the svg rasterizer to waste time with them
+                            reader.read_to_end(element.to_end().name()).unwrap();
+                        } else {
+                            writer.write_event(Event::Start(element)).unwrap();
+                        }
+                    } else {
+                        writer.write_event(Event::Start(element)).unwrap();
+                    }
                 }
 
                 Ok(Event::End(element)) => {
@@ -346,6 +354,7 @@ impl Subsector {
                             ("id", "layer6"),
                             ("inkscape:label", "Generated"),
                         ]);
+                        writer.write_indent().unwrap();
                         writer.write_event(Event::Start(layer)).unwrap();
 
                         for (point, world) in &self.map {
@@ -386,17 +395,7 @@ impl Subsector {
                                     ("y", &marker_translation.y.to_string()),
                                     ("id", &format!("{}NameText", point_str)),
                                 ])
-                                .write_inner_content(|writer| {
-                                    writer
-                                        .create_element("tspan")
-                                        .with_attributes(vec![
-                                            ("sodipodi:role", "line"),
-                                            ("id", &format!("{}NameTspan", point_str)),
-                                        ])
-                                        .write_text_content(BytesText::new(&world.name))
-                                        .unwrap();
-                                    Ok(())
-                                })
+                                .write_text_content(BytesText::new(&world.name))
                                 .unwrap();
 
                             // Place dry/world symbol
@@ -419,6 +418,8 @@ impl Subsector {
                             // Add `StarportClass-TL` text to hex
                             let offset = Translation { x: 5.0, y: 5.0 };
                             let trans = marker_translation + &offset;
+                            let starport_tl =
+                                format!("{:?}-{}", world.starport.class, world.tech_level);
                             writer
                                 .create_element("text")
                                 .with_attributes(vec![
@@ -428,19 +429,7 @@ impl Subsector {
                                     ("y", &trans.y.to_string()),
                                     ("id", &format!("{}StarportTlText", point_str)),
                                 ])
-                                .write_inner_content(|writer| {
-                                    let starport_tl =
-                                        format!("{:?}-{}", world.starport.class, world.tech_level);
-                                    writer
-                                        .create_element("tspan")
-                                        .with_attributes(vec![
-                                            ("sodipodi:role", "line"),
-                                            ("id", &format!("{}StarportTlTspan", point_str)),
-                                        ])
-                                        .write_text_content(BytesText::new(&starport_tl))
-                                        .unwrap();
-                                    Ok(())
-                                })
+                                .write_text_content(BytesText::new(&starport_tl))
                                 .unwrap();
 
                             // Place world profile code
@@ -455,19 +444,7 @@ impl Subsector {
                                     ("y", &format!("{}", trans.y)),
                                     ("id", &format!("{}WorldProfileText", point_str)),
                                 ])
-                                .write_inner_content(|writer| {
-                                    writer
-                                        .create_element("tspan")
-                                        .with_attributes(vec![
-                                            ("sodipodi:role", "line"),
-                                            ("id", &format!("{}WorldProfileTspan", point_str)),
-                                            ("x", &format!("{}", trans.x)),
-                                            ("y", &format!("{}", trans.y)),
-                                        ])
-                                        .write_text_content(BytesText::new(&world.profile_str()))
-                                        .unwrap();
-                                    Ok(())
-                                })
+                                .write_text_content(BytesText::new(&world.profile_str()))
                                 .unwrap();
                         }
                         // End of layer

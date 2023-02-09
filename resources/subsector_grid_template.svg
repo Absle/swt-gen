@@ -1,98 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
-<svg
-   sodipodi:docname="subsector_grid_template.svg"
-   id="svg5"
-   version="1.1"
-   viewBox="0 0 215.9 279.4"
-   height="11in"
-   width="8.5in"
-   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#111111"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:document-units="in"
-     showgrid="false"
-     units="in"
-     inkscape:lockguides="true"
-     inkscape:snap-global="true"
-     inkscape:snap-grids="true"
-     inkscape:snap-page="true"
-     inkscape:snap-bbox="true"
-     showguides="false"
-     inkscape:guide-bbox="true"
-     inkscape:zoom="1.4507575"
-     inkscape:cx="248.14622"
-     inkscape:cy="607.95824"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer5"
-     inkscape:snap-text-baseline="true"
-     inkscape:snap-object-midpoints="true"
-     inkscape:snap-bbox-midpoints="true">
-    <sodipodi:guide
-       position="176.421,279.4"
-       orientation="1056,0"
-       id="guide22817"
-       inkscape:locked="true" />
-    <sodipodi:guide
-       position="156.863,279.4"
-       orientation="1056,0"
-       id="guide22819"
-       inkscape:locked="true" />
-    <sodipodi:guide
-       position="137.305,279.4"
-       orientation="1056,0"
-       id="guide22821"
-       inkscape:locked="true" />
-    <sodipodi:guide
-       position="117.747,279.4"
-       orientation="1056,0"
-       id="guide22823"
-       inkscape:locked="true" />
-    <sodipodi:guide
-       position="98.189,279.4"
-       orientation="1056,0"
-       id="guide22825"
-       inkscape:locked="true" />
-    <sodipodi:guide
-       position="78.631,279.4"
-       orientation="1056,0"
-       id="guide22827"
-       inkscape:locked="true" />
-    <sodipodi:guide
-       position="59.073,279.4"
-       orientation="1056,0"
-       id="guide22829"
-       inkscape:locked="true" />
-    <sodipodi:guide
-       position="39.515,279.4"
-       orientation="1056,0"
-       id="guide22831"
-       inkscape:locked="true" />
-    <sodipodi:guide
-       position="107.95,279.4"
-       orientation="-1,0"
-       id="guide78384"
-       inkscape:label=""
-       inkscape:locked="true"
-       inkscape:color="rgb(0,0,255)" />
+<svg sodipodi:docname="subsector_grid_template.svg" id="svg5" version="1.1" viewBox="0 0 215.9 279.4" height="11in"
+  width="8.5in" inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg"
+  xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview id="namedview7" pagecolor="#ffffff" bordercolor="#111111" borderopacity="1"
+    inkscape:pageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="1" inkscape:document-units="in"
+    showgrid="false" units="in" inkscape:lockguides="true" inkscape:snap-global="true" inkscape:snap-grids="true"
+    inkscape:snap-page="true" inkscape:snap-bbox="true" showguides="false" inkscape:guide-bbox="true"
+    inkscape:zoom="1.4507575" inkscape:cx="248.14622" inkscape:cy="607.95824" inkscape:window-width="1920"
+    inkscape:window-height="1017" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1"
+    inkscape:current-layer="layer5" inkscape:snap-text-baseline="true" inkscape:snap-object-midpoints="true"
+    inkscape:snap-bbox-midpoints="true">
+    <sodipodi:guide position="176.421,279.4" orientation="1056,0" id="guide22817" inkscape:locked="true" />
+    <sodipodi:guide position="156.863,279.4" orientation="1056,0" id="guide22819" inkscape:locked="true" />
+    <sodipodi:guide position="137.305,279.4" orientation="1056,0" id="guide22821" inkscape:locked="true" />
+    <sodipodi:guide position="117.747,279.4" orientation="1056,0" id="guide22823" inkscape:locked="true" />
+    <sodipodi:guide position="98.189,279.4" orientation="1056,0" id="guide22825" inkscape:locked="true" />
+    <sodipodi:guide position="78.631,279.4" orientation="1056,0" id="guide22827" inkscape:locked="true" />
+    <sodipodi:guide position="59.073,279.4" orientation="1056,0" id="guide22829" inkscape:locked="true" />
+    <sodipodi:guide position="39.515,279.4" orientation="1056,0" id="guide22831" inkscape:locked="true" />
+    <sodipodi:guide position="107.95,279.4" orientation="-1,0" id="guide78384" inkscape:label="" inkscape:locked="true"
+      inkscape:color="rgb(0,0,255)" />
   </sodipodi:namedview>
-  <defs
-     id="defs2" />
+  <defs id="defs2" />
   <style>
     .hex-blank {
       fill: none;
@@ -206,6 +139,26 @@
       stroke-dasharray: none;
     }
 
+    .text-hex-coord {
+      font-size: 3.52778px;
+      line-height: 0;
+      font-family: sans-serif;
+      -inkscape-font-specification: Arial;
+      text-align: center;
+      text-anchor: middle;
+      stroke-width: 0.264583;
+    }
+
+    .text-legend-label {
+      font-size: 2.82222px;
+      line-height: 0;
+      font-family: sans-serif;
+      -inkscape-font-specification: Arial;
+      text-align: end;
+      text-anchor: end;
+      stroke-width: 0.264583;
+    }
+
     .text-world-name {
       font-style: normal;
       font-variant: normal;
@@ -221,2017 +174,522 @@
     }
 
     .text-world-profile {
-      font-style:italic;
-      font-variant:normal;
-      font-weight:normal;
-      font-stretch:condensed;
-      font-size:2.8px;
-      line-height:0;
-      font-family:sans-serif;
-      -inkscape-font-specification:'Arial Italic Condensed';
-      text-align:center;
-      text-anchor:middle;
-      stroke-width:0.264583;
+      font-style: italic;
+      font-variant: normal;
+      font-weight: normal;
+      font-stretch: condensed;
+      font-size: 2.8px;
+      line-height: 0;
+      font-family: sans-serif;
+      -inkscape-font-specification: 'Arial Italic Condensed';
+      text-align: center;
+      text-anchor: middle;
+      stroke-width: 0.264583;
     }
 
     .text-starport-tl {
-      font-style:italic;
-      font-variant:normal;
-      font-weight:normal;
-      font-stretch:condensed;
-      font-size:3.52777px;
-      line-height:0;
-      font-family:sans-serif;
-      -inkscape-font-specification:'Arial Italic Condensed';
-      text-align:center;
-      text-anchor:middle;
-      stroke-width:0.264583;
+      font-style: italic;
+      font-variant: normal;
+      font-weight: normal;
+      font-stretch: condensed;
+      font-size: 3.52777px;
+      line-height: 0;
+      font-family: sans-serif;
+      -inkscape-font-specification: 'Arial Italic Condensed';
+      text-align: center;
+      text-anchor: middle;
+      stroke-width: 0.264583;
     }
   </style>
-  <g
-     inkscape:label="Legend"
-     inkscape:groupmode="layer"
-     id="layer1"
-     sodipodi:insensitive="true">
-    <text
-       xml:space="preserve"
-       style="font-size:8.46667px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-       x="107.95"
-       y="9.1300306"
-       id="SubsectorName"><tspan
-         sodipodi:role="line"
-         id="tspan67616"
-         style="font-size:8.46667px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="107.95"
-         y="9.1300306">Subsector Name</tspan></text>
-    <g
-       id="g112309"
-       transform="translate(1.6151705e-6,0.45593996)">
-      <circle
-         style="fill:none;stroke:#000000;stroke-width:0.2794"
-         id="DryWorldSymbol"
-         cx="39.514999"
-         cy="257.11258"
-         r="1.27" />
-      <text
-         xml:space="preserve"
-         style="font-size:2.82222px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:end;text-anchor:end;stroke-width:0.264583"
-         x="59.072998"
-         y="257.91861"
-         id="text84496"><tspan
-           sodipodi:role="line"
-           id="tspan84494"
-           style="font-size:2.82222px;text-align:end;text-anchor:end;stroke-width:0.264583"
-           x="59.072998"
-           y="257.91861">Dry World</tspan></text>
+  <g inkscape:label="Legend" inkscape:groupmode="layer" id="layer1" sodipodi:insensitive="true">
+    <text xml:space="preserve"
+      style="font-size:8.46667px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
+      x="107.95" y="9.1300306" id="SubsectorName">Subsector Name</text>
+    <g id="g112309" transform="translate(1.6151705e-6,0.45593996)">
+      <circle style="fill:none;stroke:#000000;stroke-width:0.2794" id="DryWorldSymbol" cx="39.514999" cy="257.11258"
+        r="1.27" />
+      <text xml:space="preserve" class="text-legend-label" x="59.072998" y="257.91861" id="text84496">Dry World</text>
     </g>
-    <g
-       id="g112162"
-       transform="translate(1.8353119e-6,1.3678199)">
-      <circle
-         style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-         id="WetWorldSymbol"
-         cx="39.514999"
-         cy="260.65897"
-         r="1.27" />
-      <text
-         xml:space="preserve"
-         style="font-size:2.82222px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:end;text-anchor:end;stroke-width:0.264583"
-         x="59.072998"
-         y="261.59396"
-         id="text94070"><tspan
-           sodipodi:role="line"
-           id="tspan94068"
-           style="font-size:2.82222px;text-align:end;text-anchor:end;stroke-width:0.264583"
-           x="59.072998"
-           y="261.59396">Wet World</tspan></text>
+    <g id="g112162" transform="translate(1.8353119e-6,1.3678199)">
+      <circle style="fill:#000000;stroke:#000000;stroke-width:0.2794" id="WetWorldSymbol" cx="39.514999" cy="260.65897"
+        r="1.27" />
+      <text xml:space="preserve" class="text-legend-label" x="59.072998" y="261.59396" id="text94070">Wet World</text>
     </g>
-    <g
-       id="g118247">
-      <g
-         id="GasGiantSymbol"
-         transform="matrix(1.2059881,0,0,1.2059881,-16.197046,-52.451805)">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="GasGiantCircle"
-           cx="78.630997"
-           cy="256.73788"
-           r="0.63499999" />
-        <ellipse
-           style="fill:none;stroke:#000000;stroke-width:0.2794"
-           id="path112358"
-           ry="0.34195495"
-           rx="1.4590079"
-           cy="267.68945"
-           cx="-20.96493"
-           transform="rotate(-21.506387)" />
+    <g id="g118247">
+      <g id="GasGiantSymbol" transform="matrix(1.2059881,0,0,1.2059881,-16.197046,-52.451805)">
+        <circle style="fill:#000000;stroke:#000000;stroke-width:0.2794" id="GasGiantCircle" cx="78.630997"
+          cy="256.73788" r="0.63499999" />
+        <ellipse style="fill:none;stroke:#000000;stroke-width:0.2794" id="path112358" ry="0.34195495" rx="1.4590079"
+          cy="267.68945" cx="-20.96493" transform="rotate(-21.506387)" />
       </g>
-      <text
-         xml:space="preserve"
-         style="font-size:2.82222px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:end;text-anchor:end;stroke-width:0.264583"
-         x="98.189003"
-         y="258.1532"
-         id="text114554"><tspan
-           sodipodi:role="line"
-           id="tspan114552"
-           style="font-size:2.82222px;text-align:end;text-anchor:end;stroke-width:0.264583"
-           x="98.189003"
-           y="258.1532">Gas Giant</tspan></text>
+      <text xml:space="preserve" class="text-legend-label" x="98.189003" y="258.1532" id="text114554">Gas Giant</text>
     </g>
-    <g
-       id="g155436">
-      <text
-         xml:space="preserve"
-         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:3.52777px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="78.630997"
-         y="263.5928"
-         id="StarportTlSymbol"><tspan
-           sodipodi:role="line"
-           id="tspan139086"
-           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-family:sans-serif;-inkscape-font-specification:'Arial Italic Condensed';text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="78.630997"
-           y="263.5928">B-6</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:2.82223px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:end;text-anchor:end;stroke-width:0.264583"
-         x="98.189003"
-         y="263.20593"
-         id="text149034"><tspan
-           sodipodi:role="line"
-           id="tspan149032"
-           style="text-align:end;text-anchor:end;stroke-width:0.264583"
-           x="98.189003"
-           y="263.20593">Starport-TL</tspan></text>
+    <g id="g155436">
+      <text xml:space="preserve" class="text-starport-tl" x="78.630997" y="263.5928" id="StarportTlSymbol">B-6</text>
+      <text xml:space="preserve" class="text-legend-label" x="98.189003" y="263.20593"
+        id="text149034">Starport-TL</text>
     </g>
   </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="Grid Base"
-     style="display:inline"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:none;stroke:#000000;stroke-width:0.245207"
-       id="rect167"
-       width="163.55087"
-       height="241.40277"
-       x="26.031921"
-       y="12.602139"
-       inkscape:label="Grid Border" />
+  <g inkscape:groupmode="layer" id="layer2" inkscape:label="Grid Base" style="display:inline"
+    sodipodi:insensitive="true">
+    <rect style="fill:none;stroke:#000000;stroke-width:0.245207" id="rect167" width="163.55087" height="241.40277"
+      x="26.031921" y="12.602139" inkscape:label="Grid Border" />
   </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer3"
-     inkscape:label="Grid Hexes"
-     sodipodi:insensitive="true">
-    <g
-       id="HexGrid"
-       transform="matrix(1.1000328,0,0,1.1000328,12.248164,-1.4095707)">
-      <g
-         id="Col8"
-         style="stroke-width:0.253992;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="translate(124.46529,10.4526)">
-        <path
-           class="hex-blank"
-           d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
-           id="HexPath-0810" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0809" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0808" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0807" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0806" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
-           id="HexPath-0805" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
-           id="HexPath-0804" />
-        <path
-           class="hex-blank"
-           d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
-           id="HexPath-0803" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
-           id="HexPath-0802" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
-           id="HexPath-0801" />
+  <g inkscape:groupmode="layer" id="layer3" inkscape:label="Grid Hexes" sodipodi:insensitive="true">
+    <g id="HexGrid" transform="matrix(1.1000328,0,0,1.1000328,12.248164,-1.4095707)">
+      <g id="Col8" transform="translate(124.46529,10.4526)">
+        <path class="hex-blank"
+          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          id="HexPath-0810" />
+        <path class="hex-blank"
+          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0809" />
+        <path class="hex-blank"
+          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0808" />
+        <path class="hex-blank"
+          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0807" />
+        <path class="hex-blank"
+          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0806" />
+        <path class="hex-blank"
+          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          id="HexPath-0805" />
+        <path class="hex-blank"
+          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          id="HexPath-0804" />
+        <path class="hex-blank"
+          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          id="HexPath-0803" />
+        <path class="hex-blank"
+          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          id="HexPath-0802" />
+        <path class="hex-blank"
+          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          id="HexPath-0801" />
       </g>
-      <g
-         id="Col7"
-         style="stroke-width:0.254;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="translate(106.60613)">
-        <path
-           class="hex-blank"
-           d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
-           id="HexPath-0710" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0709" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0708" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0707" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0706" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
-           id="HexPath-0705" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
-           id="HexPath-0704" />
-        <path
-           class="hex-blank"
-           d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
-           id="HexPath-0703" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
-           id="HexPath-0702" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
-           id="HexPath-0701" />
+      <g id="Col7" transform="translate(106.60613)">
+        <path class="hex-blank"
+          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          id="HexPath-0710" />
+        <path class="hex-blank"
+          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0709" />
+        <path class="hex-blank"
+          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0708" />
+        <path class="hex-blank"
+          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0707" />
+        <path class="hex-blank"
+          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0706" />
+        <path class="hex-blank"
+          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          id="HexPath-0705" />
+        <path class="hex-blank"
+          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          id="HexPath-0704" />
+        <path class="hex-blank"
+          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          id="HexPath-0703" />
+        <path class="hex-blank"
+          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          id="HexPath-0702" />
+        <path class="hex-blank"
+          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          id="HexPath-0701" />
       </g>
-      <g
-         id="Col6"
-         style="display:inline;stroke-width:0.254;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="translate(88.930689,10.4526)">
-        <path
-           class="hex-blank"
-           d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
-           id="HexPath-0610" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0609" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0608" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0607" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0606" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
-           id="HexPath-0605" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
-           id="HexPath-0604" />
-        <path
-           class="hex-blank"
-           d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
-           id="HexPath-0603" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
-           id="HexPath-0602" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
-           id="HexPath-0601" />
+      <g id="Col6" transform="translate(88.930689,10.4526)">
+        <path class="hex-blank"
+          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          id="HexPath-0610" />
+        <path class="hex-blank"
+          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0609" />
+        <path class="hex-blank"
+          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0608" />
+        <path class="hex-blank"
+          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0607" />
+        <path class="hex-blank"
+          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0606" />
+        <path class="hex-blank"
+          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          id="HexPath-0605" />
+        <path class="hex-blank"
+          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          id="HexPath-0604" />
+        <path class="hex-blank"
+          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          id="HexPath-0603" />
+        <path class="hex-blank"
+          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          id="HexPath-0602" />
+        <path class="hex-blank"
+          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          id="HexPath-0601" />
       </g>
-      <g
-         id="Col5"
-         style="stroke-width:0.254;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="translate(71.071527)">
-        <path
-           class="hex-blank"
-           d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
-           id="HexPath-0510" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0509" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0508" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0507" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0506" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
-           id="HexPath-0505" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
-           id="HexPath-0504" />
-        <path
-           class="hex-blank"
-           d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
-           id="HexPath-0503" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
-           id="HexPath-0502" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
-           id="HexPath-0501" />
+      <g id="Col5" transform="translate(71.071527)">
+        <path class="hex-blank"
+          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          id="HexPath-0510" />
+        <path class="hex-blank"
+          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0509" />
+        <path class="hex-blank"
+          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0508" />
+        <path class="hex-blank"
+          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0507" />
+        <path class="hex-blank"
+          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0506" />
+        <path class="hex-blank"
+          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          id="HexPath-0505" />
+        <path class="hex-blank"
+          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          id="HexPath-0504" />
+        <path class="hex-blank"
+          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          id="HexPath-0503" />
+        <path class="hex-blank"
+          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          id="HexPath-0502" />
+        <path class="hex-blank"
+          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          id="HexPath-0501" />
       </g>
-      <g
-         id="Col4"
-         style="stroke-width:0.254;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="translate(53.396089,10.4526)">
-        <path
-           class="hex-blank"
-           d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
-           id="HexPath-0410" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0409" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0408" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0407" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0406" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
-           id="HexPath-0405" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
-           id="HexPath-0404" />
-        <path
-           class="hex-blank"
-           d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
-           id="HexPath-0403" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
-           id="HexPath-0402" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
-           id="HexPath-0401" />
+      <g id="Col4" transform="translate(53.396089,10.4526)">
+        <path class="hex-blank"
+          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          id="HexPath-0410" />
+        <path class="hex-blank"
+          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0409" />
+        <path class="hex-blank"
+          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0408" />
+        <path class="hex-blank"
+          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0407" />
+        <path class="hex-blank"
+          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0406" />
+        <path class="hex-blank"
+          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          id="HexPath-0405" />
+        <path class="hex-blank"
+          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          id="HexPath-0404" />
+        <path class="hex-blank"
+          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          id="HexPath-0403" />
+        <path class="hex-blank"
+          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          id="HexPath-0402" />
+        <path class="hex-blank"
+          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          id="HexPath-0401" />
       </g>
-      <g
-         id="Col3"
-         style="stroke-width:0.254;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="translate(35.536927)">
-        <path
-           class="hex-blank"
-           d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
-           id="HexPath-0310" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0309" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0308" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0307" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0306" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
-           id="HexPath-0305" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
-           id="HexPath-0304" />
-        <path
-           class="hex-blank"
-           d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
-           id="HexPath-0303" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
-           id="HexPath-0302" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
-           id="HexPath-0301" />
+      <g id="Col3" transform="translate(35.536927)">
+        <path class="hex-blank"
+          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          id="HexPath-0310" />
+        <path class="hex-blank"
+          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0309" />
+        <path class="hex-blank"
+          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0308" />
+        <path class="hex-blank"
+          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0307" />
+        <path class="hex-blank"
+          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0306" />
+        <path class="hex-blank"
+          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          id="HexPath-0305" />
+        <path class="hex-blank"
+          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          id="HexPath-0304" />
+        <path class="hex-blank"
+          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          id="HexPath-0303" />
+        <path class="hex-blank"
+          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          id="HexPath-0302" />
+        <path class="hex-blank"
+          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          id="HexPath-0301" />
       </g>
-      <g
-         id="Col2"
-         style="stroke-width:0.254;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="translate(17.859162,10.4526)">
-        <path
-           class="hex-blank"
-           d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
-           id="HexPath-0210" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0209" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0208" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0207" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0206" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
-           id="HexPath-0205" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
-           id="HexPath-0204" />
-        <path
-           class="hex-blank"
-           d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
-           id="HexPath-0203" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
-           id="HexPath-0202" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
-           id="HexPath-0201" />
+      <g id="Col2" transform="translate(17.859162,10.4526)">
+        <path class="hex-blank"
+          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          id="HexPath-0210" />
+        <path class="hex-blank"
+          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0209" />
+        <path class="hex-blank"
+          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0208" />
+        <path class="hex-blank"
+          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0207" />
+        <path class="hex-blank"
+          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0206" />
+        <path class="hex-blank"
+          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          id="HexPath-0205" />
+        <path class="hex-blank"
+          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          id="HexPath-0204" />
+        <path class="hex-blank"
+          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          id="HexPath-0203" />
+        <path class="hex-blank"
+          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          id="HexPath-0202" />
+        <path class="hex-blank"
+          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          id="HexPath-0201" />
       </g>
-      <g
-         id="Col1"
-         style="stroke-width:0.254;stroke-miterlimit:4;stroke-dasharray:none">
-        <path
-           class="hex-blank"
-           d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
-           id="HexPath-0110" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0109" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
-           id="HexPath-0108" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0107" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
-           id="HexPath-0106" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
-           id="HexPath-0105" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
-           id="HexPath-0104" />
-        <path
-           class="hex-blank"
-           d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
-           id="HexPath-0103" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
-           id="HexPath-0102" />
-        <path
-           class="hex-blank"
-           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
-           id="HexPath-0101" />
+      <g id="Col1">
+        <path class="hex-blank"
+          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          id="HexPath-0110" />
+        <path class="hex-blank"
+          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0109" />
+        <path class="hex-blank"
+          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          id="HexPath-0108" />
+        <path class="hex-blank"
+          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0107" />
+        <path class="hex-blank"
+          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          id="HexPath-0106" />
+        <path class="hex-blank"
+          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          id="HexPath-0105" />
+        <path class="hex-blank"
+          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          id="HexPath-0104" />
+        <path class="hex-blank"
+          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          id="HexPath-0103" />
+        <path class="hex-blank"
+          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          id="HexPath-0102" />
+        <path class="hex-blank"
+          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          id="HexPath-0101" />
       </g>
     </g>
   </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer4"
-     inkscape:label="CoordLabels"
-     sodipodi:insensitive="true">
-    <g
-       id="g61055">
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="15.729087"
-         id="text15448"><tspan
-           id="tspan15446"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="15.729087"
-           sodipodi:role="line">0101</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="38.789829"
-         id="text54110"><tspan
-           id="tspan54108"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="38.789829"
-           sodipodi:role="line">0102</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="61.724213"
-         id="text54168"><tspan
-           id="tspan54166"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="61.724213"
-           sodipodi:role="line">0103</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="84.784958"
-         id="text54172"><tspan
-           id="tspan54170"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="84.784958"
-           sodipodi:role="line">0104</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="107.71934"
-         id="text54176"><tspan
-           id="tspan54174"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="107.71934"
-           sodipodi:role="line">0105</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="130.71689"
-         id="text54180"><tspan
-           id="tspan54178"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="130.71689"
-           sodipodi:role="line">0106</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="153.77763"
-         id="text54184"><tspan
-           id="tspan54182"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="153.77763"
-           sodipodi:role="line">0107</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="176.64883"
-         id="text54188"><tspan
-           id="tspan54186"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="176.64883"
-           sodipodi:role="line">0108</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="199.53702"
-         id="text60975"><tspan
-           id="tspan60973"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="199.53702"
-           sodipodi:role="line">0109</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="222.69876"
-         id="text61015"><tspan
-           id="tspan61013"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line">0110</tspan><tspan
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line"
-           id="tspan94221" /></text>
+  <g inkscape:groupmode="layer" id="layer4" inkscape:label="CoordLabels" sodipodi:insensitive="true">
+    <g id="g61055">
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text15448">0101</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text54110">0102</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text54168">0103</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text54172">0104</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text54176">0105</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text54180">0106</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text54184">0107</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text54188">0108</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text60975">0109</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text61015">0110</text>
     </g>
-    <g
-       id="g97645"
-       transform="translate(19.558,11.241584)">
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="15.729087"
-         id="text97605"><tspan
-           id="tspan97603"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="15.729087"
-           sodipodi:role="line">0201</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="38.789829"
-         id="text97609"><tspan
-           id="tspan97607"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="38.789829"
-           sodipodi:role="line">0202</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="61.724213"
-         id="text97613"><tspan
-           id="tspan97611"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="61.724213"
-           sodipodi:role="line">0203</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="84.784958"
-         id="text97617"><tspan
-           id="tspan97615"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="84.784958"
-           sodipodi:role="line">0204</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="107.71934"
-         id="text97621"><tspan
-           id="tspan97619"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="107.71934"
-           sodipodi:role="line">0205</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="130.71689"
-         id="text97625"><tspan
-           id="tspan97623"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="130.71689"
-           sodipodi:role="line">0206</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="153.77763"
-         id="text97629"><tspan
-           id="tspan97627"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="153.77763"
-           sodipodi:role="line">0207</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="176.64883"
-         id="text97633"><tspan
-           id="tspan97631"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="176.64883"
-           sodipodi:role="line">0208</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="199.53702"
-         id="text97637"><tspan
-           id="tspan97635"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="199.53702"
-           sodipodi:role="line">0209</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="222.69876"
-         id="text97643"><tspan
-           id="tspan97639"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line">0210</tspan><tspan
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line"
-           id="tspan97641" /></text>
+    <g id="g97645" transform="translate(19.558,11.241584)">
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text97605">0201</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text97609">0202</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text97613">0203</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text97617">0204</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text97621">0205</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text97625">0206</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text97629">0207</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text97633">0208</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text97637">0209</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text97643">0210</text>
     </g>
-    <g
-       id="g102451"
-       transform="translate(39.116,-0.15107124)">
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="15.729087"
-         id="text102411"><tspan
-           id="tspan102409"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="15.729087"
-           sodipodi:role="line">0301</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="38.789829"
-         id="text102415"><tspan
-           id="tspan102413"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="38.789829"
-           sodipodi:role="line">0302</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="61.724213"
-         id="text102419"><tspan
-           id="tspan102417"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="61.724213"
-           sodipodi:role="line">0303</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="84.784958"
-         id="text102423"><tspan
-           id="tspan102421"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="84.784958"
-           sodipodi:role="line">0304</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="107.71934"
-         id="text102427"><tspan
-           id="tspan102425"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="107.71934"
-           sodipodi:role="line">0305</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="130.71689"
-         id="text102431"><tspan
-           id="tspan102429"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="130.71689"
-           sodipodi:role="line">0306</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="153.77763"
-         id="text102435"><tspan
-           id="tspan102433"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="153.77763"
-           sodipodi:role="line">0307</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="176.64883"
-         id="text102439"><tspan
-           id="tspan102437"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="176.64883"
-           sodipodi:role="line">0308</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="199.53702"
-         id="text102443"><tspan
-           id="tspan102441"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="199.53702"
-           sodipodi:role="line">0309</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="222.69876"
-         id="text102449"><tspan
-           id="tspan102445"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line">0310</tspan><tspan
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line"
-           id="tspan102447" /></text>
+    <g id="g102451" transform="translate(39.116,-0.15107124)">
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102411">0301</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102415">0302</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102419">0303</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102423">0304</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102427">0305</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102431">0306</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102435">0307</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102439">0308</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102443">0309</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102449">0310</text>
     </g>
-    <g
-       id="g102621"
-       transform="translate(58.674,11.455265)">
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="15.729087"
-         id="text102581"><tspan
-           id="tspan102579"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="15.729087"
-           sodipodi:role="line">0401</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="38.789829"
-         id="text102585"><tspan
-           id="tspan102583"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="38.789829"
-           sodipodi:role="line">0402</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="61.724213"
-         id="text102589"><tspan
-           id="tspan102587"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="61.724213"
-           sodipodi:role="line">0403</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="84.784958"
-         id="text102593"><tspan
-           id="tspan102591"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="84.784958"
-           sodipodi:role="line">0404</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="107.71934"
-         id="text102597"><tspan
-           id="tspan102595"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="107.71934"
-           sodipodi:role="line">0405</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="130.71689"
-         id="text102601"><tspan
-           id="tspan102599"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="130.71689"
-           sodipodi:role="line">0406</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="153.77763"
-         id="text102605"><tspan
-           id="tspan102603"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="153.77763"
-           sodipodi:role="line">0407</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="176.64883"
-         id="text102609"><tspan
-           id="tspan102607"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="176.64883"
-           sodipodi:role="line">0408</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="199.53702"
-         id="text102613"><tspan
-           id="tspan102611"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="199.53702"
-           sodipodi:role="line">0409</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="222.69876"
-         id="text102619"><tspan
-           id="tspan102615"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line">0410</tspan><tspan
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line"
-           id="tspan102617" /></text>
+    <g id="g102621" transform="translate(58.674,11.455265)">
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102581">0401</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102585">0402</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102589">0403</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102593">0404</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102597">0405</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102601">0406</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102605">0407</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102609">0408</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102613">0409</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102619">0410</text>
     </g>
-    <g
-       id="g102665"
-       transform="translate(78.232,-0.02211196)">
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="15.729087"
-         id="text102625"><tspan
-           id="tspan102623"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="15.729087"
-           sodipodi:role="line">0501</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="38.789829"
-         id="text102629"><tspan
-           id="tspan102627"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="38.789829"
-           sodipodi:role="line">0502</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="61.724213"
-         id="text102633"><tspan
-           id="tspan102631"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="61.724213"
-           sodipodi:role="line">0503</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="84.784958"
-         id="text102637"><tspan
-           id="tspan102635"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="84.784958"
-           sodipodi:role="line">0504</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="107.71934"
-         id="text102641"><tspan
-           id="tspan102639"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="107.71934"
-           sodipodi:role="line">0505</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="130.71689"
-         id="text102645"><tspan
-           id="tspan102643"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="130.71689"
-           sodipodi:role="line">0506</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="153.77763"
-         id="text102649"><tspan
-           id="tspan102647"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="153.77763"
-           sodipodi:role="line">0507</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="176.64883"
-         id="text102653"><tspan
-           id="tspan102651"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="176.64883"
-           sodipodi:role="line">0508</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="199.53702"
-         id="text102657"><tspan
-           id="tspan102655"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="199.53702"
-           sodipodi:role="line">0509</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="222.69876"
-         id="text102663"><tspan
-           id="tspan102659"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line">0510</tspan><tspan
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line"
-           id="tspan102661" /></text>
+    <g id="g102665" transform="translate(78.232,-0.02211196)">
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102625">0501</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102629">0502</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102633">0503</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102637">0504</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102641">0505</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102645">0506</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102649">0507</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102653">0508</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102657">0509</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102663">0510</text>
     </g>
-    <g
-       id="g102745"
-       transform="translate(97.79,11.455265)">
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="15.729087"
-         id="text102705"><tspan
-           id="tspan102703"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="15.729087"
-           sodipodi:role="line">0601</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="38.789829"
-         id="text102709"><tspan
-           id="tspan102707"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="38.789829"
-           sodipodi:role="line">0602</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="61.724213"
-         id="text102713"><tspan
-           id="tspan102711"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="61.724213"
-           sodipodi:role="line">0603</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="84.784958"
-         id="text102717"><tspan
-           id="tspan102715"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="84.784958"
-           sodipodi:role="line">0604</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="107.71934"
-         id="text102721"><tspan
-           id="tspan102719"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="107.71934"
-           sodipodi:role="line">0605</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="130.71689"
-         id="text102725"><tspan
-           id="tspan102723"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="130.71689"
-           sodipodi:role="line">0606</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="153.77763"
-         id="text102729"><tspan
-           id="tspan102727"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="153.77763"
-           sodipodi:role="line">0607</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="176.64883"
-         id="text102733"><tspan
-           id="tspan102731"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="176.64883"
-           sodipodi:role="line">0608</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="199.53702"
-         id="text102737"><tspan
-           id="tspan102735"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="199.53702"
-           sodipodi:role="line">0609</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="222.69876"
-         id="text102743"><tspan
-           id="tspan102739"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line">0610</tspan><tspan
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line"
-           id="tspan102741" /></text>
+    <g id="g102745" transform="translate(97.79,11.455265)">
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102705">0601</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102709">0602</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102713">0603</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102717">0604</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102721">0605</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102725">0606</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102729">0607</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102733">0608</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102737">0609</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102743">0610</text>
     </g>
-    <g
-       id="g102789"
-       transform="translate(117.348,-0.15107125)">
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="15.729087"
-         id="text102749"><tspan
-           id="tspan102747"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="15.729087"
-           sodipodi:role="line">0701</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="38.789829"
-         id="text102753"><tspan
-           id="tspan102751"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="38.789829"
-           sodipodi:role="line">0702</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="61.724213"
-         id="text102757"><tspan
-           id="tspan102755"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="61.724213"
-           sodipodi:role="line">0703</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="84.784958"
-         id="text102761"><tspan
-           id="tspan102759"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="84.784958"
-           sodipodi:role="line">0704</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="107.71934"
-         id="text102765"><tspan
-           id="tspan102763"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="107.71934"
-           sodipodi:role="line">0705</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="130.71689"
-         id="text102769"><tspan
-           id="tspan102767"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="130.71689"
-           sodipodi:role="line">0706</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="153.77763"
-         id="text102773"><tspan
-           id="tspan102771"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="153.77763"
-           sodipodi:role="line">0707</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="176.64883"
-         id="text102777"><tspan
-           id="tspan102775"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="176.64883"
-           sodipodi:role="line">0708</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="199.53702"
-         id="text102781"><tspan
-           id="tspan102779"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="199.53702"
-           sodipodi:role="line">0709</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="222.69876"
-         id="text102787"><tspan
-           id="tspan102783"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line">0710</tspan><tspan
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line"
-           id="tspan102785" /></text>
+    <g id="g102789" transform="translate(117.348,-0.15107125)">
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102749">0701</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102753">0702</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102757">0703</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102761">0704</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102765">0705</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102769">0706</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102773">0707</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102777">0708</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102781">0709</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102787">0710</text>
     </g>
-    <g
-       id="g103572"
-       transform="translate(136.906,11.455265)">
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="15.729087"
-         id="text103532"><tspan
-           id="tspan103530"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="15.729087"
-           sodipodi:role="line">0801</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="38.789829"
-         id="text103536"><tspan
-           id="tspan103534"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="38.789829"
-           sodipodi:role="line">0802</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="61.724213"
-         id="text103540"><tspan
-           id="tspan103538"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="61.724213"
-           sodipodi:role="line">0803</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="84.784958"
-         id="text103544"><tspan
-           id="tspan103542"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="84.784958"
-           sodipodi:role="line">0804</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="107.71934"
-         id="text103548"><tspan
-           id="tspan103546"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="107.71934"
-           sodipodi:role="line">0805</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="130.71689"
-         id="text103552"><tspan
-           id="tspan103550"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="130.71689"
-           sodipodi:role="line">0806</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="153.77763"
-         id="text103556"><tspan
-           id="tspan103554"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="153.77763"
-           sodipodi:role="line">0807</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="176.64883"
-         id="text103560"><tspan
-           id="tspan103558"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="176.64883"
-           sodipodi:role="line">0808</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="199.53702"
-         id="text103564"><tspan
-           id="tspan103562"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="199.53702"
-           sodipodi:role="line">0809</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.52778px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="39.514999"
-         y="222.69876"
-         id="text103570"><tspan
-           id="tspan103566"
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line">0810</tspan><tspan
-           style="font-size:3.52778px;text-align:center;text-anchor:middle;stroke-width:0.264583"
-           x="39.514999"
-           y="222.69876"
-           sodipodi:role="line"
-           id="tspan103568" /></text>
+    <g id="g103572" transform="translate(136.906,11.455265)">
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text103532">0801</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text103536">0802</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text103540">0803</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text103544">0804</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text103548">0805</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text103552">0806</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text103556">0807</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text103560">0808</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text103564">0809</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text103570">0810</text>
     </g>
   </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer5"
-     inkscape:label="Markers"
-     sodipodi:insensitive="true">
-    <g
-       id="CenterMarkers"
-       style="opacity:0;fill:#000000;stroke:#000000"
-       sodipodi:insensitive="true">
-      <g
-         id="CenterMarkerColumn-1"
-         style="fill:#000000;stroke:#000000">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0101"
-           cx="39.336403"
-           cy="24.058498"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0102"
-           cx="39.334637"
-           cy="47.053913"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0103"
-           cx="39.334637"
-           cy="70.049278"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0104"
-           cx="39.33754"
-           cy="93.044693"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0105"
-           cx="39.32901"
-           cy="116.04011"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0106"
-           cx="39.376335"
-           cy="139.03546"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0107"
-           cx="39.376335"
-           cy="162.03055"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0108"
-           cx="39.376335"
-           cy="185.02618"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0109"
-           cx="39.327095"
-           cy="208.02127"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0110"
-           cx="39.335968"
-           cy="231.01691"
-           r="0.76200002" />
+  <g inkscape:groupmode="layer" id="layer5" inkscape:label="Markers" sodipodi:insensitive="true">
+    <g id="CenterMarkers" style="opacity:0;fill:#000000;stroke:#000000" sodipodi:insensitive="true">
+      <g id="CenterMarkerColumn-1">
+        <circle id="CenterMark-0101" cx="39.336403" cy="24.058498" r="0.76200002" />
+        <circle id="CenterMark-0102" cx="39.334637" cy="47.053913" r="0.76200002" />
+        <circle id="CenterMark-0103" cx="39.334637" cy="70.049278" r="0.76200002" />
+        <circle id="CenterMark-0104" cx="39.33754" cy="93.044693" r="0.76200002" />
+        <circle id="CenterMark-0105" cx="39.32901" cy="116.04011" r="0.76200002" />
+        <circle id="CenterMark-0106" cx="39.376335" cy="139.03546" r="0.76200002" />
+        <circle id="CenterMark-0107" cx="39.376335" cy="162.03055" r="0.76200002" />
+        <circle id="CenterMark-0108" cx="39.376335" cy="185.02618" r="0.76200002" />
+        <circle id="CenterMark-0109" cx="39.327095" cy="208.02127" r="0.76200002" />
+        <circle id="CenterMark-0110" cx="39.335968" cy="231.01691" r="0.76200002" />
       </g>
-      <g
-         id="CenterMarkerColumn-2"
-         transform="translate(19.645666,11.498203)"
-         style="fill:#000000;stroke:#000000">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0201"
-           cx="39.336403"
-           cy="24.058498"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0202"
-           cx="39.334637"
-           cy="47.053913"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0203"
-           cx="39.334637"
-           cy="70.049278"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0204"
-           cx="39.33754"
-           cy="93.044693"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0205"
-           cx="39.32901"
-           cy="116.04011"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0206"
-           cx="39.376335"
-           cy="139.03546"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0207"
-           cx="39.376335"
-           cy="162.03055"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0208"
-           cx="39.376335"
-           cy="185.02618"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0209"
-           cx="39.327095"
-           cy="208.02127"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0210"
-           cx="39.335968"
-           cy="231.01691"
-           r="0.76200002" />
+      <g id="CenterMarkerColumn-2" transform="translate(19.645666,11.498203)">
+        <circle id="CenterMark-0201" cx="39.336403" cy="24.058498" r="0.76200002" />
+        <circle id="CenterMark-0202" cx="39.334637" cy="47.053913" r="0.76200002" />
+        <circle id="CenterMark-0203" cx="39.334637" cy="70.049278" r="0.76200002" />
+        <circle id="CenterMark-0204" cx="39.33754" cy="93.044693" r="0.76200002" />
+        <circle id="CenterMark-0205" cx="39.32901" cy="116.04011" r="0.76200002" />
+        <circle id="CenterMark-0206" cx="39.376335" cy="139.03546" r="0.76200002" />
+        <circle id="CenterMark-0207" cx="39.376335" cy="162.03055" r="0.76200002" />
+        <circle id="CenterMark-0208" cx="39.376335" cy="185.02618" r="0.76200002" />
+        <circle id="CenterMark-0209" cx="39.327095" cy="208.02127" r="0.76200002" />
+        <circle id="CenterMark-0210" cx="39.335968" cy="231.01691" r="0.76200002" />
       </g>
-      <g
-         id="CenterMarkerColumn-3"
-         transform="translate(39.091787)"
-         style="fill:#000000;stroke:#000000">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0301"
-           cx="39.336403"
-           cy="24.058498"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0302"
-           cx="39.334637"
-           cy="47.053913"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0303"
-           cx="39.334637"
-           cy="70.049278"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0304"
-           cx="39.33754"
-           cy="93.044693"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0305"
-           cx="39.32901"
-           cy="116.04011"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0306"
-           cx="39.376335"
-           cy="139.03546"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0307"
-           cx="39.376335"
-           cy="162.03055"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0308"
-           cx="39.376335"
-           cy="185.02618"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0309"
-           cx="39.327095"
-           cy="208.02127"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0310"
-           cx="39.335968"
-           cy="231.01691"
-           r="0.76200002" />
+      <g id="CenterMarkerColumn-3" transform="translate(39.091787)">
+        <circle id="CenterMark-0301" cx="39.336403" cy="24.058498" r="0.76200002" />
+        <circle id="CenterMark-0302" cx="39.334637" cy="47.053913" r="0.76200002" />
+        <circle id="CenterMark-0303" cx="39.334637" cy="70.049278" r="0.76200002" />
+        <circle id="CenterMark-0304" cx="39.33754" cy="93.044693" r="0.76200002" />
+        <circle id="CenterMark-0305" cx="39.32901" cy="116.04011" r="0.76200002" />
+        <circle id="CenterMark-0306" cx="39.376335" cy="139.03546" r="0.76200002" />
+        <circle id="CenterMark-0307" cx="39.376335" cy="162.03055" r="0.76200002" />
+        <circle id="CenterMark-0308" cx="39.376335" cy="185.02618" r="0.76200002" />
+        <circle id="CenterMark-0309" cx="39.327095" cy="208.02127" r="0.76200002" />
+        <circle id="CenterMark-0310" cx="39.335968" cy="231.01691" r="0.76200002" />
       </g>
-      <g
-         id="CenterMarkerColumn-4"
-         transform="translate(58.737451,11.498203)"
-         style="fill:#000000;stroke:#000000">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0401"
-           cx="39.336403"
-           cy="24.058498"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0402"
-           cx="39.334637"
-           cy="47.053913"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0403"
-           cx="39.334637"
-           cy="70.049278"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0404"
-           cx="39.33754"
-           cy="93.044693"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0405"
-           cx="39.32901"
-           cy="116.04011"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0406"
-           cx="39.376335"
-           cy="139.03546"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0407"
-           cx="39.376335"
-           cy="162.03055"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0408"
-           cx="39.376335"
-           cy="185.02618"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0409"
-           cx="39.327095"
-           cy="208.02127"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0410"
-           cx="39.335968"
-           cy="231.01691"
-           r="0.76200002" />
+      <g id="CenterMarkerColumn-4" transform="translate(58.737451,11.498203)">
+        <circle id="CenterMark-0401" cx="39.336403" cy="24.058498" r="0.76200002" />
+        <circle id="CenterMark-0402" cx="39.334637" cy="47.053913" r="0.76200002" />
+        <circle id="CenterMark-0403" cx="39.334637" cy="70.049278" r="0.76200002" />
+        <circle id="CenterMark-0404" cx="39.33754" cy="93.044693" r="0.76200002" />
+        <circle id="CenterMark-0405" cx="39.32901" cy="116.04011" r="0.76200002" />
+        <circle id="CenterMark-0406" cx="39.376335" cy="139.03546" r="0.76200002" />
+        <circle id="CenterMark-0407" cx="39.376335" cy="162.03055" r="0.76200002" />
+        <circle id="CenterMark-0408" cx="39.376335" cy="185.02618" r="0.76200002" />
+        <circle id="CenterMark-0409" cx="39.327095" cy="208.02127" r="0.76200002" />
+        <circle id="CenterMark-0410" cx="39.335968" cy="231.01691" r="0.76200002" />
       </g>
-      <g
-         id="CenterMarkerColumn-5"
-         transform="translate(78.181012)"
-         style="fill:#000000;stroke:#000000">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0501"
-           cx="39.336403"
-           cy="24.058498"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0502"
-           cx="39.334637"
-           cy="47.053913"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0503"
-           cx="39.334637"
-           cy="70.049278"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0504"
-           cx="39.33754"
-           cy="93.044693"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0505"
-           cx="39.32901"
-           cy="116.04011"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0506"
-           cx="39.376335"
-           cy="139.03546"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0507"
-           cx="39.376335"
-           cy="162.03055"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0508"
-           cx="39.376335"
-           cy="185.02618"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0509"
-           cx="39.327095"
-           cy="208.02127"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0510"
-           cx="39.335968"
-           cy="231.01691"
-           r="0.76200002" />
+      <g id="CenterMarkerColumn-5" transform="translate(78.181012)">
+        <circle id="CenterMark-0501" cx="39.336403" cy="24.058498" r="0.76200002" />
+        <circle id="CenterMark-0502" cx="39.334637" cy="47.053913" r="0.76200002" />
+        <circle id="CenterMark-0503" cx="39.334637" cy="70.049278" r="0.76200002" />
+        <circle id="CenterMark-0504" cx="39.33754" cy="93.044693" r="0.76200002" />
+        <circle id="CenterMark-0505" cx="39.32901" cy="116.04011" r="0.76200002" />
+        <circle id="CenterMark-0506" cx="39.376335" cy="139.03546" r="0.76200002" />
+        <circle id="CenterMark-0507" cx="39.376335" cy="162.03055" r="0.76200002" />
+        <circle id="CenterMark-0508" cx="39.376335" cy="185.02618" r="0.76200002" />
+        <circle id="CenterMark-0509" cx="39.327095" cy="208.02127" r="0.76200002" />
+        <circle id="CenterMark-0510" cx="39.335968" cy="231.01691" r="0.76200002" />
       </g>
-      <g
-         id="CenterMarkerColumn-6"
-         transform="translate(97.826676,11.498203)"
-         style="fill:#000000;stroke:#000000">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0601"
-           cx="39.336403"
-           cy="24.058498"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0602"
-           cx="39.334637"
-           cy="47.053913"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0603"
-           cx="39.334637"
-           cy="70.049278"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0604"
-           cx="39.33754"
-           cy="93.044693"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0605"
-           cx="39.32901"
-           cy="116.04011"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0606"
-           cx="39.376335"
-           cy="139.03546"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0607"
-           cx="39.376335"
-           cy="162.03055"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0608"
-           cx="39.376335"
-           cy="185.02618"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0609"
-           cx="39.327095"
-           cy="208.02127"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0610"
-           cx="39.335968"
-           cy="231.01691"
-           r="0.76200002" />
+      <g id="CenterMarkerColumn-6" transform="translate(97.826676,11.498203)">
+        <circle id="CenterMark-0601" cx="39.336403" cy="24.058498" r="0.76200002" />
+        <circle id="CenterMark-0602" cx="39.334637" cy="47.053913" r="0.76200002" />
+        <circle id="CenterMark-0603" cx="39.334637" cy="70.049278" r="0.76200002" />
+        <circle id="CenterMark-0604" cx="39.33754" cy="93.044693" r="0.76200002" />
+        <circle id="CenterMark-0605" cx="39.32901" cy="116.04011" r="0.76200002" />
+        <circle id="CenterMark-0606" cx="39.376335" cy="139.03546" r="0.76200002" />
+        <circle id="CenterMark-0607" cx="39.376335" cy="162.03055" r="0.76200002" />
+        <circle id="CenterMark-0608" cx="39.376335" cy="185.02618" r="0.76200002" />
+        <circle id="CenterMark-0609" cx="39.327095" cy="208.02127" r="0.76200002" />
+        <circle id="CenterMark-0610" cx="39.335968" cy="231.01691" r="0.76200002" />
       </g>
-      <g
-         id="CenterMarkerColumn-7"
-         transform="translate(117.27024)"
-         style="fill:#000000;stroke:#000000">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0701"
-           cx="39.336403"
-           cy="24.058498"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0702"
-           cx="39.334637"
-           cy="47.053913"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0703"
-           cx="39.334637"
-           cy="70.049278"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0704"
-           cx="39.33754"
-           cy="93.044693"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0705"
-           cx="39.32901"
-           cy="116.04011"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0706"
-           cx="39.376335"
-           cy="139.03546"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0707"
-           cx="39.376335"
-           cy="162.03055"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0708"
-           cx="39.376335"
-           cy="185.02618"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0709"
-           cx="39.327095"
-           cy="208.02127"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0710"
-           cx="39.335968"
-           cy="231.01691"
-           r="0.76200002" />
+      <g id="CenterMarkerColumn-7" transform="translate(117.27024)">
+        <circle id="CenterMark-0701" cx="39.336403" cy="24.058498" r="0.76200002" />
+        <circle id="CenterMark-0702" cx="39.334637" cy="47.053913" r="0.76200002" />
+        <circle id="CenterMark-0703" cx="39.334637" cy="70.049278" r="0.76200002" />
+        <circle id="CenterMark-0704" cx="39.33754" cy="93.044693" r="0.76200002" />
+        <circle id="CenterMark-0705" cx="39.32901" cy="116.04011" r="0.76200002" />
+        <circle id="CenterMark-0706" cx="39.376335" cy="139.03546" r="0.76200002" />
+        <circle id="CenterMark-0707" cx="39.376335" cy="162.03055" r="0.76200002" />
+        <circle id="CenterMark-0708" cx="39.376335" cy="185.02618" r="0.76200002" />
+        <circle id="CenterMark-0709" cx="39.327095" cy="208.02127" r="0.76200002" />
+        <circle id="CenterMark-0710" cx="39.335968" cy="231.01691" r="0.76200002" />
       </g>
-      <g
-         id="CenterMarkerColumn-8"
-         transform="translate(136.9159,11.498203)"
-         style="fill:#000000;stroke:#000000">
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0801"
-           cx="39.336403"
-           cy="24.058498"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0802"
-           cx="39.334637"
-           cy="47.053913"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0803"
-           cx="39.334637"
-           cy="70.049278"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0804"
-           cx="39.33754"
-           cy="93.044693"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0805"
-           cx="39.32901"
-           cy="116.04011"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0806"
-           cx="39.376335"
-           cy="139.03546"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0807"
-           cx="39.376335"
-           cy="162.03055"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0808"
-           cx="39.376335"
-           cy="185.02618"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0809"
-           cx="39.327095"
-           cy="208.02127"
-           r="0.76200002" />
-        <circle
-           style="fill:#000000;stroke:#000000;stroke-width:0.2794"
-           id="CenterMark-0810"
-           cx="39.335968"
-           cy="231.01691"
-           r="0.76200002" />
+      <g id="CenterMarkerColumn-8" transform="translate(136.9159,11.498203)">
+        <circle id="CenterMark-0801" cx="39.336403" cy="24.058498" r="0.76200002" />
+        <circle id="CenterMark-0802" cx="39.334637" cy="47.053913" r="0.76200002" />
+        <circle id="CenterMark-0803" cx="39.334637" cy="70.049278" r="0.76200002" />
+        <circle id="CenterMark-0804" cx="39.33754" cy="93.044693" r="0.76200002" />
+        <circle id="CenterMark-0805" cx="39.32901" cy="116.04011" r="0.76200002" />
+        <circle id="CenterMark-0806" cx="39.376335" cy="139.03546" r="0.76200002" />
+        <circle id="CenterMark-0807" cx="39.376335" cy="162.03055" r="0.76200002" />
+        <circle id="CenterMark-0808" cx="39.376335" cy="185.02618" r="0.76200002" />
+        <circle id="CenterMark-0809" cx="39.327095" cy="208.02127" r="0.76200002" />
+        <circle id="CenterMark-0810" cx="39.335968" cy="231.01691" r="0.76200002" />
       </g>
     </g>
   </g>
