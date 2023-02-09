@@ -1,204 +1,230 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
-<svg sodipodi:docname="subsector_grid_template.svg" id="svg5" version="1.1" viewBox="0 0 215.9 279.4" height="11in"
-  width="8.5in" inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+<svg sodipodi:docname="subsector_grid_template.svg" id="svg5" version="1.1"
+  viewBox="0 0 215.9 279.4" height="11in"
+  width="8.5in" inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg"
+  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+  xmlns="http://www.w3.org/2000/svg"
   xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview id="namedview7" pagecolor="#ffffff" bordercolor="#111111" borderopacity="1"
-    inkscape:pageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="1" inkscape:document-units="in"
-    showgrid="false" units="in" inkscape:lockguides="true" inkscape:snap-global="true" inkscape:snap-grids="true"
-    inkscape:snap-page="true" inkscape:snap-bbox="true" showguides="false" inkscape:guide-bbox="true"
-    inkscape:zoom="1.4507575" inkscape:cx="248.14622" inkscape:cy="607.95824" inkscape:window-width="1920"
-    inkscape:window-height="1017" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1"
-    inkscape:current-layer="layer5" inkscape:snap-text-baseline="true" inkscape:snap-object-midpoints="true"
-    inkscape:snap-bbox-midpoints="true">
-    <sodipodi:guide position="176.421,279.4" orientation="1056,0" id="guide22817" inkscape:locked="true" />
-    <sodipodi:guide position="156.863,279.4" orientation="1056,0" id="guide22819" inkscape:locked="true" />
-    <sodipodi:guide position="137.305,279.4" orientation="1056,0" id="guide22821" inkscape:locked="true" />
-    <sodipodi:guide position="117.747,279.4" orientation="1056,0" id="guide22823" inkscape:locked="true" />
-    <sodipodi:guide position="98.189,279.4" orientation="1056,0" id="guide22825" inkscape:locked="true" />
-    <sodipodi:guide position="78.631,279.4" orientation="1056,0" id="guide22827" inkscape:locked="true" />
-    <sodipodi:guide position="59.073,279.4" orientation="1056,0" id="guide22829" inkscape:locked="true" />
-    <sodipodi:guide position="39.515,279.4" orientation="1056,0" id="guide22831" inkscape:locked="true" />
-    <sodipodi:guide position="107.95,279.4" orientation="-1,0" id="guide78384" inkscape:label="" inkscape:locked="true"
-      inkscape:color="rgb(0,0,255)" />
+    inkscape:pageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="1"
+    inkscape:document-units="in"
+    showgrid="false" units="in" inkscape:lockguides="false" inkscape:snap-global="true"
+    inkscape:snap-grids="true"
+    inkscape:snap-page="true" inkscape:snap-bbox="true" showguides="false"
+    inkscape:guide-bbox="true"
+    inkscape:zoom="1.4507575" inkscape:cx="321.55614" inkscape:cy="895.39427"
+    inkscape:window-width="1920"
+    inkscape:window-height="1017" inkscape:window-x="-8" inkscape:window-y="-8"
+    inkscape:window-maximized="1"
+    inkscape:current-layer="g103572" inkscape:snap-text-baseline="true"
+    inkscape:snap-object-midpoints="true"
+    inkscape:snap-bbox-midpoints="true" inkscape:showpageshadow="0" inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide position="176.421,279.4" orientation="1056,0" id="guide22817"
+      inkscape:locked="false" />
+    <sodipodi:guide position="156.863,279.4" orientation="1056,0" id="guide22819"
+      inkscape:locked="false" />
+    <sodipodi:guide position="137.305,279.4" orientation="1056,0" id="guide22821"
+      inkscape:locked="false" />
+    <sodipodi:guide position="117.747,279.4" orientation="1056,0" id="guide22823"
+      inkscape:locked="false" />
+    <sodipodi:guide position="98.189,279.4" orientation="1056,0" id="guide22825"
+      inkscape:locked="false" />
+    <sodipodi:guide position="78.631,279.4" orientation="1056,0" id="guide22827"
+      inkscape:locked="false" />
+    <sodipodi:guide position="59.073,279.4" orientation="1056,0" id="guide22829"
+      inkscape:locked="false" />
+    <sodipodi:guide position="39.515,279.4" orientation="1056,0" id="guide22831"
+      inkscape:locked="false" />
+    <sodipodi:guide position="107.95,279.4" orientation="-1,0" id="guide78384" inkscape:label=""
+      inkscape:locked="false" inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide position="190.5,279.4" orientation="-1,0" id="guide5918"
+      inkscape:locked="false" inkscape:label=""
+      inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide position="25.4,279.4" orientation="-1,0" id="guide5920"
+      inkscape:locked="false" inkscape:label=""
+      inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide position="13.131071,28.085896" orientation="0,-1" id="guide5974"
+      inkscape:locked="false" />
+    <sodipodi:guide position="-10.942559,266.99843" orientation="0,-1" id="guide5976"
+      inkscape:locked="false" />
   </sodipodi:namedview>
   <defs id="defs2" />
-  <style>
+  <style id="style1362">
     .hex-blank {
-      fill: none;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: none;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-turqoise {
-      fill: #8dd3c7;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #8dd3c7;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-yellow {
-      fill: #ffffb3;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #ffffb3;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-periwinkle {
-      fill: #bebada;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #bebada;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-red {
-      fill: #fb8072;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #fb8072;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-blue {
-      fill: #80b1d3;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #80b1d3;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-orange {
-      fill: #fdb462;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #fdb462;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-pear {
-      fill: #b3de69;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #b3de69;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-lavender {
-      fill: #fccde5;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #fccde5;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-grey {
-      fill: #d9d9d9;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #d9d9d9;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-violet {
-      fill: #bc80bd;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #bc80bd;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-pistachio {
-      fill: #ccebc5;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #ccebc5;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-color-gold {
-      fill: #ffed6f;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: #ffed6f;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .hex-test {
-      fill: purple;
-      stroke: #000000;
-      stroke-width: 0.254;
-      stroke-miterlimit: 4;
-      stroke-dasharray: none;
+    fill: purple;
+    stroke: #000000;
+    stroke-width: 0.254;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
     }
 
     .text-hex-coord {
-      font-size: 3.52778px;
-      line-height: 0;
-      font-family: sans-serif;
-      -inkscape-font-specification: Arial;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.264583;
+    font-size: 3.52778px;
+    line-height: 0;
+    font-family: sans-serif;
+    -inkscape-font-specification: Arial;
+    text-align: center;
+    text-anchor: middle;
+    stroke-width: 0.264583;
     }
 
     .text-legend-label {
-      font-size: 2.82222px;
-      line-height: 0;
-      font-family: sans-serif;
-      -inkscape-font-specification: Arial;
-      text-align: end;
-      text-anchor: end;
-      stroke-width: 0.264583;
+    font-size: 2.82222px;
+    line-height: 0;
+    font-family: sans-serif;
+    -inkscape-font-specification: Arial;
+    text-align: end;
+    text-anchor: end;
+    stroke-width: 0.264583;
     }
 
     .text-world-name {
-      font-style: normal;
-      font-variant: normal;
-      font-weight: normal;
-      font-stretch: condensed;
-      font-size: 3.52777px;
-      line-height: 0;
-      font-family: sans-serif;
-      -inkscape-font-specification: 'Arial Italic Condensed';
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.264583;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    font-stretch: condensed;
+    font-size: 3.52777px;
+    line-height: 0;
+    font-family: sans-serif;
+    -inkscape-font-specification: 'Arial Italic Condensed';
+    text-align: center;
+    text-anchor: middle;
+    stroke-width: 0.264583;
     }
 
     .text-world-profile {
-      font-style: italic;
-      font-variant: normal;
-      font-weight: normal;
-      font-stretch: condensed;
-      font-size: 2.8px;
-      line-height: 0;
-      font-family: sans-serif;
-      -inkscape-font-specification: 'Arial Italic Condensed';
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.264583;
+    font-style: italic;
+    font-variant: normal;
+    font-weight: normal;
+    font-stretch: condensed;
+    font-size: 2.8px;
+    line-height: 0;
+    font-family: sans-serif;
+    -inkscape-font-specification: 'Arial Italic Condensed';
+    text-align: center;
+    text-anchor: middle;
+    stroke-width: 0.264583;
     }
 
     .text-starport-tl {
-      font-style: italic;
-      font-variant: normal;
-      font-weight: normal;
-      font-stretch: condensed;
-      font-size: 3.52777px;
-      line-height: 0;
-      font-family: sans-serif;
-      -inkscape-font-specification: 'Arial Italic Condensed';
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.264583;
+    font-style: italic;
+    font-variant: normal;
+    font-weight: normal;
+    font-stretch: condensed;
+    font-size: 3.52777px;
+    line-height: 0;
+    font-family: sans-serif;
+    -inkscape-font-specification: 'Arial Italic Condensed';
+    text-align: center;
+    text-anchor: middle;
+    stroke-width: 0.264583;
     }
   </style>
   <g inkscape:label="Legend" inkscape:groupmode="layer" id="layer1" sodipodi:insensitive="true">
@@ -206,64 +232,72 @@
       style="font-size:8.46667px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
       x="107.95" y="9.1300306" id="SubsectorName">Subsector Name</text>
     <g id="g112309" transform="translate(1.6151705e-6,0.45593996)">
-      <circle style="fill:none;stroke:#000000;stroke-width:0.2794" id="DryWorldSymbol" cx="39.514999" cy="257.11258"
+      <circle style="fill:none;stroke:#000000;stroke-width:0.2794" id="DryWorldSymbol"
+        cx="39.514999" cy="257.11258"
         r="1.27" />
-      <text xml:space="preserve" class="text-legend-label" x="59.072998" y="257.91861" id="text84496">Dry World</text>
+      <text xml:space="preserve" class="text-legend-label" x="59.072998" y="257.91861"
+        id="text84496">Dry World</text>
     </g>
     <g id="g112162" transform="translate(1.8353119e-6,1.3678199)">
-      <circle style="fill:#000000;stroke:#000000;stroke-width:0.2794" id="WetWorldSymbol" cx="39.514999" cy="260.65897"
-        r="1.27" />
-      <text xml:space="preserve" class="text-legend-label" x="59.072998" y="261.59396" id="text94070">Wet World</text>
+      <circle style="fill:#000000;stroke:#000000;stroke-width:0.2794" id="WetWorldSymbol"
+        cx="39.514999"
+        cy="260.65897" r="1.27" />
+      <text xml:space="preserve" class="text-legend-label" x="59.072998" y="261.59396"
+        id="text94070">Wet World</text>
     </g>
     <g id="g118247">
       <g id="GasGiantSymbol" transform="matrix(1.2059881,0,0,1.2059881,-16.197046,-52.451805)">
-        <circle style="fill:#000000;stroke:#000000;stroke-width:0.2794" id="GasGiantCircle" cx="78.630997"
+        <circle style="fill:#000000;stroke:#000000;stroke-width:0.2794" id="GasGiantCircle"
+          cx="78.630997"
           cy="256.73788" r="0.63499999" />
-        <ellipse style="fill:none;stroke:#000000;stroke-width:0.2794" id="path112358" ry="0.34195495" rx="1.4590079"
+        <ellipse style="fill:none;stroke:#000000;stroke-width:0.2794" id="path112358"
+          ry="0.34195495" rx="1.4590079"
           cy="267.68945" cx="-20.96493" transform="rotate(-21.506387)" />
       </g>
-      <text xml:space="preserve" class="text-legend-label" x="98.189003" y="258.1532" id="text114554">Gas Giant</text>
+      <text xml:space="preserve" class="text-legend-label" x="98.189003" y="258.1532"
+        id="text114554">Gas Giant</text>
     </g>
     <g id="g155436">
-      <text xml:space="preserve" class="text-starport-tl" x="78.630997" y="263.5928" id="StarportTlSymbol">B-6</text>
+      <text xml:space="preserve" class="text-starport-tl" x="78.630997" y="263.5928"
+        id="StarportTlSymbol">B-6</text>
       <text xml:space="preserve" class="text-legend-label" x="98.189003" y="263.20593"
         id="text149034">Starport-TL</text>
     </g>
   </g>
-  <g inkscape:groupmode="layer" id="layer2" inkscape:label="Grid Base" style="display:inline"
-    sodipodi:insensitive="true">
-    <rect style="fill:none;stroke:#000000;stroke-width:0.245207" id="rect167" width="163.55087" height="241.40277"
-      x="26.031921" y="12.602139" inkscape:label="Grid Border" />
+  <g inkscape:groupmode="layer" id="layer2" inkscape:label="Grid Base">
+    <rect style="fill:none;stroke:#000000;stroke-width:0.244347" id="rect167" width="164.28123"
+      height="238.64517"
+      x="26.03149" y="12.601709" inkscape:label="Grid Border" />
   </g>
-  <g inkscape:groupmode="layer" id="layer3" inkscape:label="Grid Hexes" sodipodi:insensitive="true">
+  <g inkscape:groupmode="layer" id="layer3" inkscape:label="Grid Hexes">
     <g id="HexGrid" transform="matrix(1.1000328,0,0,1.1000328,12.248164,-1.4095707)">
-      <g id="Col8" transform="translate(124.46529,10.4526)">
+      <g id="Col8" transform="translate(125.1922,10.3266)">
         <path class="hex-blank"
-          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          d="m 12.6808,209.0126 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
           id="HexPath-0810" />
         <path class="hex-blank"
-          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.6809,188.3606 5.9616,-10.326 h 1e-4 c 0.0185,0 11.9229,0 11.9229,0 l 10e-5,10e-4 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -1e-4,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0809" />
         <path class="hex-blank"
-          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.6812,167.7096 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 10e-5 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0808" />
         <path class="hex-blank"
-          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.6815,147.0586 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 10e-5 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0807" />
         <path class="hex-blank"
-          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.6815,126.4076 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 10e-5 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0806" />
         <path class="hex-blank"
-          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          d="m 12.6819,105.7556 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,0.001 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
           id="HexPath-0805" />
         <path class="hex-blank"
-          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          d="m 12.6821,85.1048 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6112,95.374 12.6821,85.1048 12.6821,85.1048"
           id="HexPath-0804" />
         <path class="hex-blank"
-          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          d="m 12.6823,64.4538 5.9616,-10.3257 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6067,74.715 12.6823,64.4538 12.6823,64.4538"
           id="HexPath-0803" />
         <path class="hex-blank"
-          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          d="m 12.6825,43.8029 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 c -0.0416,0.0721 -5.9613,10.3252 -5.9613,10.3252 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.6023,54.056 12.6825,43.8029 12.6825,43.8029"
           id="HexPath-0802" />
         <path class="hex-blank"
           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
@@ -271,223 +305,223 @@
       </g>
       <g id="Col7" transform="translate(106.60613)">
         <path class="hex-blank"
-          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          d="m 13.38167,209.0146 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
           id="HexPath-0710" />
         <path class="hex-blank"
-          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 13.38167,188.3626 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 10e-5,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0709" />
         <path class="hex-blank"
-          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 13.38187,167.7106 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 10e-5 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0708" />
         <path class="hex-blank"
-          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 13.38187,147.0596 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 10e-5 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0707" />
         <path class="hex-blank"
-          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 13.38227,126.4086 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 10e-5 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0706" />
         <path class="hex-blank"
-          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          d="m 13.38267,105.7566 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
           id="HexPath-0705" />
         <path class="hex-blank"
-          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          d="m 13.38327,85.1058 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.0323,-0.056 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0704" />
         <path class="hex-blank"
-          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          d="m 13.38387,64.4548 5.9616,-10.3257 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0703" />
         <path class="hex-blank"
-          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          d="m 13.38457,43.8039 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 c -0.0416,0.0721 -5.9613,10.3252 -5.9613,10.3252 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 c -0.0416,-0.0721 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0702" />
         <path class="hex-blank"
-          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          d="m 13.38477,23.1531 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 10e-5,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
           id="HexPath-0701" />
       </g>
       <g id="Col6" transform="translate(88.930689,10.4526)">
         <path class="hex-blank"
-          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          d="m 13.173311,208.8879 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
           id="HexPath-0610" />
         <path class="hex-blank"
-          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 13.173411,188.2359 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 10e-5,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -1e-4,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0609" />
         <path class="hex-blank"
-          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 13.173411,167.5839 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 10e-5 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -1e-4 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0608" />
         <path class="hex-blank"
-          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 13.173511,146.9329 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 10e-5 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0607" />
         <path class="hex-blank"
-          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 13.173911,126.2819 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 10e-5 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0606" />
         <path class="hex-blank"
-          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          d="m 13.174311,105.6299 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
           id="HexPath-0605" />
         <path class="hex-blank"
-          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          d="m 13.174711,84.9788 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.0323,-0.056 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0604" />
         <path class="hex-blank"
-          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          d="m 13.175311,64.3278 5.9616,-10.3257 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0603" />
         <path class="hex-blank"
-          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          d="m 13.175511,43.6769 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 c -0.0416,0.0721 -5.9613,10.3252 -5.9613,10.3252 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 c -0.0416,-0.0721 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0602" />
         <path class="hex-blank"
-          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          d="m 13.175711,23.0261 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 10e-5,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
           id="HexPath-0601" />
       </g>
       <g id="Col5" transform="translate(71.071527)">
         <path class="hex-blank"
-          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          d="m 13.148873,209.0136 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
           id="HexPath-0510" />
         <path class="hex-blank"
-          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 13.148873,188.3616 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 10e-5,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -1e-4,10e-4 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0509" />
         <path class="hex-blank"
-          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 13.148973,167.7106 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 10e-5 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0508" />
         <path class="hex-blank"
-          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 13.148973,147.0596 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 10e-5 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0507" />
         <path class="hex-blank"
-          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 13.148973,126.4086 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 10e-5 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0506" />
         <path class="hex-blank"
-          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          d="m 13.149073,105.7566 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
           id="HexPath-0505" />
         <path class="hex-blank"
-          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          d="m 13.149273,85.1058 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.0323,-0.056 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0504" />
         <path class="hex-blank"
-          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          d="m 13.149473,64.4548 5.9616,-10.3257 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0503" />
         <path class="hex-blank"
-          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          d="m 13.149673,43.8039 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 c -0.0416,0.0721 -5.9613,10.3252 -5.9613,10.3252 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 c -0.0416,-0.0721 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0502" />
         <path class="hex-blank"
-          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          d="m 13.150373,23.1531 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 10e-5,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
           id="HexPath-0501" />
       </g>
       <g id="Col4" transform="translate(53.396089,10.4526)">
         <path class="hex-blank"
-          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          d="m 12.937011,208.8871 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
           id="HexPath-0410" />
         <path class="hex-blank"
-          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.937111,188.2351 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 10e-5,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -1e-4,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0409" />
         <path class="hex-blank"
-          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.937311,167.5831 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 10e-5 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -1e-4 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0408" />
         <path class="hex-blank"
-          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.937611,146.9321 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 10e-5 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0407" />
         <path class="hex-blank"
-          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.938011,126.2811 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -1e-4 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0406" />
         <path class="hex-blank"
-          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          d="m 12.938411,105.6291 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,0.001 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
           id="HexPath-0405" />
         <path class="hex-blank"
-          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          d="m 12.939011,84.9783 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.0323,-0.056 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0404" />
         <path class="hex-blank"
-          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          d="m 12.939611,64.3273 5.9616,-10.3257 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0403" />
         <path class="hex-blank"
-          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          d="m 12.940311,43.6764 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 c -0.0416,0.0721 -5.9613,10.3252 -5.9613,10.3252 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 c -0.0416,-0.0721 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0402" />
         <path class="hex-blank"
-          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          d="M 12.941011,23.0256 18.902611,12.7 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 10e-5,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
           id="HexPath-0401" />
       </g>
       <g id="Col3" transform="translate(35.536927)">
         <path class="hex-blank"
-          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          d="m 12.911573,209.0131 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
           id="HexPath-0310" />
         <path class="hex-blank"
-          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.911673,188.3611 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 10e-5,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -1e-4,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0309" />
         <path class="hex-blank"
-          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.911973,167.7101 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 10e-5 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -1e-4 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0308" />
         <path class="hex-blank"
-          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.912273,147.0591 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 10e-5 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0307" />
         <path class="hex-blank"
-          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.912673,126.4081 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 10e-5 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0306" />
         <path class="hex-blank"
-          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          d="m 12.913073,105.7561 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
           id="HexPath-0305" />
         <path class="hex-blank"
-          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          d="m 12.913673,85.1053 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.0323,-0.056 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0304" />
         <path class="hex-blank"
-          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          d="m 12.914273,64.4543 5.9616,-10.3257 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0303" />
         <path class="hex-blank"
-          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          d="m 12.914973,43.8034 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 c -0.0416,0.0721 -5.9613,10.3252 -5.9613,10.3252 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 c -0.0416,-0.0721 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0302" />
         <path class="hex-blank"
-          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          d="m 12.915673,23.1526 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 10e-5,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
           id="HexPath-0301" />
       </g>
       <g id="Col2" transform="translate(17.859162,10.4526)">
         <path class="hex-blank"
-          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          d="m 12.706438,208.8873 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
           id="HexPath-0210" />
         <path class="hex-blank"
-          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.706538,188.2353 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 10e-5,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -1e-4,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0209" />
         <path class="hex-blank"
-          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.706538,167.5833 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 10e-5 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -1e-4 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0208" />
         <path class="hex-blank"
-          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.706538,146.9323 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 10e-5 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -1e-4 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0207" />
         <path class="hex-blank"
-          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.706938,126.2813 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 10e-5 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -1e-4 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -1e-4 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0206" />
         <path class="hex-blank"
-          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          d="m 12.707338,105.6293 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,0.001 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
           id="HexPath-0205" />
         <path class="hex-blank"
-          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          d="m 12.707738,84.9782 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.0323,-0.056 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0204" />
         <path class="hex-blank"
-          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          d="m 12.708338,64.3272 5.9616,-10.3257 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0203" />
         <path class="hex-blank"
-          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          d="m 12.708538,43.6763 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 c -0.0416,0.0721 -5.9613,10.3252 -5.9613,10.3252 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 c -0.0416,-0.0721 -5.9614,-10.3252 -5.9614,-10.3252"
           id="HexPath-0202" />
         <path class="hex-blank"
-          d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
+          d="m 12.708538,23.0251 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 10e-5,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
           id="HexPath-0201" />
       </g>
       <g id="Col1">
         <path class="hex-blank"
-          d="m 12.6832,211.291 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
+          d="m 12.6813,209.0142 5.9616,-10.326 h 10e-5 c 0.0092,0 11.9229,0 11.9229,0 v 0 c 0.0046,0.008 5.9615,10.326 5.9615,10.326 v 0 c -0.0046,0.008 -5.9615,10.325 -5.9615,10.325 h -10e-5 c -0.0092,0 -11.9229,0 -11.9229,0 v 0 c -0.0046,-0.008 -5.9616,-10.325 -5.9616,-10.325"
           id="HexPath-0110" />
         <path class="hex-blank"
-          d="m 12.6832,190.386 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 1e-4,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -10e-5,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.6814,188.3622 5.9616,-10.326 h 10e-5 c 0.0185,0 11.9229,0 11.9229,0 l 10e-5,0.001 c 0.0092,0.016 5.9614,10.325 5.9614,10.325 l -1e-4,0.001 c -0.0092,0.016 -5.9614,10.325 -5.9614,10.325 h -10e-5 c -0.0185,0 -11.9229,0 -11.9229,0 h -10e-5 c -0.0092,-0.016 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0109" />
         <path class="hex-blank"
-          d="m 12.6832,169.482 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 1e-4 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
+          d="m 12.6814,167.7102 5.9616,-10.326 h 2e-4 c 0.0277,0 11.9228,0 11.9228,0 h 10e-5 c 0.0138,0.024 5.9614,10.326 5.9614,10.326 h -1e-4 c -0.0138,0.024 -5.9614,10.326 -5.9614,10.326 h -2e-4 c -0.0277,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0138,-0.024 -5.9615,-10.326 -5.9615,-10.326"
           id="HexPath-0108" />
         <path class="hex-blank"
-          d="m 12.6832,148.578 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.6817,147.0592 5.9616,-10.326 h 2e-4 c 0.037,0 11.9228,0 11.9228,0 h 1e-4 c 0.0185,0.032 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0185,0.032 -5.9614,10.325 -5.9614,10.325 h -2e-4 c -0.037,0 -11.9228,0 -11.9228,0 h -10e-5 c -0.0185,-0.032 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0107" />
         <path class="hex-blank"
-          d="m 12.6832,127.674 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
+          d="m 12.6817,126.4082 5.9616,-10.326 h 3e-4 c 0.0462,0 11.9227,0 11.9227,0 h 1e-4 c 0.0231,0.04 5.9614,10.326 5.9614,10.326 h -10e-5 c -0.0231,0.04 -5.9614,10.325 -5.9614,10.325 h -3e-4 c -0.0462,0 -11.9227,0 -11.9227,0 h -10e-5 c -0.0231,-0.04 -5.9615,-10.325 -5.9615,-10.325"
           id="HexPath-0106" />
         <path class="hex-blank"
-          d="m 12.6832,106.769 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
+          d="m 12.6818,105.7562 5.9616,-10.3255 h 3e-4 c 0.0555,0 11.9227,0 11.9227,0 l 2e-4,3e-4 c 0.0277,0.048 5.9613,10.3252 5.9613,10.3252 l -2e-4,10e-4 c -0.0277,0.048 -5.9613,10.325 -5.9613,10.325 h -3e-4 c -0.0555,0 -11.9227,0 -11.9227,0 h -2e-4 c -0.0277,-0.048 -5.9614,-10.326 -5.9614,-10.326"
           id="HexPath-0105" />
         <path class="hex-blank"
-          d="m 12.6832,85.865 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6123,96.1342 12.6832,85.865 12.6832,85.865"
+          d="m 12.6818,85.1051 5.9616,-10.3257 h 4e-4 c 0.0647,0 11.9226,0 11.9226,0 l 2e-4,3e-4 c 0.0323,0.056 5.9613,10.3254 5.9613,10.3254 l -2e-4,3e-4 c -0.0323,0.056 -5.9613,10.3253 -5.9613,10.3253 h -4e-4 c -0.0647,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6109,95.3743 12.6818,85.1051 12.6818,85.1051"
           id="HexPath-0104" />
         <path class="hex-blank"
-          d="M 12.6832,64.9607 18.6448,54.635 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 c -0.037,-0.064 -5.9614,-10.3252 -5.9614,-10.3252"
+          d="m 12.6818,64.4538 5.9616,-10.3257 h 4e-4 c 0.074,0 11.9226,0 11.9226,0 l 2e-4,4e-4 c 0.037,0.064 5.9613,10.3253 5.9613,10.3253 l -2e-4,4e-4 c -0.037,0.064 -5.9613,10.3252 -5.9613,10.3252 h -4e-4 c -0.074,0 -11.9226,0 -11.9226,0 l -2e-4,-4e-4 C 18.6062,74.715 12.6818,64.4538 12.6818,64.4538"
           id="HexPath-0103" />
         <path class="hex-blank"
-          d="m 12.6832,44.0564 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 C 36.4875,44.1289 30.5678,54.382 30.5678,54.382 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.603,54.3095 12.6832,44.0564 12.6832,44.0564"
+          d="m 12.6825,43.8029 5.9616,-10.3256 h 5e-4 c 0.0832,0 11.9225,0 11.9225,0 l 2e-4,4e-4 c 0.0416,0.072 5.9613,10.3252 5.9613,10.3252 l -2e-4,4e-4 c -0.0416,0.0721 -5.9613,10.3252 -5.9613,10.3252 h -5e-4 c -0.0832,0 -11.9225,0 -11.9225,0 l -2e-4,-4e-4 C 18.6023,54.056 12.6825,43.8029 12.6825,43.8029"
           id="HexPath-0102" />
         <path class="hex-blank"
           d="m 12.6832,23.1521 5.9616,-10.3256 c 0,0 2e-4,0 5e-4,0 0.0925,0 11.9225,0 11.9225,0 0,0 1e-4,2e-4 3e-4,5e-4 0.0462,0.08 5.9612,10.3251 5.9612,10.3251 l -3e-4,5e-4 c -0.0462,0.08 -5.9612,10.3251 -5.9612,10.3251 h -5e-4 c -0.0925,0 -11.9225,0 -11.9225,0 l -3e-4,-5e-4 c -0.0462,-0.08 -5.9613,-10.3251 -5.9613,-10.3251"
@@ -495,201 +529,291 @@
       </g>
     </g>
   </g>
-  <g inkscape:groupmode="layer" id="layer4" inkscape:label="CoordLabels" sodipodi:insensitive="true">
+  <g inkscape:groupmode="layer" id="layer4" inkscape:label="CoordLabels">
     <g id="g61055">
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text15448">0101</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text54110">0102</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text54168">0103</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text54172">0104</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text54176">0105</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text54180">0106</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text54184">0107</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text54188">0108</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text60975">0109</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text61015">0110</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087"
+        id="text15448">0101</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.330425" y="38.63876" id="text54110">0102</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.34774" y="61.301895" id="text54168">0103</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.303272" y="84.103859"
+        id="text54172">0104</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.334362" y="106.76699"
+        id="text54176">0105</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.352295" y="129.50749"
+        id="text54180">0106</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.367798" y="152.29613"
+        id="text54184">0107</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.361435" y="175.03923"
+        id="text54188">0108</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="197.56268"
+        id="text60975">0109</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.657288" y="220.11957"
+        id="text61015">0110</text>
     </g>
     <g id="g97645" transform="translate(19.558,11.241584)">
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text97605">0201</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text97609">0202</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text97613">0203</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text97617">0204</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text97621">0205</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text97625">0206</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text97629">0207</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text97633">0208</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text97637">0209</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text97643">0210</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.858047"
+        id="text97605">0201</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.66087" id="text97609">0202</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.324005"
+        id="text97613">0203</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="83.997871"
+        id="text97617">0204</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="106.91892"
+        id="text97621">0205</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="129.40067"
+        id="text97625">0206</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="152.19016"
+        id="text97629">0207</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="175.06136"
+        id="text97633">0208</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="197.54933"
+        id="text97637">0209</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="220.45317"
+        id="text97643">0210</text>
     </g>
     <g id="g102451" transform="translate(39.116,-0.15107124)">
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102411">0301</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102415">0302</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102419">0303</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102423">0304</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102427">0305</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102431">0306</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102435">0307</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102439">0308</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102443">0309</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102449">0310</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.63768" y="15.88102" id="text102411">0301</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829"
+        id="text102415">0302</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.452965"
+        id="text102419">0303</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.255791"
+        id="text102423">0304</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="106.91892"
+        id="text102427">0305</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="129.65857"
+        id="text102431">0306</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="152.44806"
+        id="text102435">0307</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="175.19031"
+        id="text102439">0308</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.552486" y="197.71376"
+        id="text102443">0309</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.561249" y="220.2715"
+        id="text102449">0310</text>
     </g>
     <g id="g102621" transform="translate(58.674,11.455265)">
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102581">0401</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102585">0402</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102589">0403</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102593">0404</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102597">0405</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102601">0406</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102605">0407</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102609">0408</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102613">0409</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102619">0410</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.75322" y="15.643504"
+        id="text102581">0401</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.677475" y="38.447189"
+        id="text102585">0402</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.69479" y="61.110325"
+        id="text102589">0403</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.649662" y="83.783333"
+        id="text102593">0404</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.680092" y="106.70438"
+        id="text102597">0405</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.697693" y="129.18613"
+        id="text102601">0406</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.712757" y="151.97562"
+        id="text102605">0407</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.706398" y="174.84767"
+        id="text102609">0408</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.668133" y="197.33479"
+        id="text102613">0409</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.676895" y="220.23863"
+        id="text102619">0410</text>
     </g>
     <g id="g102665" transform="translate(78.232,-0.02211196)">
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102625">0501</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102629">0502</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102633">0503</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102637">0504</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102641">0505</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102645">0506</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102649">0507</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102653">0508</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102657">0509</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102663">0510</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.869083" y="15.75206"
+        id="text102625">0501</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.793339" y="38.66087"
+        id="text102629">0502</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.811207" y="61.324005"
+        id="text102633">0503</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.766518" y="84.125969"
+        id="text102637">0504</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.79739" y="106.7891" id="text102641">0505</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.815319" y="129.52875"
+        id="text102645">0506</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.830822" y="152.31824"
+        id="text102649">0507</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.824795" y="175.06136"
+        id="text102653">0508</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.78664" y="197.58394"
+        id="text102657">0509</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.795513" y="220.14168"
+        id="text102663">0510</text>
     </g>
     <g id="g102745" transform="translate(97.79,11.455265)">
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102705">0601</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102709">0602</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102713">0603</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102717">0604</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102721">0605</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102725">0606</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102729">0607</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102733">0608</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102737">0609</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102743">0610</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.984619" y="15.643504"
+        id="text102705">0601</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.909424" y="38.447189"
+        id="text102709">0602</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.927292" y="61.110325"
+        id="text102713">0603</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.882164" y="83.783333"
+        id="text102717">0604</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.912815" y="106.70438"
+        id="text102721">0605</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.930416" y="129.18613"
+        id="text102725">0606</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.945477" y="151.97562"
+        id="text102729">0607</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.939342" y="174.84767"
+        id="text102733">0608</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.901299" y="197.33479"
+        id="text102737">0609</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.910061" y="220.23863"
+        id="text102743">0610</text>
     </g>
     <g id="g102789" transform="translate(117.348,-0.15107125)">
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text102749">0701</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text102753">0702</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text102757">0703</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text102761">0704</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text102765">0705</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text102769">0706</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text102773">0707</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text102777">0708</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text102781">0709</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text102787">0710</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.100159" y="15.88102"
+        id="text102749">0701</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.024963" y="38.789829"
+        id="text102753">0702</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.091892" y="61.452965"
+        id="text102757">0703</text>
+      <text xml:space="preserve" class="text-hex-coord" x="39.99715" y="84.254929"
+        id="text102761">0704</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.02758" y="106.91806"
+        id="text102765"
+      >0705</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.045185" y="129.6577"
+        id="text102769">0706</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.060249" y="152.44719"
+        id="text102773">0707</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.054218" y="175.19031"
+        id="text102777">0708</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.015953" y="197.71289"
+        id="text102781">0709</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.024826" y="220.27063"
+        id="text102787">0710</text>
     </g>
     <g id="g103572" transform="translate(136.906,11.455265)">
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="15.729087" id="text103532">0801</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="38.789829" id="text103536">0802</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="61.724213" id="text103540">0803</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="84.784958" id="text103544">0804</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="107.71934" id="text103548">0805</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="130.71689" id="text103552">0806</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="153.77763" id="text103556">0807</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="176.64883" id="text103560">0808</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="199.53702" id="text103564">0809</text>
-      <text xml:space="preserve" class="text-hex-coord" x="39.514999" y="222.69876" id="text103570">0810</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.215694" y="15.638336"
+        id="text103532"
+      >0801</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.13995" y="38.447189"
+        id="text103536"
+      >0802</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.157818" y="61.110325"
+        id="text103540"
+      >0803</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.113129" y="83.784195"
+        id="text103544"
+      >0804</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.144001" y="106.71127"
+        id="text103548"
+      >0805</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.146095" y="129.18698"
+        id="text103552"
+      >0806</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.177101" y="151.97647"
+        id="text103556"
+      >0807</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.170746" y="174.84767"
+        id="text103560"
+      >0808</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.13237" y="197.32962"
+        id="text103564"
+      >0809</text>
+      <text xml:space="preserve" class="text-hex-coord" x="40.141132" y="220.24553"
+        id="text103570"
+      >0810</text>
     </g>
   </g>
-  <g inkscape:groupmode="layer" id="layer5" inkscape:label="Markers" sodipodi:insensitive="true">
-    <g id="CenterMarkers" style="opacity:0;fill:#000000;stroke:#000000" sodipodi:insensitive="true">
+  <g inkscape:groupmode="layer" id="layer5" inkscape:label="Markers" visibility="hidden">
+    <g id="CenterMarkers" style="display:inline;opacity:1;fill:#000000;stroke:#000000">
       <g id="CenterMarkerColumn-1">
         <circle id="CenterMark-0101" cx="39.336403" cy="24.058498" r="0.76200002" />
-        <circle id="CenterMark-0102" cx="39.334637" cy="47.053913" r="0.76200002" />
-        <circle id="CenterMark-0103" cx="39.334637" cy="70.049278" r="0.76200002" />
-        <circle id="CenterMark-0104" cx="39.33754" cy="93.044693" r="0.76200002" />
-        <circle id="CenterMark-0105" cx="39.32901" cy="116.04011" r="0.76200002" />
-        <circle id="CenterMark-0106" cx="39.376335" cy="139.03546" r="0.76200002" />
-        <circle id="CenterMark-0107" cx="39.376335" cy="162.03055" r="0.76200002" />
-        <circle id="CenterMark-0108" cx="39.376335" cy="185.02618" r="0.76200002" />
-        <circle id="CenterMark-0109" cx="39.327095" cy="208.02127" r="0.76200002" />
-        <circle id="CenterMark-0110" cx="39.335968" cy="231.01691" r="0.76200002" />
+        <circle id="CenterMark-0102" cx="39.33387" cy="46.775055" r="0.76200002" />
+        <circle id="CenterMark-0103" cx="39.333099" cy="69.491669" r="0.76200002" />
+        <circle id="CenterMark-0104" cx="39.335999" cy="92.208778" r="0.76200002" />
+        <circle id="CenterMark-0105" cx="39.327473" cy="114.92599" r="0.76200002" />
+        <circle id="CenterMark-0106" cx="39.374687" cy="137.64305" r="0.76200002" />
+        <circle id="CenterMark-0107" cx="39.374687" cy="160.35982" r="0.76200002" />
+        <circle id="CenterMark-0108" cx="39.374355" cy="183.07715" r="0.76200002" />
+        <circle id="CenterMark-0109" cx="39.325115" cy="205.79503" r="0.76200002" />
+        <circle id="CenterMark-0110" cx="39.333878" cy="228.51236" r="0.76200002" />
       </g>
-      <g id="CenterMarkerColumn-2" transform="translate(19.645666,11.498203)">
-        <circle id="CenterMark-0201" cx="39.336403" cy="24.058498" r="0.76200002" />
-        <circle id="CenterMark-0202" cx="39.334637" cy="47.053913" r="0.76200002" />
-        <circle id="CenterMark-0203" cx="39.334637" cy="70.049278" r="0.76200002" />
-        <circle id="CenterMark-0204" cx="39.33754" cy="93.044693" r="0.76200002" />
-        <circle id="CenterMark-0205" cx="39.32901" cy="116.04011" r="0.76200002" />
-        <circle id="CenterMark-0206" cx="39.376335" cy="139.03546" r="0.76200002" />
-        <circle id="CenterMark-0207" cx="39.376335" cy="162.03055" r="0.76200002" />
-        <circle id="CenterMark-0208" cx="39.376335" cy="185.02618" r="0.76200002" />
-        <circle id="CenterMark-0209" cx="39.327095" cy="208.02127" r="0.76200002" />
-        <circle id="CenterMark-0210" cx="39.335968" cy="231.01691" r="0.76200002" />
+      <g id="CenterMarkerColumn-2" transform="translate(19.645666,11.498203)"
+      >
+        <circle id="CenterMark-0201" cx="39.364277" cy="23.918795" r="0.76200002" />
+        <circle id="CenterMark-0202" cx="39.362511" cy="46.635792" r="0.76200002" />
+        <circle id="CenterMark-0203" cx="39.362289" cy="69.352402" r="0.76200002" />
+        <circle id="CenterMark-0204" cx="39.364529" cy="92.069183" r="0.76200002" />
+        <circle id="CenterMark-0205" cx="39.35556" cy="114.7864" r="0.76200002" />
+        <circle id="CenterMark-0206" cx="39.402447" cy="137.50345" r="0.76200002" />
+        <circle id="CenterMark-0207" cx="39.402008" cy="160.22023" r="0.76200002" />
+        <circle id="CenterMark-0208" cx="39.402008" cy="182.93756" r="0.76200002" />
+        <circle id="CenterMark-0209" cx="39.352768" cy="205.65543" r="0.76200002" />
+        <circle id="CenterMark-0210" cx="39.36153" cy="228.37276" r="0.76200002" />
       </g>
       <g id="CenterMarkerColumn-3" transform="translate(39.091787)">
-        <circle id="CenterMark-0301" cx="39.336403" cy="24.058498" r="0.76200002" />
-        <circle id="CenterMark-0302" cx="39.334637" cy="47.053913" r="0.76200002" />
-        <circle id="CenterMark-0303" cx="39.334637" cy="70.049278" r="0.76200002" />
-        <circle id="CenterMark-0304" cx="39.33754" cy="93.044693" r="0.76200002" />
-        <circle id="CenterMark-0305" cx="39.32901" cy="116.04011" r="0.76200002" />
-        <circle id="CenterMark-0306" cx="39.376335" cy="139.03546" r="0.76200002" />
-        <circle id="CenterMark-0307" cx="39.376335" cy="162.03055" r="0.76200002" />
-        <circle id="CenterMark-0308" cx="39.376335" cy="185.02618" r="0.76200002" />
-        <circle id="CenterMark-0309" cx="39.327095" cy="208.02127" r="0.76200002" />
-        <circle id="CenterMark-0310" cx="39.335968" cy="231.01691" r="0.76200002" />
+        <circle id="CenterMark-0301" cx="39.592133" cy="24.05905" r="0.76200002" />
+        <circle id="CenterMark-0302" cx="39.589596" cy="46.775604" r="0.76200002" />
+        <circle id="CenterMark-0303" cx="39.588825" cy="69.492218" r="0.76200002" />
+        <circle id="CenterMark-0304" cx="39.591064" cy="92.208992" r="0.76200002" />
+        <circle id="CenterMark-0305" cx="39.581879" cy="114.92588" r="0.76200002" />
+        <circle id="CenterMark-0306" cx="39.628761" cy="137.64293" r="0.76200002" />
+        <circle id="CenterMark-0307" cx="39.628323" cy="160.35971" r="0.76200002" />
+        <circle id="CenterMark-0308" cx="39.627995" cy="183.07704" r="0.76200002" />
+        <circle id="CenterMark-0309" cx="39.578423" cy="205.79382" r="0.76200002" />
+        <circle id="CenterMark-0310" cx="39.587185" cy="228.51114" r="0.76200002" />
       </g>
-      <g id="CenterMarkerColumn-4" transform="translate(58.737451,11.498203)">
-        <circle id="CenterMark-0401" cx="39.336403" cy="24.058498" r="0.76200002" />
-        <circle id="CenterMark-0402" cx="39.334637" cy="47.053913" r="0.76200002" />
-        <circle id="CenterMark-0403" cx="39.334637" cy="70.049278" r="0.76200002" />
-        <circle id="CenterMark-0404" cx="39.33754" cy="93.044693" r="0.76200002" />
-        <circle id="CenterMark-0405" cx="39.32901" cy="116.04011" r="0.76200002" />
-        <circle id="CenterMark-0406" cx="39.376335" cy="139.03546" r="0.76200002" />
-        <circle id="CenterMark-0407" cx="39.376335" cy="162.03055" r="0.76200002" />
-        <circle id="CenterMark-0408" cx="39.376335" cy="185.02618" r="0.76200002" />
-        <circle id="CenterMark-0409" cx="39.327095" cy="208.02127" r="0.76200002" />
-        <circle id="CenterMark-0410" cx="39.335968" cy="231.01691" r="0.76200002" />
+      <g id="CenterMarkerColumn-4" transform="translate(58.737451,11.498203)"
+      >
+        <circle id="CenterMark-0401" cx="39.620003" cy="23.919344" r="0.76200002" />
+        <circle id="CenterMark-0402" cx="39.617466" cy="46.635902" r="0.76200002" />
+        <circle id="CenterMark-0403" cx="39.616695" cy="69.352516" r="0.76200002" />
+        <circle id="CenterMark-0404" cx="39.618938" cy="92.06929" r="0.76200002" />
+        <circle id="CenterMark-0405" cx="39.609749" cy="114.78618" r="0.76200002" />
+        <circle id="CenterMark-0406" cx="39.656635" cy="137.50323" r="0.76200002" />
+        <circle id="CenterMark-0407" cx="39.656197" cy="160.22" r="0.76200002" />
+        <circle id="CenterMark-0408" cx="39.655865" cy="182.93733" r="0.76200002" />
+        <circle id="CenterMark-0409" cx="39.606403" cy="205.65521" r="0.76200002" />
+        <circle id="CenterMark-0410" cx="39.61517" cy="228.37254" r="0.76200002" />
       </g>
       <g id="CenterMarkerColumn-5" transform="translate(78.181012)">
-        <circle id="CenterMark-0501" cx="39.336403" cy="24.058498" r="0.76200002" />
-        <circle id="CenterMark-0502" cx="39.334637" cy="47.053913" r="0.76200002" />
-        <circle id="CenterMark-0503" cx="39.334637" cy="70.049278" r="0.76200002" />
-        <circle id="CenterMark-0504" cx="39.33754" cy="93.044693" r="0.76200002" />
-        <circle id="CenterMark-0505" cx="39.32901" cy="116.04011" r="0.76200002" />
-        <circle id="CenterMark-0506" cx="39.376335" cy="139.03546" r="0.76200002" />
-        <circle id="CenterMark-0507" cx="39.376335" cy="162.03055" r="0.76200002" />
-        <circle id="CenterMark-0508" cx="39.376335" cy="185.02618" r="0.76200002" />
-        <circle id="CenterMark-0509" cx="39.327095" cy="208.02127" r="0.76200002" />
-        <circle id="CenterMark-0510" cx="39.335968" cy="231.01691" r="0.76200002" />
+        <circle id="CenterMark-0501" cx="39.850307" cy="24.059599" r="0.76200002" />
+        <circle id="CenterMark-0502" cx="39.847775" cy="46.776157" r="0.76200002" />
+        <circle id="CenterMark-0503" cx="39.847553" cy="69.492767" r="0.76200002" />
+        <circle id="CenterMark-0504" cx="39.850235" cy="92.209549" r="0.76200002" />
+        <circle id="CenterMark-0505" cx="39.841484" cy="114.92643" r="0.76200002" />
+        <circle id="CenterMark-0506" cx="39.888702" cy="137.64348" r="0.76200002" />
+        <circle id="CenterMark-0507" cx="39.888699" cy="160.36026" r="0.76200002" />
+        <circle id="CenterMark-0508" cx="39.888702" cy="183.07759" r="0.76200002" />
+        <circle id="CenterMark-0509" cx="39.839352" cy="205.79437" r="0.76200002" />
+        <circle id="CenterMark-0510" cx="39.848225" cy="228.51169" r="0.76200002" />
       </g>
-      <g id="CenterMarkerColumn-6" transform="translate(97.826676,11.498203)">
-        <circle id="CenterMark-0601" cx="39.336403" cy="24.058498" r="0.76200002" />
-        <circle id="CenterMark-0602" cx="39.334637" cy="47.053913" r="0.76200002" />
-        <circle id="CenterMark-0603" cx="39.334637" cy="70.049278" r="0.76200002" />
-        <circle id="CenterMark-0604" cx="39.33754" cy="93.044693" r="0.76200002" />
-        <circle id="CenterMark-0605" cx="39.32901" cy="116.04011" r="0.76200002" />
-        <circle id="CenterMark-0606" cx="39.376335" cy="139.03546" r="0.76200002" />
-        <circle id="CenterMark-0607" cx="39.376335" cy="162.03055" r="0.76200002" />
-        <circle id="CenterMark-0608" cx="39.376335" cy="185.02618" r="0.76200002" />
-        <circle id="CenterMark-0609" cx="39.327095" cy="208.02127" r="0.76200002" />
-        <circle id="CenterMark-0610" cx="39.335968" cy="231.01691" r="0.76200002" />
+      <g id="CenterMarkerColumn-6" transform="translate(97.826676,11.498203)"
+      >
+        <circle id="CenterMark-0601" cx="39.878181" cy="23.919895" r="0.76200002" />
+        <circle id="CenterMark-0602" cx="39.876194" cy="46.636452" r="0.76200002" />
+        <circle id="CenterMark-0603" cx="39.875977" cy="69.353065" r="0.76200002" />
+        <circle id="CenterMark-0604" cx="39.878216" cy="92.069839" r="0.76200002" />
+        <circle id="CenterMark-0605" cx="39.869247" cy="114.78706" r="0.76200002" />
+        <circle id="CenterMark-0606" cx="39.916134" cy="137.5041" r="0.76200002" />
+        <circle id="CenterMark-0607" cx="39.915691" cy="160.22089" r="0.76200002" />
+        <circle id="CenterMark-0608" cx="39.915585" cy="182.93822" r="0.76200002" />
+        <circle id="CenterMark-0609" cx="39.866344" cy="205.6561" r="0.76200002" />
+        <circle id="CenterMark-0610" cx="39.875107" cy="228.37341" r="0.76200002" />
       </g>
       <g id="CenterMarkerColumn-7" transform="translate(117.27024)">
-        <circle id="CenterMark-0701" cx="39.336403" cy="24.058498" r="0.76200002" />
-        <circle id="CenterMark-0702" cx="39.334637" cy="47.053913" r="0.76200002" />
-        <circle id="CenterMark-0703" cx="39.334637" cy="70.049278" r="0.76200002" />
-        <circle id="CenterMark-0704" cx="39.33754" cy="93.044693" r="0.76200002" />
-        <circle id="CenterMark-0705" cx="39.32901" cy="116.04011" r="0.76200002" />
-        <circle id="CenterMark-0706" cx="39.376335" cy="139.03546" r="0.76200002" />
-        <circle id="CenterMark-0707" cx="39.376335" cy="162.03055" r="0.76200002" />
-        <circle id="CenterMark-0708" cx="39.376335" cy="185.02618" r="0.76200002" />
-        <circle id="CenterMark-0709" cx="39.327095" cy="208.02127" r="0.76200002" />
-        <circle id="CenterMark-0710" cx="39.335968" cy="231.01691" r="0.76200002" />
+        <circle id="CenterMark-0701" cx="40.108154" cy="24.059599" r="0.76200002" />
+        <circle id="CenterMark-0702" cx="40.106167" cy="46.776157" r="0.76200002" />
+        <circle id="CenterMark-0703" cx="40.105396" cy="69.492767" r="0.76200002" />
+        <circle id="CenterMark-0704" cx="40.107639" cy="92.209549" r="0.76200002" />
+        <circle id="CenterMark-0705" cx="40.09845" cy="114.92643" r="0.76200002" />
+        <circle id="CenterMark-0706" cx="40.145336" cy="137.64348" r="0.76200002" />
+        <circle id="CenterMark-0707" cx="40.144897" cy="160.36026" r="0.76200002" />
+        <circle id="CenterMark-0708" cx="40.144897" cy="183.07759" r="0.76200002" />
+        <circle id="CenterMark-0709" cx="40.095436" cy="205.79547" r="0.76200002" />
+        <circle id="CenterMark-0710" cx="40.104309" cy="228.5128" r="0.76200002" />
       </g>
-      <g id="CenterMarkerColumn-8" transform="translate(136.9159,11.498203)">
-        <circle id="CenterMark-0801" cx="39.336403" cy="24.058498" r="0.76200002" />
-        <circle id="CenterMark-0802" cx="39.334637" cy="47.053913" r="0.76200002" />
-        <circle id="CenterMark-0803" cx="39.334637" cy="70.049278" r="0.76200002" />
-        <circle id="CenterMark-0804" cx="39.33754" cy="93.044693" r="0.76200002" />
-        <circle id="CenterMark-0805" cx="39.32901" cy="116.04011" r="0.76200002" />
-        <circle id="CenterMark-0806" cx="39.376335" cy="139.03546" r="0.76200002" />
-        <circle id="CenterMark-0807" cx="39.376335" cy="162.03055" r="0.76200002" />
-        <circle id="CenterMark-0808" cx="39.376335" cy="185.02618" r="0.76200002" />
-        <circle id="CenterMark-0809" cx="39.327095" cy="208.02127" r="0.76200002" />
-        <circle id="CenterMark-0810" cx="39.335968" cy="231.01691" r="0.76200002" />
+      <g id="CenterMarkerColumn-8" transform="translate(136.9159,11.498203)"
+      >
+        <circle id="CenterMark-0801" cx="40.136032" cy="23.919895" r="0.76200002" />
+        <circle id="CenterMark-0802" cx="40.133495" cy="46.636452" r="0.76200002" />
+        <circle id="CenterMark-0803" cx="40.133274" cy="69.353065" r="0.76200002" />
+        <circle id="CenterMark-0804" cx="40.135956" cy="92.069839" r="0.76200002" />
+        <circle id="CenterMark-0805" cx="40.127209" cy="114.78673" r="0.76200002" />
+        <circle id="CenterMark-0806" cx="40.174091" cy="137.50378" r="0.76200002" />
+        <circle id="CenterMark-0807" cx="40.174091" cy="160.22057" r="0.76200002" />
+        <circle id="CenterMark-0808" cx="40.173763" cy="182.93788" r="0.76200002" />
+        <circle id="CenterMark-0809" cx="40.124191" cy="205.65466" r="0.76200002" />
+        <circle id="CenterMark-0810" cx="40.132954" cy="228.37199" r="0.76200002" />
       </g>
     </g>
   </g>

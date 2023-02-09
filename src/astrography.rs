@@ -334,7 +334,7 @@ impl Subsector {
                 Ok(Event::Start(element)) => {
                     if let Ok(Some(id_attr)) = element.try_get_attribute("id") {
                         let id = str::from_utf8(&id_attr.value).unwrap();
-                        if id == "CenterMarkers" {
+                        if id == "layer5" {
                             // Skip past all the center markers; they're invisible so we don't want
                             // the svg rasterizer to waste time with them
                             reader.read_to_end(element.to_end().name()).unwrap();
