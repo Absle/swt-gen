@@ -52,7 +52,7 @@
       inkscape:locked="false" />
   </sodipodi:namedview>
   <defs id="defs2" />
-  <style id="style1362">
+  <style>
     .hex-blank {
     fill: none;
     stroke: #000000;
@@ -227,10 +227,10 @@
     stroke-width: 0.264583;
     }
   </style>
+  <text xml:space="preserve"
+    style="font-size:8.46667px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
+    x="107.95" y="9.1300306" id="SubsectorName">Subsector Name</text>
   <g inkscape:label="Legend" inkscape:groupmode="layer" id="layer1" sodipodi:insensitive="true">
-    <text xml:space="preserve"
-      style="font-size:8.46667px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;stroke-width:0.264583"
-      x="107.95" y="9.1300306" id="SubsectorName">Subsector Name</text>
     <g id="g112309" transform="translate(1.6151705e-6,0.45593996)">
       <circle style="fill:none;stroke:#000000;stroke-width:0.2794" id="DryWorldSymbol"
         cx="39.514999" cy="257.11258"
@@ -667,8 +667,7 @@
       <text xml:space="preserve" class="text-hex-coord" x="39.99715" y="84.254929"
         id="text102761">0704</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.02758" y="106.91806"
-        id="text102765"
-      >0705</text>
+        id="text102765">0705</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.045185" y="129.6577"
         id="text102769">0706</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.060249" y="152.44719"
@@ -682,35 +681,25 @@
     </g>
     <g id="g103572" transform="translate(136.906,11.455265)">
       <text xml:space="preserve" class="text-hex-coord" x="40.215694" y="15.638336"
-        id="text103532"
-      >0801</text>
+        id="text103532">0801</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.13995" y="38.447189"
-        id="text103536"
-      >0802</text>
+        id="text103536">0802</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.157818" y="61.110325"
-        id="text103540"
-      >0803</text>
+        id="text103540">0803</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.113129" y="83.784195"
-        id="text103544"
-      >0804</text>
+        id="text103544">0804</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.144001" y="106.71127"
-        id="text103548"
-      >0805</text>
+        id="text103548">0805</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.146095" y="129.18698"
-        id="text103552"
-      >0806</text>
+        id="text103552">0806</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.177101" y="151.97647"
-        id="text103556"
-      >0807</text>
+        id="text103556">0807</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.170746" y="174.84767"
-        id="text103560"
-      >0808</text>
+        id="text103560">0808</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.13237" y="197.32962"
-        id="text103564"
-      >0809</text>
+        id="text103564">0809</text>
       <text xml:space="preserve" class="text-hex-coord" x="40.141132" y="220.24553"
-        id="text103570"
-      >0810</text>
+        id="text103570">0810</text>
     </g>
   </g>
   <g inkscape:groupmode="layer" id="layer5" inkscape:label="Markers" visibility="hidden">
@@ -727,8 +716,7 @@
         <circle id="CenterMark-0109" cx="39.325115" cy="205.79503" r="0.76200002" />
         <circle id="CenterMark-0110" cx="39.333878" cy="228.51236" r="0.76200002" />
       </g>
-      <g id="CenterMarkerColumn-2" transform="translate(19.645666,11.498203)"
-      >
+      <g id="CenterMarkerColumn-2" transform="translate(19.645666,11.498203)">
         <circle id="CenterMark-0201" cx="39.364277" cy="23.918795" r="0.76200002" />
         <circle id="CenterMark-0202" cx="39.362511" cy="46.635792" r="0.76200002" />
         <circle id="CenterMark-0203" cx="39.362289" cy="69.352402" r="0.76200002" />
@@ -752,8 +740,7 @@
         <circle id="CenterMark-0309" cx="39.578423" cy="205.79382" r="0.76200002" />
         <circle id="CenterMark-0310" cx="39.587185" cy="228.51114" r="0.76200002" />
       </g>
-      <g id="CenterMarkerColumn-4" transform="translate(58.737451,11.498203)"
-      >
+      <g id="CenterMarkerColumn-4" transform="translate(58.737451,11.498203)">
         <circle id="CenterMark-0401" cx="39.620003" cy="23.919344" r="0.76200002" />
         <circle id="CenterMark-0402" cx="39.617466" cy="46.635902" r="0.76200002" />
         <circle id="CenterMark-0403" cx="39.616695" cy="69.352516" r="0.76200002" />
@@ -777,8 +764,7 @@
         <circle id="CenterMark-0509" cx="39.839352" cy="205.79437" r="0.76200002" />
         <circle id="CenterMark-0510" cx="39.848225" cy="228.51169" r="0.76200002" />
       </g>
-      <g id="CenterMarkerColumn-6" transform="translate(97.826676,11.498203)"
-      >
+      <g id="CenterMarkerColumn-6" transform="translate(97.826676,11.498203)">
         <circle id="CenterMark-0601" cx="39.878181" cy="23.919895" r="0.76200002" />
         <circle id="CenterMark-0602" cx="39.876194" cy="46.636452" r="0.76200002" />
         <circle id="CenterMark-0603" cx="39.875977" cy="69.353065" r="0.76200002" />
@@ -802,8 +788,7 @@
         <circle id="CenterMark-0709" cx="40.095436" cy="205.79547" r="0.76200002" />
         <circle id="CenterMark-0710" cx="40.104309" cy="228.5128" r="0.76200002" />
       </g>
-      <g id="CenterMarkerColumn-8" transform="translate(136.9159,11.498203)"
-      >
+      <g id="CenterMarkerColumn-8" transform="translate(136.9159,11.498203)">
         <circle id="CenterMark-0801" cx="40.136032" cy="23.919895" r="0.76200002" />
         <circle id="CenterMark-0802" cx="40.133495" cy="46.636452" r="0.76200002" />
         <circle id="CenterMark-0803" cx="40.133274" cy="69.353065" r="0.76200002" />

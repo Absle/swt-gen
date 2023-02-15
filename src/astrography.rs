@@ -23,6 +23,17 @@ use crate::dice;
 
 use serialize::{JsonableSubsector, T5Table};
 
+pub(crate) const SUBSECTOR_TEMPLATE_SVG: &str =
+    include_str!("../resources/subsector_grid_template.svg");
+
+lazy_static! {
+    static ref SUBSECTOR_GRID_SVG: String = subsector_grid_svg();
+    pub(crate) static ref CENTER_MARKERS: BTreeMap<Point, Translation> = center_markers();
+    static ref GAS_GIANT_TRANS: Translation = map_legend_translation("GasGiantCircle");
+    static ref DRY_WORLD_TRANS: Translation = map_legend_translation("DryWorldSymbol");
+    static ref WET_WORLD_TRANS: Translation = map_legend_translation("WetWorldSymbol");
+}
+
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) struct Point {
     pub x: i32,
@@ -126,9 +137,9 @@ impl fmt::Display for PolityColor {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-struct Translation {
-    x: f64,
-    y: f64,
+pub(crate) struct Translation {
+    pub(crate) x: f64,
+    pub(crate) y: f64,
 }
 
 impl Translation {
@@ -152,7 +163,7 @@ impl Translation {
     }
 }
 
-impl Add for &Translation {
+impl Add for Translation {
     type Output = Translation;
     fn add(self, other: Self) -> Translation {
         Translation {
@@ -168,7 +179,7 @@ impl Default for Translation {
     }
 }
 
-impl Sub for &Translation {
+impl Sub for Translation {
     type Output = Translation;
     fn sub(self, other: Self) -> Translation {
         Translation {
@@ -226,15 +237,6 @@ impl fmt::Display for WorldAbundance {
 pub(crate) struct Subsector {
     name: String,
     map: BTreeMap<Point, World>,
-}
-
-const TEMPLATE_SVG: &str = include_str!("../resources/subsector_grid_template.svg");
-
-lazy_static! {
-    static ref CENTER_MARKERS: BTreeMap<Point, Translation> = center_markers();
-    static ref GAS_GIANT_TRANS: Translation = map_legend_translation("GasGiantCircle");
-    static ref DRY_WORLD_TRANS: Translation = map_legend_translation("DryWorldSymbol");
-    static ref WET_WORLD_TRANS: Translation = map_legend_translation("WetWorldSymbol");
 }
 
 impl Subsector {
@@ -322,8 +324,9 @@ impl Subsector {
         T5Table::from(self).to_string()
     }
 
+    /** Generate an SVG image of the full `Subsector` map for export to disk. */
     pub fn generate_svg(&self, colored: bool) -> String {
-        let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
+        let mut reader = quick_xml::Reader::from_str(SUBSECTOR_TEMPLATE_SVG);
         let mut writer = quick_xml::Writer::new_with_indent(io::Cursor::new(Vec::new()), b' ', 2);
         loop {
             match reader.read_event() {
@@ -358,94 +361,7 @@ impl Subsector {
                         writer.write_event(Event::Start(layer)).unwrap();
 
                         for (point, world) in &self.map {
-                            let point_str = point.to_string();
-                            let marker_translation = CENTER_MARKERS
-                                .get(point)
-                                .expect("Found a point with no center marker");
-
-                            // Place gas giant symbol
-                            if world.has_gas_giant {
-                                let offset = Translation { x: 0.0, y: -6.0 };
-                                let trans = &(marker_translation - &GAS_GIANT_TRANS) + &offset;
-
-                                writer
-                                    .create_element("use")
-                                    .with_attributes(vec![
-                                        ("href", "#GasGiantSymbol"),
-                                        (
-                                            "id",
-                                            &format!("{:02}{:02}GasGiantSymbol", point.x, point.y),
-                                        ),
-                                        (
-                                            "transform",
-                                            &format!("translate({},{})", trans.x, trans.y),
-                                        ),
-                                    ])
-                                    .write_empty()
-                                    .unwrap();
-                            }
-
-                            // Place world name
-                            writer
-                                .create_element("text")
-                                .with_attributes(vec![
-                                    ("xml:space", "preserve"),
-                                    ("class", "text-world-name"),
-                                    ("x", &marker_translation.x.to_string()),
-                                    ("y", &marker_translation.y.to_string()),
-                                    ("id", &format!("{}NameText", point_str)),
-                                ])
-                                .write_text_content(BytesText::new(&world.name))
-                                .unwrap();
-
-                            // Place dry/world symbol
-                            let (symbol_id, world_trans) = match world.hydrographics.code {
-                                h if h <= 3 => ("DryWorldSymbol", *DRY_WORLD_TRANS),
-                                _ => ("WetWorldSymbol", *WET_WORLD_TRANS),
-                            };
-                            let offset = Translation { x: -5.0, y: 4.0 };
-                            let trans = &(marker_translation - &world_trans) + &offset;
-                            writer
-                                .create_element("use")
-                                .with_attributes(vec![
-                                    ("href", &format!("#{}", symbol_id)[..]),
-                                    ("id", &format!("{}{}", point_str, symbol_id)),
-                                    ("transform", &format!("translate({},{})", trans.x, trans.y)),
-                                ])
-                                .write_empty()
-                                .unwrap();
-
-                            // Add `StarportClass-TL` text to hex
-                            let offset = Translation { x: 5.0, y: 5.0 };
-                            let trans = marker_translation + &offset;
-                            let starport_tl =
-                                format!("{:?}-{}", world.starport.class, world.tech_level);
-                            writer
-                                .create_element("text")
-                                .with_attributes(vec![
-                                    ("xml:space", "preserve"),
-                                    ("class", "text-starport-tl"),
-                                    ("x", &trans.x.to_string()),
-                                    ("y", &trans.y.to_string()),
-                                    ("id", &format!("{}StarportTlText", point_str)),
-                                ])
-                                .write_text_content(BytesText::new(&starport_tl))
-                                .unwrap();
-
-                            // Place world profile code
-                            let offset = Translation { x: 0.0, y: 10.0 };
-                            let trans = marker_translation + &offset;
-                            writer
-                                .create_element("text")
-                                .with_attributes(vec![
-                                    ("xml:space", "preserve"),
-                                    ("class", "text-world-profile"),
-                                    ("x", &format!("{}", trans.x)),
-                                    ("y", &format!("{}", trans.y)),
-                                    ("id", &format!("{}WorldProfileText", point_str)),
-                                ])
-                                .write_text_content(BytesText::new(&world.profile_str()))
-                                .unwrap();
+                            process_world_to_svg_elements(&mut writer, point, world);
                         }
                         // End of layer
                         writer.write_event(Event::End(BytesEnd::new("g"))).unwrap();
@@ -502,10 +418,7 @@ impl Subsector {
                     }
                 }
 
-                Ok(Event::Decl(element)) => {
-                    writer.write_event(Event::Decl(element)).unwrap();
-                }
-
+                Ok(Event::Decl(element)) => writer.write_event(Event::Decl(element)).unwrap(),
                 _ => panic!("Unexpected element in template svg"),
             }
         }
@@ -515,7 +428,16 @@ impl Subsector {
             .to_string()
     }
 
-    #[cfg(test)]
+    /** Generate SVG of the subsector map grid without worlds.
+
+    Primarily intended to be layered with an image of the `Subsector`'s worlds.
+
+    TODO: this will probably need an update when the Allegiances/stellar polities are implemented
+    */
+    pub fn generate_grid_svg(&self) -> String {
+        SUBSECTOR_GRID_SVG.clone()
+    }
+
     pub fn get_map(&mut self) -> &BTreeMap<Point, World> {
         &self.map
     }
@@ -653,7 +575,7 @@ impl Default for Subsector {
 }
 
 fn center_markers() -> BTreeMap<Point, Translation> {
-    let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
+    let mut reader = quick_xml::Reader::from_str(SUBSECTOR_TEMPLATE_SVG);
     let mut column_translations: [Translation; Subsector::COLUMNS] =
         [Translation::default(); Subsector::COLUMNS];
     let mut circle_translations: BTreeMap<Point, Translation> = BTreeMap::new();
@@ -758,10 +680,10 @@ fn center_markers() -> BTreeMap<Point, Translation> {
                 y: y as i32,
             };
 
-            let center_mark = circle_translations
+            let center_mark = *circle_translations
                 .get(&point)
                 .expect("Not all expected center marks were parsed")
-                + &column_translation;
+                + column_translation;
             center_marks.insert(point, center_mark);
         }
     }
@@ -769,7 +691,7 @@ fn center_markers() -> BTreeMap<Point, Translation> {
 }
 
 fn map_legend_translation(id: &str) -> Translation {
-    let mut reader = quick_xml::Reader::from_str(TEMPLATE_SVG);
+    let mut reader = quick_xml::Reader::from_str(SUBSECTOR_TEMPLATE_SVG);
     loop {
         match reader.read_event() {
             Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -841,6 +763,96 @@ fn map_legend_translation(id: &str) -> Translation {
     }
 }
 
+fn process_world_to_svg_elements<W: std::io::Write>(
+    writer: &mut quick_xml::Writer<W>,
+    point: &Point,
+    world: &World,
+) {
+    let point_str = point.to_string();
+    let marker_translation = CENTER_MARKERS
+        .get(point)
+        .expect("Found a point with no center marker");
+
+    // Place gas giant symbol
+    if world.has_gas_giant {
+        let offset = Translation { x: 0.0, y: -6.0 };
+        let trans = *marker_translation - *GAS_GIANT_TRANS + offset;
+
+        writer
+            .create_element("use")
+            .with_attributes(vec![
+                ("href", "#GasGiantSymbol"),
+                ("id", &format!("{:02}{:02}GasGiantSymbol", point.x, point.y)),
+                ("transform", &format!("translate({},{})", trans.x, trans.y)),
+            ])
+            .write_empty()
+            .unwrap();
+    }
+
+    // Place world name
+    writer
+        .create_element("text")
+        .with_attributes(vec![
+            ("xml:space", "preserve"),
+            ("class", "text-world-name"),
+            ("x", &marker_translation.x.to_string()),
+            ("y", &marker_translation.y.to_string()),
+            ("id", &format!("{}NameText", point_str)),
+        ])
+        .write_text_content(BytesText::new(&world.name))
+        .unwrap();
+
+    // Place dry/world symbol
+    let (symbol_id, world_trans) = if world.is_wet_world() {
+        ("WetWorldSymbol", *WET_WORLD_TRANS)
+    } else {
+        ("DryWorldSymbol", *DRY_WORLD_TRANS)
+    };
+
+    let offset = Translation { x: -5.0, y: 4.0 };
+    let trans = *marker_translation - world_trans + offset;
+    writer
+        .create_element("use")
+        .with_attributes(vec![
+            ("href", &format!("#{}", symbol_id)[..]),
+            ("id", &format!("{}{}", point_str, symbol_id)),
+            ("transform", &format!("translate({},{})", trans.x, trans.y)),
+        ])
+        .write_empty()
+        .unwrap();
+
+    // Add `StarportClass-TL` text to hex
+    let offset = Translation { x: 5.0, y: 5.0 };
+    let trans = *marker_translation + offset;
+    let starport_tl = world.starport_tl_str();
+    writer
+        .create_element("text")
+        .with_attributes(vec![
+            ("xml:space", "preserve"),
+            ("class", "text-starport-tl"),
+            ("x", &trans.x.to_string()),
+            ("y", &trans.y.to_string()),
+            ("id", &format!("{}StarportTlText", point_str)),
+        ])
+        .write_text_content(BytesText::new(&starport_tl))
+        .unwrap();
+
+    // Place world profile code
+    let offset = Translation { x: 0.0, y: 10.0 };
+    let trans = *marker_translation + offset;
+    writer
+        .create_element("text")
+        .with_attributes(vec![
+            ("xml:space", "preserve"),
+            ("class", "text-world-profile"),
+            ("x", &format!("{}", trans.x)),
+            ("y", &format!("{}", trans.y)),
+            ("id", &format!("{}WorldProfileText", point_str)),
+        ])
+        .write_text_content(BytesText::new(&world.profile_str()))
+        .unwrap();
+}
+
 fn random_names(count: usize) -> Vec<String> {
     let vowels = vec![
         vec![
@@ -908,6 +920,43 @@ fn random_names(count: usize) -> Vec<String> {
     }
 
     ret
+}
+
+fn subsector_grid_svg() -> String {
+    let mut reader = quick_xml::Reader::from_str(SUBSECTOR_TEMPLATE_SVG);
+    let mut writer = quick_xml::Writer::new(io::Cursor::new(Vec::new()));
+    loop {
+        match reader.read_event() {
+            Err(e) => unreachable!("Error at position {}: {:?}", reader.buffer_position(), e),
+            Ok(Event::Eof) => break,
+            Ok(Event::Comment(_)) => (),
+
+            Ok(Event::Start(element)) => {
+                if let Ok(Some(id_attr)) = element.try_get_attribute("id") {
+                    let id = str::from_utf8(&id_attr.value).unwrap();
+                    match id {
+                        "SubsectorName" => {
+                            reader.read_to_end(element.to_end().name()).unwrap();
+                        }
+                        _ => writer.write_event(Event::Start(element)).unwrap(),
+                    }
+                } else {
+                    writer.write_event(Event::Start(element)).unwrap();
+                }
+            }
+
+            Ok(Event::End(element)) => writer.write_event(Event::End(element)).unwrap(),
+            Ok(Event::Empty(element)) => writer.write_event(Event::Empty(element)).unwrap(),
+            Ok(Event::Text(text)) => writer.write_event(Event::Text(text)).unwrap(),
+            Ok(Event::Decl(element)) => writer.write_event(Event::Decl(element)).unwrap(),
+            _ => panic!("Unexpected element in template svg"),
+        }
+    }
+    writer.write_event(Event::Eof).unwrap();
+
+    str::from_utf8(&writer.into_inner().into_inner())
+        .expect("Invalid UTF-8 while generating svg")
+        .to_string()
 }
 
 #[cfg(test)]

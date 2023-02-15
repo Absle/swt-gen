@@ -7,7 +7,7 @@ use egui::{menu, Button, CentralPanel, Color32, Context, FontId, TopBottomPanel}
 use crate::app::{GeneratorApp, Message};
 
 pub(crate) use popup::Popup;
-pub(crate) use subsector_map_display::generate_subsector_image;
+pub(crate) use subsector_map_display::rasterize_svg;
 pub(crate) use world_data_display::TabLabel;
 
 pub(crate) const LABEL_FONT: FontId = FontId::proportional(11.0);

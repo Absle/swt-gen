@@ -495,6 +495,10 @@ impl World {
         }
     }
 
+    pub(crate) fn is_wet_world(&self) -> bool {
+        self.hydrographics.code > 3
+    }
+
     /** Attempts to mutate the `World` into a "player-safe" state.
 
     To do so, it defaults all of the fields that are likely to have spoilers to the zeroth index of
@@ -704,6 +708,10 @@ impl World {
             x if x >= 9 => self.travel_code = TravelCode::Amber,
             _ => (),
         }
+    }
+
+    pub(crate) fn starport_tl_str(&self) -> String {
+        format!("{:?}-{}", self.starport.class, self.tech_level)
     }
 
     pub fn trade_code_long_str(&self) -> String {

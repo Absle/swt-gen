@@ -116,8 +116,8 @@ pub struct GeneratorApp {
     subsector: Subsector,
     /// Whether the loaded [`Subsector`] has unsaved changes
     subsector_edited: bool,
-    /// Image of the subsector map, rasterized from the generated svg
-    subsector_image: Option<RetainedImage>,
+    /// Image of the blank subsector grid to layer with world images
+    subsector_grid_image: Option<RetainedImage>,
     /// Selected display [`TabLabel`]
     tab: gui::TabLabel,
     /// `Receiver` for the subsector image worker thread
@@ -319,7 +319,7 @@ impl GeneratorApp {
         // Spawn worker thread to process SVG asynchronously
         thread::spawn(move || {
             while let Ok(svg) = boss_rx.recv() {
-                match boss_tx.send(gui::generate_subsector_image(svg)) {
+                match boss_tx.send(gui::rasterize_svg(svg)) {
                     Ok(_) => (),
                     Err(_) => break,
                 }
@@ -341,7 +341,7 @@ impl GeneratorApp {
             save_filename: String::new(),
             subsector,
             subsector_edited: false,
-            subsector_image: None,
+            subsector_grid_image: None,
             tab: gui::TabLabel::WorldSurvey,
             worker_rx,
             worker_tx,
@@ -617,8 +617,10 @@ impl GeneratorApp {
         }
     }
 
-    fn redraw_subsector_image(&mut self) -> MessageResult {
-        let svg = self.subsector.generate_svg(COLORED);
+    // TODO: current unneeded but drawing the world allegiances might be done by changing the svg
+    #[allow(dead_code)]
+    fn redraw_subsector_grid(&mut self) -> MessageResult {
+        let svg = self.subsector.generate_grid_svg();
         self.worker_tx
             .send(svg)
             .expect("Subsector map worker thread should never hang up.");
@@ -881,7 +883,6 @@ impl GeneratorApp {
 
     fn subsector_model_updated(&mut self) -> MessageResult {
         self.subsector_edited = true;
-        self.redraw_subsector_image()?;
         Ok(Some(()))
     }
 
