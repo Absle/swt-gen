@@ -12,13 +12,13 @@ TODOs completed in this way should probably should still have an issue created a
 - Large world names overflow hex on a single line
 
 ### General TODOs
-- Make executable portable by using `include_str!` and `include!` macros
 - Improve unit test coverage
 - More doc-comments where useful
-- Fix up interface and module interdependencies to make things more usable externally and less monolithic
 - Some kind of logging schema
 - Auto saving, probably to some `*.json~` backup files
 - Some kind of user preference saving
+- Refactor the player-safe gui into a separate binary rather than a feature
+- Make an install/release script to zip up both the default binary and player-safe binary
 
 ### App/GUI TODOs
 - Add support for creating Stellar alliances and trade connections in GUI once backend groundwork is completed for it
@@ -27,12 +27,12 @@ TODOs completed in this way should probably should still have an issue created a
 - Clicking to new planet should just apply the changes by default rather than having a popup
 - Tech level should have some indication of what the number means, not just a number
 - Size should have some comparison with Earth or list the gravity, not just a number
-- Refactor the player-safe gui into a separate binary rather than a feature
 - Add a way to reorder factions
 - Adjust faction tab GUI spacing
 - Rework whole-world-regeneration to allow reverting and get rid of warning popup
 - Refactor calls to `TextStyle::Heading.resolve(&Style::default())` into one `rich_text_heading` function; consider using lazy static for it
 - Add a "TAS Description" or "GM Description" that is viewable but not editable in player-safe GUI
+- Consider refactoring the subsector map rendering pipeline. Currently it manually paints world symbols on top of a (blurry) hex grid rendered from an SVG; these should probably be unified into some kind of hex grid GUI.
 
 ### Backened/Astrography TODOs
 - Move world generation over to be more in line with the Cepheus Engine SRD, though it still may not be full compatible
@@ -47,9 +47,6 @@ TODOs completed in this way should probably should still have an issue created a
 - Create an Obsidian plugin; this is ***only worth doing if*** making the web-app takes you 95% of the way towards to displaying the GUI in an Electron application like Obsidian
 - Add Markdown syntax support in the notes area of the app
 
-### Refactoring
-
-
 ## Completed TODOs
 
 ### Bugs
@@ -62,6 +59,8 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Refactor implementations of `ToString` to `std::fmt::Display`~~
 - ~~Update project name~~
 - ~~Remove redundant serialization and deserializing code once GUI is in a good state~~
+- ~~Fix up interface and module interdependencies to make things more usable externally and less monolithic~~
+- ~~Make executable portable by using `include_str!` and `include!` macros~~
 
 ### App/GUI TODOs
 - ~~Finish adding displays for all `Subsector` fields~~

@@ -5,6 +5,17 @@ use serde::{Deserialize, Serialize};
 
 use crate::dice;
 
+const ATMO_TABLE_CSV: &str = include_str!("../../resources/tables/atmospheres.csv");
+const TEMP_TABLE_CSV: &str = include_str!("../../resources/tables/temperatures.csv");
+const HYDRO_TABLE_CSV: &str = include_str!("../../resources/tables/hydrographics.csv");
+const POP_TABLE_CSV: &str = include_str!("../../resources/tables/populations.csv");
+const GOV_TABLE_CSV: &str = include_str!("../../resources/tables/governments.csv");
+const FACTION_TABLE_CSV: &str = include_str!("../../resources/tables/factions.csv");
+const CULTURE_TABLE_CSV: &str = include_str!("../../resources/tables/cultural_differences.csv");
+const WORLD_TAG_TABLE_CSV: &str = include_str!("../../resources/tables/world_tags.csv");
+const LAW_TABLE_CSV: &str = include_str!("../../resources/tables/law_levels.csv");
+const STARPORT_TABLE_CSV: &str = include_str!("../../resources/tables/starports.csv");
+
 /** Trait representing a record or row in a table. */
 trait Record {
     /** Get the `code` of this `Record`; i.e. its index in the table.
@@ -297,9 +308,9 @@ where
     }
 }
 
-fn load_table<T: for<'de> Deserialize<'de> + Record>(file_path: &str) -> Vec<T> {
+fn load_table<T: for<'de> Deserialize<'de> + Record>(table_csv: &str) -> Vec<T> {
     let mut table = Vec::new();
-    let mut reader = csv::Reader::from_path(file_path).unwrap();
+    let mut reader = csv::Reader::from_reader(table_csv.as_bytes());
     for (index, result) in reader.deserialize().enumerate() {
         let record: T = result.unwrap();
         assert_eq!(
@@ -342,16 +353,16 @@ pub(crate) struct SubsectorTableCollection {
 impl SubsectorTableCollection {
     fn new() -> SubsectorTableCollection {
         SubsectorTableCollection {
-            atmo_table: load_table("resources/tables/atmospheres.csv"),
-            temp_table: load_table("resources/tables/temperatures.csv"),
-            hydro_table: load_table("resources/tables/hydrographics.csv"),
-            pop_table: load_table("resources/tables/populations.csv"),
-            gov_table: load_table("resources/tables/governments.csv"),
-            faction_table: load_table("resources/tables/factions.csv"),
-            culture_table: load_table("resources/tables/cultural_differences.csv"),
-            world_tag_table: load_table("resources/tables/world_tags.csv"),
-            law_table: load_table("resources/tables/law_levels.csv"),
-            starport_table: load_table("resources/tables/starports.csv"),
+            atmo_table: load_table(ATMO_TABLE_CSV),
+            temp_table: load_table(TEMP_TABLE_CSV),
+            hydro_table: load_table(HYDRO_TABLE_CSV),
+            pop_table: load_table(POP_TABLE_CSV),
+            gov_table: load_table(GOV_TABLE_CSV),
+            faction_table: load_table(FACTION_TABLE_CSV),
+            culture_table: load_table(CULTURE_TABLE_CSV),
+            world_tag_table: load_table(WORLD_TAG_TABLE_CSV),
+            law_table: load_table(LAW_TABLE_CSV),
+            starport_table: load_table(STARPORT_TABLE_CSV),
         }
     }
 }

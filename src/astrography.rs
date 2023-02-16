@@ -9,7 +9,7 @@ use std::{
     collections::BTreeMap,
     convert::TryFrom,
     error::Error,
-    fmt, fs, io,
+    fmt, io,
     ops::{Add, Sub},
     str,
 };
@@ -286,7 +286,8 @@ impl Subsector {
 
     #[allow(dead_code)]
     pub(crate) fn show(&self) {
-        let mut hex_grid = fs::read_to_string("resources/hex_grid.txt").unwrap();
+        const HEX_GRID: &str = include_str!("../resources/hex_grid.txt");
+        let mut hex_grid = HEX_GRID.to_string();
         for x in 1..=Subsector::COLUMNS {
             for y in 1..=Subsector::ROWS {
                 let marker = format!(".{}", 100 * x + y);
