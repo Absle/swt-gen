@@ -7,7 +7,7 @@ use std::ops::{Add, AddAssign, Div, Mul, Rem, Sub};
 
 If it walks like an integer and quacks like an integer, it's probably an integer.
 */
-pub trait DuckInteger:
+pub(crate) trait DuckInteger:
     Add<Output = Self>
     + AddAssign
     + Sub<Output = Self>
@@ -48,7 +48,7 @@ impl<T> DuckInteger for T where
 # Panics
 Panics of `range` is empty.
 */
-pub fn roll_range<T: DuckInteger, U: SampleRange<T>>(range: U) -> T {
+pub(crate) fn roll_range<T: DuckInteger, U: SampleRange<T>>(range: U) -> T {
     assert!(!range.is_empty(), "Cannot roll within an empty range");
     let mut rng = rand::thread_rng();
     rng.gen_range(range)
@@ -59,7 +59,7 @@ pub fn roll_range<T: DuckInteger, U: SampleRange<T>>(range: U) -> T {
 # Panics
 Panics if `rolls` or `sides` is less than 1.
 */
-pub fn roll<T: DuckInteger>(rolls: T, sides: T) -> T {
+pub(crate) fn roll<T: DuckInteger>(rolls: T, sides: T) -> T {
     let one = T::try_from(1).unwrap_or_else(|_| unreachable!());
     assert!(rolls >= one, "Cannot roll zero or fewer dice");
     assert!(sides >= one, "Dice must have at least one side");
@@ -75,13 +75,13 @@ pub fn roll<T: DuckInteger>(rolls: T, sides: T) -> T {
 }
 
 /** Wrapper for `dice::roll(1, sides)`. */
-pub fn roll_1d<T: DuckInteger>(sides: T) -> T {
+pub(crate) fn roll_1d<T: DuckInteger>(sides: T) -> T {
     let one = T::try_from(1).unwrap_or_else(|_| unreachable!());
     roll(one, sides)
 }
 
 /** Wrapper for `dice::roll(2, sides)`. */
-pub fn roll_2d<T: DuckInteger>(sides: T) -> T {
+pub(crate) fn roll_2d<T: DuckInteger>(sides: T) -> T {
     let two = T::try_from(2).unwrap_or_else(|_| unreachable!());
     roll(two, sides)
 }
@@ -96,7 +96,7 @@ For example,
 - etc...
 */
 #[allow(dead_code)]
-pub fn roll_d66() -> isize {
+pub(crate) fn roll_d66() -> isize {
     10 * roll_1d(6) + roll_1d(6)
 }
 

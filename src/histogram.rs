@@ -1,13 +1,13 @@
 use std::collections::BTreeMap;
 
-pub struct Histogram<'a, T> {
+pub(crate) struct Histogram<'a, T> {
     title: &'a str,
     data_set: BTreeMap<T, i32>,
     total: u32,
 }
 
 impl<'a, T: std::cmp::Ord + std::fmt::Debug> Histogram<'a, T> {
-    pub fn new(title: &'a str) -> Self {
+    pub(crate) fn new(title: &'a str) -> Self {
         Histogram {
             title,
             data_set: BTreeMap::new(),
@@ -15,7 +15,7 @@ impl<'a, T: std::cmp::Ord + std::fmt::Debug> Histogram<'a, T> {
         }
     }
 
-    pub fn with_domain<U>(title: &'a str, domain: U) -> Self
+    pub(crate) fn with_domain<U>(title: &'a str, domain: U) -> Self
     where
         U: IntoIterator<Item = T>,
     {
@@ -31,20 +31,20 @@ impl<'a, T: std::cmp::Ord + std::fmt::Debug> Histogram<'a, T> {
         }
     }
 
-    pub fn inc(&mut self, item: T) {
+    pub(crate) fn inc(&mut self, item: T) {
         *self.data_set.entry(item).or_insert(0) += 1;
         self.total += 1;
     }
 
     #[allow(dead_code)]
-    pub fn dec(&mut self, item: &T) {
+    pub(crate) fn dec(&mut self, item: &T) {
         if let Some(count) = self.data_set.get_mut(item) {
             *count -= 1;
             self.total -= 1;
         }
     }
 
-    pub fn show(&self, scale: usize) {
+    pub(crate) fn show(&self, scale: usize) {
         let scale = if scale > 0 { scale } else { 1 };
 
         println!("{}", self.title);
@@ -63,7 +63,7 @@ impl<'a, T: std::cmp::Ord + std::fmt::Debug> Histogram<'a, T> {
         println!();
     }
 
-    pub fn show_percent(&self, scale: usize) {
+    pub(crate) fn show_percent(&self, scale: usize) {
         let scale = if scale > 0 { scale } else { 1 };
 
         println!("{}", self.title);

@@ -36,8 +36,8 @@ lazy_static! {
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub(crate) struct Point {
-    pub x: i32,
-    pub y: i32,
+    pub(crate) x: i32,
+    pub(crate) y: i32,
 }
 
 impl fmt::Display for Point {
@@ -190,7 +190,7 @@ impl Sub for Translation {
 }
 
 #[derive(Clone, Copy, Eq, PartialEq)]
-pub enum WorldAbundance {
+pub(crate) enum WorldAbundance {
     Rift,
     Sparse,
     Nominal,
@@ -199,7 +199,7 @@ pub enum WorldAbundance {
 }
 
 impl WorldAbundance {
-    pub const WORLD_ABUNDANCE_VALUES: [WorldAbundance; 5] = [
+    pub(crate) const WORLD_ABUNDANCE_VALUES: [WorldAbundance; 5] = [
         Self::Rift,
         Self::Sparse,
         Self::Nominal,
@@ -240,8 +240,8 @@ pub(crate) struct Subsector {
 }
 
 impl Subsector {
-    pub const COLUMNS: usize = 8;
-    pub const ROWS: usize = 10;
+    pub(crate) const COLUMNS: usize = 8;
+    pub(crate) const ROWS: usize = 10;
 
     pub(crate) fn empty() -> Self {
         Subsector {
@@ -250,15 +250,15 @@ impl Subsector {
         }
     }
 
-    pub fn name(&self) -> &str {
+    pub(crate) fn name(&self) -> &str {
         &self.name[..]
     }
 
-    pub fn set_name(&mut self, new_name: String) {
+    pub(crate) fn set_name(&mut self, new_name: String) {
         self.name = new_name;
     }
 
-    pub fn new(world_abundance_dm: i16) -> Self {
+    pub(crate) fn new(world_abundance_dm: i16) -> Self {
         let mut subsector = Self::empty();
         let mut names = random_names(Subsector::COLUMNS * Subsector::ROWS + 1).into_iter();
         subsector.name = names.next().unwrap();
@@ -285,7 +285,7 @@ impl Subsector {
     }
 
     #[allow(dead_code)]
-    pub fn show(&self) {
+    pub(crate) fn show(&self) {
         let mut hex_grid = fs::read_to_string("resources/hex_grid.txt").unwrap();
         for x in 1..=Subsector::COLUMNS {
             for y in 1..=Subsector::ROWS {
@@ -310,22 +310,22 @@ impl Subsector {
         println!("{}\n", hex_grid);
     }
 
-    pub fn to_json(&self) -> String {
+    pub(crate) fn to_json(&self) -> String {
         JsonableSubsector::from(self).to_string()
     }
 
-    pub fn try_from_json(json: &str) -> Result<Self, Box<dyn Error>> {
+    pub(crate) fn try_from_json(json: &str) -> Result<Self, Box<dyn Error>> {
         let jsonable: JsonableSubsector = serde_json::from_str(json)?;
         let subsector = Self::try_from(jsonable)?;
         Ok(subsector)
     }
 
-    pub fn to_sec_table(&self) -> String {
+    pub(crate) fn to_sec_table(&self) -> String {
         T5Table::from(self).to_string()
     }
 
     /** Generate an SVG image of the full `Subsector` map for export to disk. */
-    pub fn generate_svg(&self, colored: bool) -> String {
+    pub(crate) fn generate_svg(&self, colored: bool) -> String {
         let mut reader = quick_xml::Reader::from_str(SUBSECTOR_TEMPLATE_SVG);
         let mut writer = quick_xml::Writer::new_with_indent(io::Cursor::new(Vec::new()), b' ', 2);
         loop {
@@ -434,16 +434,16 @@ impl Subsector {
 
     TODO: this will probably need an update when the Allegiances/stellar polities are implemented
     */
-    pub fn generate_grid_svg(&self) -> String {
+    pub(crate) fn generate_grid_svg(&self) -> String {
         SUBSECTOR_GRID_SVG.clone()
     }
 
-    pub fn get_map(&mut self) -> &BTreeMap<Point, World> {
+    pub(crate) fn get_map(&mut self) -> &BTreeMap<Point, World> {
         &self.map
     }
 
     /** Returns a reference to the `World` at `point` or `None` if there isn't one. */
-    pub fn get_world(&self, point: &Point) -> Option<&World> {
+    pub(crate) fn get_world(&self, point: &Point) -> Option<&World> {
         self.map.get(point)
     }
 
@@ -461,7 +461,11 @@ impl Subsector {
     - `Ok(None)` if the was inserted into an empty location,
     - `Err(msg)` if `point` was out of bounds and the insertion failed
     */
-    pub fn insert_world(&mut self, point: &Point, world: World) -> Result<Option<World>, String> {
+    pub(crate) fn insert_world(
+        &mut self,
+        point: &Point,
+        world: World,
+    ) -> Result<Option<World>, String> {
         if Self::point_is_inbounds(point) {
             Ok(self.map.insert(*point, world))
         } else {
@@ -476,7 +480,7 @@ impl Subsector {
     - `Ok(None)` if the world was inserted into an empty location,
     - `Err(msg)` if `point` was out of bounds and the insertion failed
     */
-    pub fn insert_random_world(&mut self, point: &Point) -> Result<Option<World>, String> {
+    pub(crate) fn insert_random_world(&mut self, point: &Point) -> Result<Option<World>, String> {
         let mut names = random_names(Subsector::COLUMNS * Subsector::ROWS + 1).into_iter();
         let name = names.next().unwrap();
         self.insert_world(point, World::new(name))
@@ -489,7 +493,7 @@ impl Subsector {
     - `Ok(None)` if there was no world to remove,
     - `Err(msg)` if `point` is out of bounds and the removal failed
     */
-    pub fn remove_world(&mut self, point: &Point) -> Result<Option<World>, String> {
+    pub(crate) fn remove_world(&mut self, point: &Point) -> Result<Option<World>, String> {
         if Self::point_is_inbounds(point) {
             Ok(self.map.remove(point))
         } else {
@@ -508,7 +512,7 @@ impl Subsector {
         - `destination` was out of bounds
         - There was no world to move at `source`
     */
-    pub fn move_world(
+    pub(crate) fn move_world(
         &mut self,
         source: &Point,
         destination: &Point,
@@ -541,7 +545,7 @@ impl Subsector {
     This is intended to work alongside a player-safe version of the GUI that has the defaulted
     fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
     */
-    pub fn copy_player_safe(&self) -> Self {
+    pub(crate) fn copy_player_safe(&self) -> Self {
         let mut player_safe_subsector = self.clone();
         player_safe_subsector.make_player_safe();
         player_safe_subsector
@@ -561,7 +565,7 @@ impl Subsector {
     This is intended to work alongside a player-safe version of the GUI that has the defaulted
     fields removed; this is more to prevent overly-clever players from mining the JSON for spoilers.
     */
-    pub fn make_player_safe(&mut self) {
+    pub(crate) fn make_player_safe(&mut self) {
         for (_point, world) in self.map.iter_mut() {
             world.make_player_safe();
         }

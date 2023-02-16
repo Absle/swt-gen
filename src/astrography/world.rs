@@ -18,7 +18,7 @@ pub(crate) struct Faction {
 }
 
 impl Faction {
-    pub fn random() -> Faction {
+    pub(crate) fn random() -> Faction {
         let faction_info = TABLES.faction_table.roll_normal_2d6(0);
 
         Faction {
@@ -164,7 +164,7 @@ impl World {
         self.factions.len() - 1
     }
 
-    pub fn base_str(&self) -> String {
+    pub(crate) fn base_str(&self) -> String {
         let mut bases = Vec::new();
         if self.has_naval_base {
             bases.push(String::from("N"));
@@ -523,7 +523,7 @@ impl World {
     }
 
     /** Create a randomized `World` named `name` at `location`. */
-    pub fn new(name: String) -> Self {
+    pub(crate) fn new(name: String) -> Self {
         let mut world = Self::empty();
         world.name = name;
 
@@ -549,7 +549,7 @@ impl World {
         world
     }
 
-    pub fn profile_str(&self) -> String {
+    pub(crate) fn profile_str(&self) -> String {
         format!(
             "{starport:?}{size:X}{atmo:X}{hydro:X}{pop:X}{gov:X}{law:X}-{tech:X}",
             starport = self.starport.class,
@@ -714,7 +714,7 @@ impl World {
         format!("{:?}-{}", self.starport.class, self.tech_level)
     }
 
-    pub fn trade_code_long_str(&self) -> String {
+    pub(crate) fn trade_code_long_str(&self) -> String {
         self.trade_codes
             .iter()
             .map(|code| code.to_long_str())
@@ -722,7 +722,7 @@ impl World {
             .join(", ")
     }
 
-    pub fn trade_code_str(&self) -> String {
+    pub(crate) fn trade_code_str(&self) -> String {
         self.trade_codes
             .iter()
             .map(|code| format!("{:?}", code))
@@ -730,7 +730,7 @@ impl World {
             .join(" ")
     }
 
-    pub fn travel_code_str(&self) -> String {
+    pub(crate) fn travel_code_str(&self) -> String {
         format!("{:?}", self.travel_code)
     }
 }
@@ -769,7 +769,7 @@ impl PartialEq for World {
 }
 
 #[allow(dead_code)]
-pub fn histograms(n: usize) {
+pub(crate) fn histograms(n: usize) {
     let mut gas_giant_hist = Histogram::with_domain("Gas Giant", [false, true]);
     let mut size_hist = Histogram::with_domain("Size", 0..=10);
     let mut atmo_hist =
