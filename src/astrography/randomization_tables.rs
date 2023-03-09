@@ -357,7 +357,7 @@ fn test_table(file_path: &str) {
 }
 
 #[derive(Debug)]
-pub(crate) struct SubsectorTableCollection {
+pub(crate) struct RandomizationTableCollection {
     pub(crate) atmo_table: AtmoTable,
     pub(crate) temp_table: TempTable,
     pub(crate) hydro_table: HydroTable,
@@ -371,9 +371,9 @@ pub(crate) struct SubsectorTableCollection {
     pub(crate) tech_level_table: TechLevelTable,
 }
 
-impl SubsectorTableCollection {
-    fn new() -> SubsectorTableCollection {
-        SubsectorTableCollection {
+impl RandomizationTableCollection {
+    fn new() -> RandomizationTableCollection {
+        RandomizationTableCollection {
             atmo_table: load_table(ATMO_TABLE_CSV),
             temp_table: load_table(TEMP_TABLE_CSV),
             hydro_table: load_table(HYDRO_TABLE_CSV),
@@ -390,7 +390,8 @@ impl SubsectorTableCollection {
 }
 
 lazy_static! {
-    pub(crate) static ref TABLES: SubsectorTableCollection = SubsectorTableCollection::new();
+    pub(crate) static ref TABLES: RandomizationTableCollection =
+        RandomizationTableCollection::new();
 }
 
 #[cfg(test)]
@@ -400,6 +401,6 @@ mod tests {
     #[test]
     fn load_all_tables() {
         // No easy way to check the contents, just make sure they all load without panic
-        SubsectorTableCollection::new();
+        RandomizationTableCollection::new();
     }
 }

@@ -1,8 +1,8 @@
+mod randomization_tables;
 mod serialize;
-mod table;
 mod world;
 
-pub(crate) use table::*;
+pub(crate) use randomization_tables::*;
 pub(crate) use world::{Faction, TravelCode, World};
 
 use std::{
