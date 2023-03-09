@@ -759,6 +759,7 @@ impl GeneratorApp {
                         .font(LABEL_FONT)
                         .color(LABEL_COLOR),
                 );
+                ui.label(RichText::new("Gravity").font(LABEL_FONT).color(LABEL_COLOR));
                 ui.end_row();
 
                 // Size code
@@ -786,6 +787,9 @@ impl GeneratorApp {
                 {
                     self.message(Message::WorldDiameterUpdated);
                 }
+
+                // Gravity
+                ui.label(self.world.gravity());
 
                 if ui
                     .button(RichText::new(DICE_ICON).font(FontId::proportional(BUTTON_FONT_SIZE)))

@@ -491,6 +491,23 @@ impl World {
         }
     }
 
+    pub(crate) fn gravity(&mut self) -> &str {
+        match self.size {
+            0 => "N/A",
+            1 => "0.05 G",
+            2 => "0.15 G",
+            3 => "0.25 G",
+            4 => "0.35 G",
+            5 => "0.45 G",
+            6 => "0.70 G",
+            7 => "0.90 G",
+            8 => "1.00 G",
+            9 => "1.25 G",
+            10 => "1.40 G",
+            _ => unreachable!(),
+        }
+    }
+
     pub(crate) fn is_wet_world(&self) -> bool {
         self.hydrographics.code > 3
     }
