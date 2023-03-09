@@ -911,15 +911,19 @@ impl GeneratorApp {
 
         ui.horizontal(|ui| {
             ComboBox::from_id_source("tech_level_selection")
-                .selected_text(self.world.tech_level.to_string())
-                .width(SHORT_SELECTION_WIDTH)
+                .selected_text(format!(
+                    "{}: {}",
+                    self.world.tech_level.code,
+                    TABLES.tech_level_table[self.world.tech_level.code as usize].description
+                ))
+                .width(FIELD_SELECTION_WIDTH)
                 .show_ui(ui, |ui| {
-                    for tech_level in World::TECH_MIN..=World::TECH_MAX {
+                    for tech_level in TABLES.tech_level_table.iter() {
                         if ui
                             .selectable_value(
                                 &mut self.world.tech_level,
-                                tech_level as u16,
-                                tech_level.to_string(),
+                                tech_level.clone(),
+                                format!("{}: {}", tech_level.code, tech_level.description),
                             )
                             .clicked()
                         {

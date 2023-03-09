@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::astrography::{
     AtmoRecord, CulturalDiffRecord, GovRecord, HydroRecord, LawRecord, PopRecord, StarportClass,
-    StarportRecord, Table, TempRecord, WorldTagRecord, TABLES,
+    StarportRecord, Table, TechLevelRecord, TempRecord, WorldTagRecord, TABLES,
 };
 use crate::dice;
 use crate::histogram::Histogram;
@@ -139,7 +139,7 @@ pub(crate) struct World {
     pub(crate) culture: CulturalDiffRecord,
     pub(crate) world_tags: [WorldTagRecord; Self::NUM_TAGS],
     pub(crate) starport: StarportRecord,
-    pub(crate) tech_level: u16,
+    pub(crate) tech_level: TechLevelRecord,
     pub(crate) has_naval_base: bool,
     pub(crate) has_scout_base: bool,
     pub(crate) has_research_base: bool,
@@ -152,9 +152,6 @@ pub(crate) struct World {
 impl World {
     pub(crate) const SIZE_MIN: u16 = 0;
     pub(crate) const SIZE_MAX: u16 = 10;
-
-    pub(crate) const TECH_MIN: i32 = 0;
-    pub(crate) const TECH_MAX: i32 = 15;
 
     pub(crate) const NUM_TAGS: usize = 2;
 
@@ -201,7 +198,7 @@ impl World {
             ],
             law_level: TABLES.law_table[0].clone(),
             starport: TABLES.starport_table[0].clone(),
-            tech_level: 0,
+            tech_level: TABLES.tech_level_table[0].clone(),
             has_naval_base: false,
             has_scout_base: false,
             has_research_base: false,
@@ -451,8 +448,7 @@ impl World {
         };
 
         let modifier = size_mod + atmo_mod + hydro_mod + pop_mod + gov_mod + starport_mod;
-        let roll: i32 = dice::roll_1d(6) + modifier;
-        self.tech_level = roll.clamp(Self::TECH_MIN, Self::TECH_MAX) as u16;
+        self.tech_level = TABLES.tech_level_table.roll_normal_2d6(modifier).clone();
     }
 
     pub(crate) fn generate_temperature(&mut self) {
@@ -559,7 +555,7 @@ impl World {
             pop = self.population.code,
             gov = self.government.code,
             law = self.law_level.code,
-            tech = self.tech_level
+            tech = self.tech_level.code,
         )
     }
 
@@ -627,7 +623,7 @@ impl World {
         }
 
         // High tech
-        if self.tech_level >= 12 {
+        if self.tech_level.code >= 12 {
             self.trade_codes.insert(TradeCode::Ht);
         }
 
@@ -649,7 +645,7 @@ impl World {
         }
 
         // Low tech
-        if self.tech_level <= 5 {
+        if self.tech_level.code <= 5 {
             self.trade_codes.insert(TradeCode::Lt);
         }
 
@@ -711,7 +707,7 @@ impl World {
     }
 
     pub(crate) fn starport_tl_str(&self) -> String {
-        format!("{:?}-{}", self.starport.class, self.tech_level)
+        format!("{:?}-{}", self.starport.class, self.tech_level.code)
     }
 
     pub(crate) fn trade_code_long_str(&self) -> String {
@@ -789,7 +785,8 @@ pub(crate) fn histograms(n: usize) {
     );
     let mut fac_count_hist = Histogram::new("Faction Count");
     let mut starport_hist = Histogram::new("Starport");
-    let mut tech_hist = Histogram::new("Tech Level");
+    let mut tech_hist =
+        Histogram::with_domain("Tech Level", 0..=(TABLES.tech_level_table.len() as u16 - 1));
     let mut trade_code_hist = Histogram::new("Trade Codes");
 
     for _ in 0..n {
@@ -810,7 +807,7 @@ pub(crate) fn histograms(n: usize) {
         fac_count_hist.inc(world.factions.len());
 
         starport_hist.inc(world.starport.class);
-        tech_hist.inc(world.tech_level);
+        tech_hist.inc(world.tech_level.code);
 
         for trade_code in world.trade_codes {
             trade_code_hist.inc(trade_code);

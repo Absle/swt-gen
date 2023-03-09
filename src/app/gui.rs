@@ -23,7 +23,7 @@ pub(crate) const NEGATIVE_RED: Color32 = Color32::from_rgb(255, 144, 144);
 pub(crate) const BUTTON_FONT_SIZE: f32 = 16.0;
 
 pub(crate) const FIELD_SPACING: f32 = 15.0;
-pub(crate) const FIELD_SELECTION_WIDTH: f32 = 225.0;
+pub(crate) const FIELD_SELECTION_WIDTH: f32 = 250.0;
 pub(crate) const SHORT_SELECTION_WIDTH: f32 = 50.0;
 
 pub(crate) const DICE_ICON: &str = "🎲";

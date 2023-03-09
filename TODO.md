@@ -25,7 +25,6 @@ TODOs completed in this way should probably should still have an issue created a
 - Add dark mode support... somehow
 - Implement a framework to more structurally link `Message`s with their hotkeys
 - Clicking to new planet should just apply the changes by default rather than having a popup
-- Tech level should have some indication of what the number means, not just a number
 - Size should have some comparison with Earth or list the gravity, not just a number
 - Add a way to reorder factions
 - Adjust faction tab GUI spacing
@@ -91,3 +90,4 @@ TODOs completed in this way should probably should still have an issue created a
 - ~~Refactor svg generation to use a proper xml editor~~
 - ~~Consider moving from `self.message(Message)` to using the `pipe` system to take advantage of non-mutable borrowing~~
 - ~~Remove `Message::Cancel*` messages that don't do anything anything and replace with `Message::NoOp`~~
+- ~~Tech level should have some indication of what the number means, not just a number~~

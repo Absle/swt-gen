@@ -15,6 +15,7 @@ const CULTURE_TABLE_CSV: &str = include_str!("../../resources/tables/cultural_di
 const WORLD_TAG_TABLE_CSV: &str = include_str!("../../resources/tables/world_tags.csv");
 const LAW_TABLE_CSV: &str = include_str!("../../resources/tables/law_levels.csv");
 const STARPORT_TABLE_CSV: &str = include_str!("../../resources/tables/starports.csv");
+const TECH_LEVEL_CSV: &str = include_str!("../../resources/tables/tech_levels.csv");
 
 /** Trait representing a record or row in a table. */
 trait Record {
@@ -261,6 +262,25 @@ impl Record for StarportRecord {
 }
 type StarportTable = Vec<StarportRecord>;
 
+#[derive(Clone, Debug, Deserialize, Eq, Serialize)]
+pub(crate) struct TechLevelRecord {
+    pub(crate) code: u16,
+    pub(crate) description: String,
+}
+
+impl PartialEq for TechLevelRecord {
+    fn eq(&self, other: &Self) -> bool {
+        self.code == other.code
+    }
+}
+
+impl Record for TechLevelRecord {
+    fn code(&self) -> u16 {
+        self.code
+    }
+}
+type TechLevelTable = Vec<TechLevelRecord>;
+
 pub(crate) trait Table<T> {
     /** Get a reference to an item within the `Table` using a uniform distribution. */
     fn roll_uniform(&self) -> &T;
@@ -348,6 +368,7 @@ pub(crate) struct SubsectorTableCollection {
     pub(crate) world_tag_table: WorldTagTable,
     pub(crate) law_table: LawTable,
     pub(crate) starport_table: StarportTable,
+    pub(crate) tech_level_table: TechLevelTable,
 }
 
 impl SubsectorTableCollection {
@@ -363,6 +384,7 @@ impl SubsectorTableCollection {
             world_tag_table: load_table(WORLD_TAG_TABLE_CSV),
             law_table: load_table(LAW_TABLE_CSV),
             starport_table: load_table(STARPORT_TABLE_CSV),
+            tech_level_table: load_table(TECH_LEVEL_CSV),
         }
     }
 }
