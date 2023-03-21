@@ -5,41 +5,49 @@ use crate::astrography::{Point, Subsector, World};
 
 const UWP_REFERENCE: &str = r"# UWP Reference Diagram:
 #
-#      ,- Starport
-#     |  ,- Atmosphere
-#     | |  ,- Population
-#     | | |  ,- Law Level
-#     | | | |
 #     CA6A643-9
-#      | | |  |
-#      | | |   `- Tech Level
-#      | |  `- Government
-#      |  `- Hydrographics
-#       `- Size";
+#     ||||||| `- Tech Level
+#     |||||| `- Law Level
+#     ||||| `- Government
+#     |||| `- Population
+#     ||| `- Hydrographics
+#     || `- Atmosphere
+#     | `- Size
+#      `- Starport";
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 enum Header {
-    Name,
     Hex,
+    Name,
     UniversalWorldProfile,
-    Bases,
     Remarks,
+    Bases,
     Zone,
-    PlanetsBeltsGasGiants,
     Allegiance,
+    ImportanceExtension,
+    EconomicExtension,
+    CulturalExtension,
+    Nobility,
+    PopModBeltsGasGiants,
+    Worlds,
     Stellar,
 }
 
 impl Header {
-    const ALL_VALUES: [Header; 9] = [
-        Header::Name,
+    const ALL_VALUES: [Header; 14] = [
         Header::Hex,
+        Header::Name,
         Header::UniversalWorldProfile,
-        Header::Bases,
         Header::Remarks,
+        Header::Bases,
         Header::Zone,
-        Header::PlanetsBeltsGasGiants,
         Header::Allegiance,
+        Header::ImportanceExtension,
+        Header::EconomicExtension,
+        Header::CulturalExtension,
+        Header::Nobility,
+        Header::PopModBeltsGasGiants,
+        Header::Worlds,
         Header::Stellar,
     ];
 }
@@ -47,14 +55,19 @@ impl Header {
 impl fmt::Display for Header {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let s = match self {
-            Header::Name => "Name",
             Header::Hex => "Hex",
+            Header::Name => "Name",
             Header::UniversalWorldProfile => "UWP",
-            Header::Bases => "Bases",
             Header::Remarks => "Remarks",
-            Header::Zone => "Zone",
-            Header::PlanetsBeltsGasGiants => "PBG",
+            Header::Bases => "B",
+            Header::Zone => "Z",
             Header::Allegiance => "A",
+            Header::ImportanceExtension => "{Ix}",
+            Header::EconomicExtension => "(Ex)",
+            Header::CulturalExtension => "[Cx]",
+            Header::Nobility => "N",
+            Header::PopModBeltsGasGiants => "PBG",
+            Header::Worlds => "W",
             Header::Stellar => "Stellar",
         };
         write!(f, "{}", s)
@@ -68,20 +81,27 @@ struct T5Record {
 impl From<(&World, &Point)> for T5Record {
     fn from(value: (&World, &Point)) -> Self {
         let (world, point) = value;
-        let pbg = if world.has_gas_giant { "101" } else { "100" };
 
         let mut columns = HashMap::new();
         for header in Header::ALL_VALUES {
             let _ = match header {
-                Header::Name => columns.insert(header, world.name.clone()),
                 Header::Hex => columns.insert(header, point.to_string()),
+                Header::Name => columns.insert(header, world.name.clone()),
                 Header::UniversalWorldProfile => columns.insert(header, world.profile_str()),
-                Header::Bases => columns.insert(header, world.base_str()),
                 Header::Remarks => columns.insert(header, world.trade_code_str()),
+                Header::Bases => columns.insert(header, world.base_str()),
                 Header::Zone => columns.insert(header, world.travel_code.as_short_string()),
-                Header::PlanetsBeltsGasGiants => columns.insert(header, pbg.to_string()),
                 Header::Allegiance => columns.insert(header, "Na".to_string()),
-                Header::Stellar => columns.insert(header, String::new()),
+                Header::ImportanceExtension => columns.insert(header, world.importance_extension()),
+                Header::EconomicExtension => columns.insert(header, "-".to_string()),
+                Header::CulturalExtension => columns.insert(header, "-".to_string()),
+                Header::Nobility => columns.insert(header, "-".to_string()),
+                Header::PopModBeltsGasGiants => columns.insert(
+                    header,
+                    if world.has_gas_giant { "101" } else { "100" }.to_string(),
+                ),
+                Header::Worlds => columns.insert(header, "1".to_string()),
+                Header::Stellar => columns.insert(header, "-".to_string()),
             };
         }
 

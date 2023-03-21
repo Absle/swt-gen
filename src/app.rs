@@ -47,9 +47,9 @@ pub(crate) enum Message {
     ConfirmRemoveWorld { point: Point },
     ConfirmRenameSubsector { new_name: String },
     ConfirmUnsavedExit,
+    ExportColumnDelimitedTable,
     ExportPlayerSafeSubsectorJson,
     ExportSubsectorMapSvg,
-    ExportSummaryTable,
     HexGridClicked { new_point: Point },
     NewFactionGovSelected { new_code: u16 },
     NewFactionStrengthSelected { new_code: u16 },
@@ -351,6 +351,31 @@ impl GeneratorApp {
         }
     }
 
+    fn export_column_delimited_table(&self) -> MessageResult {
+        let filename = format!("{} Subsector Table.txt", self.subsector.name());
+        let result = save_file_dialog(
+            &self.save_directory,
+            &filename,
+            "Plain Text",
+            &["txt"],
+            self.subsector.to_t5_table(),
+        );
+
+        match result {
+            Ok(Some(_)) => Ok(Some(())),
+            Ok(None) => Ok(None),
+            Err(e) => {
+                MessageDialog::new()
+                    .set_type(MessageType::Error)
+                    .set_title("Error: Failed to Save Summary Table")
+                    .set_text(&format!("{}", e)[..])
+                    .show_alert()
+                    .unwrap();
+                Err(e.to_string())
+            }
+        }
+    }
+
     fn export_player_safe_subsector_json(&mut self) -> MessageResult {
         let filename = format!("{} Subsector Player-Safe.json", self.subsector.name());
         let result = save_file_dialog(
@@ -393,31 +418,6 @@ impl GeneratorApp {
                 MessageDialog::new()
                     .set_type(MessageType::Error)
                     .set_title("Error: Failed to Save SVG")
-                    .set_text(&format!("{}", e)[..])
-                    .show_alert()
-                    .unwrap();
-                Err(e.to_string())
-            }
-        }
-    }
-
-    fn export_summary_table(&self) -> MessageResult {
-        let filename = format!("{} Subsector Table.txt", self.subsector.name());
-        let result = save_file_dialog(
-            &self.save_directory,
-            &filename,
-            "Plain Text",
-            &["txt"],
-            self.subsector.to_sec_table(),
-        );
-
-        match result {
-            Ok(Some(_)) => Ok(Some(())),
-            Ok(None) => Ok(None),
-            Err(e) => {
-                MessageDialog::new()
-                    .set_type(MessageType::Error)
-                    .set_title("Error: Failed to Save Summary Table")
                     .set_text(&format!("{}", e)[..])
                     .show_alert()
                     .unwrap();
@@ -479,9 +479,9 @@ impl GeneratorApp {
             ConfirmRemoveWorld { point } => self.confirm_remove_world(point),
             ConfirmRenameSubsector { new_name } => self.confirm_rename_subsector(new_name),
             ConfirmUnsavedExit => self.confirm_unsaved_exit(),
+            ExportColumnDelimitedTable => self.export_column_delimited_table(),
             ExportPlayerSafeSubsectorJson => self.export_player_safe_subsector_json(),
             ExportSubsectorMapSvg => self.export_subsector_map_svg(),
-            ExportSummaryTable => self.export_summary_table(),
             HexGridClicked { new_point } => self.hex_grid_clicked(new_point),
             NewFactionGovSelected { new_code } => self.new_faction_gov_selected(new_code),
             NewFactionStrengthSelected { new_code } => self.new_faction_strength_selected(new_code),

@@ -321,7 +321,7 @@ impl Subsector {
         Ok(subsector)
     }
 
-    pub(crate) fn to_sec_table(&self) -> String {
+    pub(crate) fn to_t5_table(&self) -> String {
         T5Table::from(self).to_string()
     }
 

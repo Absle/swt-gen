@@ -37,6 +37,87 @@ TODOs completed in this way should probably should still have an issue created a
 - Add a background color to the subsector grid svg template, rather than just transparent and unreadable on renderers with a dark background
 - Add support for colored "stellar alliances" and trade/diplomatic connection lines; ***actually creating these alliances and connections*** will be done by the user in the GUI
     - Update svg generation to display these
+- Consider supporting full T5 world generation (belts, economic/cultural extension, etc.)
+    - From a Reddit comment on how the extensions are calculated (https://www.reddit.com/r/traveller/comments/k0vc75/comment/gdn0kau/?utm_source=share&utm_medium=web2x&context=3):
+        > Ix IMPORTANCE EXTENSION {+4}
+        >
+        > The Importance Extension is contained between {braces}.
+        >
+        > The Importance Extension (Ix) ranks worlds within a region. It governs the locations of capitals and trade routes.
+        >
+        > IMPORTANCE EXTENSION = Characteristic Value
+        >
+        > Starport Type A or B = +1
+        >
+        > Starport D or worse = - 1
+        >
+        > Tech Level G or more = +1
+        >
+        > Tech Level A or more = +1
+        >
+        > Tech Level 8 or less = - 1
+        >
+        > Per Ag Hi In Ri = +1
+        >
+        > If Pop 6 or less = -1
+        >
+        > If Naval AND Scout Base = +1
+        >
+        > If Way Station = +1
+        >
+        > Important = +4 or greater.
+        >
+        > Unimportant = 0 or less.
+        >
+        > Ex ECONOMIC EXTENSION (RLI+E)
+        >
+        > The Economic Extension is contained between (parentheses)].
+        >
+        > The Economic Extension (Ex) is the strength of a world economy and provides basic insights into the economy’s structure and capabilities.
+        >
+        > ECONOMIC EXTENSION = Characteristic Value
+        >
+        > Resources = +2D (+If TL 8+) +GG + Belts
+        >
+        > Labor = Pop - 1
+        >
+        > Infrastructure = 2D + Ix
+        >
+        > If Ba, Di, Lo, then = 0
+        >
+        > If Lo, then = 1
+        >
+        > If Ni, then = 1D + Ix
+        >
+        > Efficiency = 1D - 1D
+        >
+        > The minimum value for Resources, Labor, and Infrastructure is 0. Efficiency may be negative and can make RU negative.
+        >
+        > Cx CULTURAL EXTENSION [HASS]
+        >
+        > The Cultural Extension is contained between [brackets].
+        >
+        > The Cultural Extension (Cx) is a broad insight into the expected social norms and behaviors of the citizens of the world.
+        >
+        > CULTURAL EXTENSION = Characteristic Value
+        >
+        > Homogeneity = Pop + 1D - 1D
+        >
+        > Acceptance = Pop + Ix
+        >
+        > Strangeness = 1D - 1D + 5
+        >
+        > Symbols = 1D - 1D + TL
+        >
+        > For all values, less than 1 = 1
+        >
+        > Homogeneity is a measure of the degree to which members of society hold common beliefs. Members of very homogeneous cultures are in strong agreement on the fundamentals of society (usually basic rights, religion, and methods of interaction). Members of non-homogeneous cultures hold many different beliefs on the fundamentals of society.
+        >
+        > Acceptance is the degree of xenophobia (or xenophilia) in the culture. High Acceptance is evidenced by friendliness to outsiders and offworlders; Low Acceptance is characterized by fear or rejection of outsiders.
+        >
+        > Strangeness is the degree of difference from the norms of interstellar society. High Strangeness is evidenced by unusual or outwardly incomprehensible actions, statements, or responses in the course daily activity. Low Strangeness reflects activities close to interstellar norms.
+        >
+        > Symbols used by the culture may range from the concrete (idols; totems; statuary) to the abstract (symbolized belief systems; group affiliations).
 
 ### Far Future TODOs
 - Some kind of search/query/filtering system

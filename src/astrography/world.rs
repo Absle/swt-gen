@@ -49,7 +49,7 @@ pub(crate) enum TravelCode {
 impl TravelCode {
     pub(crate) fn as_short_string(&self) -> String {
         match self {
-            TravelCode::Safe => "".to_string(),
+            TravelCode::Safe => "-".to_string(),
             TravelCode::Amber => "A".to_string(),
             TravelCode::Red => "R".to_string(),
         }
@@ -175,7 +175,13 @@ impl World {
         if self.has_tas {
             bases.push(String::from("T"));
         }
-        bases.join(" ")
+        let s = bases.join("");
+
+        if !s.is_empty() {
+            s
+        } else {
+            "-".to_string()
+        }
     }
 
     pub(crate) fn empty() -> Self {
@@ -508,6 +514,43 @@ impl World {
         }
     }
 
+    pub(crate) fn importance_extension(&self) -> String {
+        let mut importance = 0;
+        importance += match self.starport.class {
+            StarportClass::A | StarportClass::B => 1,
+            StarportClass::D | StarportClass::E | StarportClass::X => -1,
+            _ => 0,
+        };
+
+        if self.tech_level.code >= 16 {
+            importance += 1;
+        }
+        if self.tech_level.code >= 10 {
+            importance += 1;
+        }
+        if self.tech_level.code <= 8 {
+            importance -= 1;
+        }
+
+        const IMPORTANT_TRADE_CODES: [TradeCode; 4] =
+            [TradeCode::Ag, TradeCode::Hi, TradeCode::In, TradeCode::Ri];
+        for trade_code in IMPORTANT_TRADE_CODES {
+            if self.trade_codes.contains(&trade_code) {
+                importance += 1;
+            }
+        }
+
+        if self.population.code <= 6 {
+            importance -= 1;
+        }
+
+        if self.has_naval_base && self.has_scout_base {
+            importance += 1;
+        }
+
+        format!("{{ {} }}", importance)
+    }
+
     pub(crate) fn is_wet_world(&self) -> bool {
         self.hydrographics.code > 3
     }
@@ -736,11 +779,17 @@ impl World {
     }
 
     pub(crate) fn trade_code_str(&self) -> String {
-        self.trade_codes
+        let s = self
+            .trade_codes
             .iter()
             .map(|code| format!("{:?}", code))
             .collect::<Vec<String>>()
-            .join(" ")
+            .join(" ");
+        if !s.is_empty() {
+            s
+        } else {
+            "-".to_string()
+        }
     }
 
     pub(crate) fn travel_code_str(&self) -> String {

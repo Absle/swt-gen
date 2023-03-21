@@ -127,9 +127,9 @@ impl GeneratorApp {
                                 self.message(Message::ExportPlayerSafeSubsectorJson);
                             }
 
-                            let button = Button::new("Summary Table SEC...").wrap(false);
+                            let button = Button::new("Column Delimited Table...").wrap(false);
                             if ui.add(button).clicked() {
-                                self.message(Message::ExportSummaryTable);
+                                self.message(Message::ExportColumnDelimitedTable);
                             }
                         });
                     });
