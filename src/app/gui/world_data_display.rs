@@ -8,8 +8,8 @@ use egui::{
 use crate::{
     app::{
         gui::{
-            BUTTON_FONT_SIZE, DICE_ICON, FIELD_SELECTION_WIDTH, FIELD_SPACING, LABEL_COLOR,
-            LABEL_FONT, LABEL_SPACING, NEGATIVE_RED, POSITIVE_BLUE, SAVE_ICON,
+            BUTTON_FONT_SIZE, CLIPBOARD_ICON, DICE_ICON, FIELD_SELECTION_WIDTH, FIELD_SPACING,
+            LABEL_COLOR, LABEL_FONT, LABEL_SPACING, NEGATIVE_RED, POSITIVE_BLUE, SAVE_ICON,
             SHORT_SELECTION_WIDTH, X_ICON,
         },
         GeneratorApp, Message,
@@ -680,7 +680,11 @@ impl GeneratorApp {
                             .color(LABEL_COLOR),
                     );
 
-                    if ui.button("📋").on_hover_text("Click to copy").clicked() {
+                    if ui
+                        .button(CLIPBOARD_ICON)
+                        .on_hover_text("Click to copy")
+                        .clicked()
+                    {
                         ui.output().copied_text = self.world.profile_str();
                     }
                 });
@@ -692,7 +696,11 @@ impl GeneratorApp {
                             .color(LABEL_COLOR),
                     );
 
-                    if ui.button("📋").on_hover_text("Click to copy").clicked() {
+                    if ui
+                        .button(CLIPBOARD_ICON)
+                        .on_hover_text("Click to copy")
+                        .clicked()
+                    {
                         ui.output().copied_text = self.world.trade_code_str();
                     }
                 });
@@ -702,13 +710,24 @@ impl GeneratorApp {
                         .font(LABEL_FONT)
                         .color(LABEL_COLOR),
                 );
+
+                ui.label(
+                    RichText::new("Planetoid Belts")
+                        .font(LABEL_FONT)
+                        .color(LABEL_COLOR),
+                );
+
+                ui.label(
+                    RichText::new("Gas Giants")
+                        .font(LABEL_FONT)
+                        .color(LABEL_COLOR),
+                );
                 ui.end_row();
 
                 // Location
                 let response = ui.add(
                     TextEdit::singleline(&mut self.point_str).desired_width(SHORT_SELECTION_WIDTH),
                 );
-
                 if response.lost_focus() {
                     if ui.input().key_pressed(Key::Enter) {
                         self.message(Message::WorldLocUpdated);
@@ -739,13 +758,35 @@ impl GeneratorApp {
                         }
                     });
 
-                // Gas giant presence
-                ui.checkbox(
-                    &mut self.world.has_gas_giant,
-                    RichText::new("Gas Giant Present")
-                        .font(LABEL_FONT)
-                        .color(LABEL_COLOR),
+                // Planetoid Belts
+                let response = ui.add(
+                    TextEdit::singleline(&mut self.belt_str)
+                        .desired_width(SHORT_SELECTION_WIDTH / 2.0),
                 );
+                if response.lost_focus() {
+                    if ui.input().key_pressed(Key::Enter) {
+                        self.message(Message::WorldPlanetoidBeltsUpdated);
+                    } else {
+                        self.belt_str = self
+                            .world
+                            .planetoid_belts
+                            .expect("World planetoid belts should not be None")
+                            .to_string();
+                    }
+                }
+
+                // Gas giants
+                let response = ui.add(
+                    TextEdit::singleline(&mut self.gas_giant_str)
+                        .desired_width(SHORT_SELECTION_WIDTH / 2.0),
+                );
+                if response.lost_focus() {
+                    if ui.input().key_pressed(Key::Enter) {
+                        self.message(Message::WorldGasGiantsUpdated);
+                    } else {
+                        self.gas_giant_str = self.world.gas_giants.to_string();
+                    }
+                }
             });
     }
 
@@ -865,33 +906,26 @@ impl GeneratorApp {
             });
         ui.add_space(FIELD_SPACING);
 
+        ui.heading("Bases");
         Grid::new("bases_grid")
             .spacing([FIELD_SPACING, LABEL_SPACING])
             .show(ui, |ui| {
-                ui.label(RichText::new("Bases").font(LABEL_FONT).color(LABEL_COLOR));
-                ui.end_row();
-
-                ui.checkbox(
-                    &mut self.world.has_naval_base,
-                    RichText::new("Naval").font(LABEL_FONT).color(LABEL_COLOR),
-                );
-
-                ui.checkbox(
-                    &mut self.world.has_scout_base,
-                    RichText::new("Scout").font(LABEL_FONT).color(LABEL_COLOR),
-                );
-
-                ui.checkbox(
-                    &mut self.world.has_research_base,
+                ui.label(RichText::new("Naval").font(LABEL_FONT).color(LABEL_COLOR));
+                ui.label(RichText::new("Scout").font(LABEL_FONT).color(LABEL_COLOR));
+                ui.label(
                     RichText::new("Research")
                         .font(LABEL_FONT)
                         .color(LABEL_COLOR),
                 );
+                ui.label(RichText::new("TAS").font(LABEL_FONT).color(LABEL_COLOR));
+                ui.label(RichText::new("Pirate").font(LABEL_FONT).color(LABEL_COLOR));
+                ui.end_row();
 
-                ui.checkbox(
-                    &mut self.world.has_tas,
-                    RichText::new("TAS").font(LABEL_FONT).color(LABEL_COLOR),
-                );
+                ui.checkbox(&mut self.world.has_naval_base, "");
+                ui.checkbox(&mut self.world.has_scout_base, "");
+                ui.checkbox(&mut self.world.has_research_base, "");
+                ui.checkbox(&mut self.world.has_tas, "");
+                ui.checkbox(&mut self.world.has_pirate_base, "");
             });
     }
 

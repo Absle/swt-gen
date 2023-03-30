@@ -125,14 +125,13 @@ impl TradeCode {
 #[derive(Clone, Debug, Deserialize, Eq, Serialize)]
 pub(crate) struct World {
     pub(crate) name: String,
-    pub(crate) has_gas_giant: bool,
+    pub(crate) gas_giants: i32,
     pub(crate) size: u16,
     pub(crate) diameter: u32,
     pub(crate) atmosphere: AtmoRecord,
     pub(crate) temperature: TempRecord,
     pub(crate) hydrographics: HydroRecord,
     pub(crate) population: PopRecord,
-    pub(crate) unmodified_pop: u16,
     pub(crate) government: GovRecord,
     pub(crate) law_level: LawRecord,
     pub(crate) factions: Vec<Faction>,
@@ -144,15 +143,17 @@ pub(crate) struct World {
     pub(crate) has_scout_base: bool,
     pub(crate) has_research_base: bool,
     pub(crate) has_tas: bool,
+    pub(crate) has_pirate_base: bool,
     pub(crate) travel_code: TravelCode,
     pub(crate) trade_codes: BTreeSet<TradeCode>,
     pub(crate) notes: String,
+
+    pub(crate) planetoid_belts: Option<i32>,
 }
 
 impl World {
     pub(crate) const SIZE_MIN: u16 = 0;
     pub(crate) const SIZE_MAX: u16 = 10;
-
     pub(crate) const NUM_TAGS: usize = 2;
 
     /** Add a randomized faction and return its index. */
@@ -175,6 +176,9 @@ impl World {
         if self.has_tas {
             bases.push(String::from("T"));
         }
+        if self.has_pirate_base {
+            bases.push(String::from("P"));
+        }
         let s = bases.join("");
 
         if !s.is_empty() {
@@ -187,14 +191,13 @@ impl World {
     pub(crate) fn empty() -> Self {
         World {
             name: String::from(""),
-            has_gas_giant: false,
+            gas_giants: 0,
             size: 0,
             diameter: 0,
             atmosphere: TABLES.atmo_table[0].clone(),
             temperature: TABLES.temp_table[0].clone(),
             hydrographics: TABLES.hydro_table[0].clone(),
             population: TABLES.pop_table[0].clone(),
-            unmodified_pop: 0,
             government: TABLES.gov_table[0].clone(),
             factions: Vec::new(),
             culture: TABLES.culture_table[0].clone(),
@@ -209,15 +212,21 @@ impl World {
             has_scout_base: false,
             has_research_base: false,
             has_tas: false,
+            has_pirate_base: false,
             travel_code: TravelCode::Safe,
             trade_codes: BTreeSet::new(),
             notes: String::new(),
+            planetoid_belts: Some(0),
         }
     }
 
     pub(crate) fn generate_atmosphere(&mut self) {
-        let modifier = self.size as i32 - 7;
-        self.atmosphere = TABLES.atmo_table.roll_normal_2d6(modifier).clone();
+        if self.size > 0 {
+            let modifier = self.size as i32 - 7;
+            self.atmosphere = TABLES.atmo_table.roll_normal_2d6(modifier).clone();
+        } else {
+            self.atmosphere = TABLES.atmo_table[0].clone();
+        }
     }
 
     fn generate_bases(&mut self) {
@@ -225,6 +234,7 @@ impl World {
         let scout_target;
         let research_target;
         let tas_target;
+        let pirate_target = 12;
         match self.starport.class {
             StarportClass::A => {
                 naval_target = 8;
@@ -235,7 +245,7 @@ impl World {
 
             StarportClass::B => {
                 naval_target = 8;
-                scout_target = 8;
+                scout_target = 9;
                 research_target = 10;
                 tas_target = 0; // Guaranteed
             }
@@ -266,6 +276,9 @@ impl World {
         self.has_scout_base = dice::roll_2d(6) >= scout_target;
         self.has_research_base = dice::roll_2d(6) >= research_target;
         self.has_tas = dice::roll_2d(6) >= tas_target;
+        self.has_pirate_base = !self.has_naval_base
+            && self.starport.class != StarportClass::A
+            && dice::roll_2d(6) >= pirate_target;
     }
 
     pub(crate) fn generate_berthing_cost(&mut self) {
@@ -285,7 +298,7 @@ impl World {
         let faction_count = dice::roll_1d(3)
             + match self.government.code {
                 0 | 7 => 1,
-                x if x >= 10 => -1,
+                10.. => -1,
                 _ => 0,
             };
 
@@ -294,10 +307,10 @@ impl World {
         }
     }
 
-    fn generate_gas_giant(&mut self) {
-        match dice::roll_2d(6) {
-            0..=9 => self.has_gas_giant = true,
-            _ => self.has_gas_giant = false,
+    fn generate_gas_giants(&mut self) {
+        self.gas_giants = match dice::roll_2d(6) {
+            5..=12 => (dice::roll_1d(6) - 2).clamp(1, i32::MAX),
+            _ => 0,
         }
     }
 
@@ -306,7 +319,9 @@ impl World {
             self.government = TABLES.gov_table[0].clone();
             return;
         }
-        let modifier = self.unmodified_pop as i32 - 7;
+        // To keep governments less tyrannical, we deviate from the Cepheus Engine slightly and
+        // don't include the "habitability" modifiers of the world when rolling for the government
+        let modifier = self.unmodified_population() - 7;
         self.government = TABLES.gov_table.roll_normal_2d6(modifier).clone();
     }
 
@@ -316,22 +331,12 @@ impl World {
             return;
         }
 
-        let atmo_modifier: i32 = match self.atmosphere.code {
+        let modifier: i32 = match self.atmosphere.code {
             0 | 1 | 10 | 11 | 12 => -4,
+            14 => -2,
             _ => 0,
         };
 
-        let temp_modifier: i32 = if self.atmosphere.code != 13 {
-            match self.temperature.code {
-                10 | 11 => -2,
-                12 => -6,
-                _ => 0,
-            }
-        } else {
-            0
-        };
-
-        let modifier = atmo_modifier + temp_modifier;
         self.hydrographics = TABLES.hydro_table.roll_normal_2d6(modifier).clone();
     }
 
@@ -344,51 +349,28 @@ impl World {
         self.law_level = TABLES.law_table.roll_normal_2d6(modifier).clone();
     }
 
-    pub(crate) fn generate_population(&mut self) {
-        // By default, the population roll is a straight 2d6-2; in my opinion
-        // the population of a planet should be modified by the habitability of
-        // its size, atmosphere, and hydrographic. Because of this, we borrow
-        // the modifiers from the Cepheus Engine's world population modifiers.
-        // See: https://www.orffenspace.com/cepheus-srd/worlds.html#world-population
+    fn generate_planetoid_belts(&mut self) {
+        let has_belts = dice::roll_2d(6) >= 4;
+        let world_is_planetoid = self.size == 0;
 
-        // We keep the unmodified roll to use as the modifier for the government rolls;
-        // this is to avoid too high of an average law level in the subsector
-
-        let size_mod: i32 = match self.size {
-            0..=2 => -1,
-            _ => 0,
-        };
-
-        let atmo_mod: i32 = match self.atmosphere.code {
-            10..=u16::MAX => -2,
-            6 => 3,
-            5 | 8 => 1,
-            _ => 0,
-        };
-
-        let hydro_mod: i32 = if self.hydrographics.code == 0 && self.atmosphere.code < 3 {
-            -2
+        // If the world has a size of 0, it is itself a planetoid so there's at least one belt
+        self.planetoid_belts = if has_belts || world_is_planetoid {
+            Some((dice::roll_1d(6) - 3).clamp(1, i32::MAX))
         } else {
-            0
+            Some(0)
         };
-        let modifier = size_mod + atmo_mod + hydro_mod - 2;
+    }
 
-        let roll = dice::roll_2d(6);
-        let modified_roll = roll + modifier;
-
-        let lower = 0;
-        let upper = (TABLES.pop_table.len() - 1) as i32;
-        let index = modified_roll.clamp(lower, upper) as usize;
-
-        self.unmodified_pop = roll.clamp(lower, upper) as u16;
-        self.population = TABLES.pop_table[index].clone();
+    pub(crate) fn generate_population(&mut self) {
+        let modifier = self.population_modifier();
+        self.population = TABLES.pop_table.roll_normal_2d6(modifier - 2).clone();
     }
 
     pub(crate) fn generate_size(&mut self) {
         self.size = (dice::roll_2d(6) - 2).clamp(Self::SIZE_MIN, Self::SIZE_MAX);
 
         let median: u32 = match self.size {
-            0 => 700,
+            0 => 800,
             _ => (1600 * self.size).into(),
         };
         let min = median - 200;
@@ -397,15 +379,8 @@ impl World {
     }
 
     pub(crate) fn generate_starport(&mut self) {
-        let pop_mod: i32 = match self.population.code {
-            8..=9 => 1,
-            x if x >= 10 => 2,
-            3..=4 => -1,
-            x if x <= 2 => -2,
-            _ => 0,
-        };
-
-        self.starport = TABLES.starport_table.roll_normal_2d6(pop_mod).clone();
+        let modifier = self.population.code as i32 - 7;
+        self.starport = TABLES.starport_table.roll_normal_2d6(modifier).clone();
         self.generate_berthing_cost();
     }
 
@@ -431,9 +406,10 @@ impl World {
 
         let pop_mod = match self.population.code {
             1..=5 => 1,
-            8 => 1,
-            9 => 2,
-            10 => 4,
+            9 => 1,
+            10 => 2,
+            11 => 3,
+            12 => 4,
             _ => 0,
         };
 
@@ -454,7 +430,7 @@ impl World {
         };
 
         let modifier = size_mod + atmo_mod + hydro_mod + pop_mod + gov_mod + starport_mod;
-        self.tech_level = TABLES.tech_level_table.roll_normal_2d6(modifier).clone();
+        self.tech_level = TABLES.tech_level_table.roll_1d6(modifier).clone();
     }
 
     pub(crate) fn generate_temperature(&mut self) {
@@ -510,8 +486,12 @@ impl World {
             8 => "1.00 G",
             9 => "1.25 G",
             10 => "1.40 G",
-            _ => unreachable!(),
+            _ => unreachable!("The size should always be in the range 0..=10"),
         }
+    }
+
+    pub(crate) fn has_gas_giant(&self) -> bool {
+        self.gas_giants > 0
     }
 
     pub(crate) fn importance_extension(&self) -> String {
@@ -585,7 +565,6 @@ impl World {
 
         // Generation *must* happen in this order, many fields depend on the value
         // of other fields when making their rolls
-        world.generate_gas_giant();
         world.generate_size();
         world.generate_atmosphere();
         world.generate_temperature();
@@ -601,8 +580,50 @@ impl World {
         world.generate_bases();
         world.resolve_travel_code();
         world.resolve_trade_codes();
+        world.generate_planetoid_belts();
+        world.generate_gas_giants();
 
         world
+    }
+
+    /** Resolve trade codes, ensure `Option` fields are not `None`, and recalculate extensions.*/
+    pub(crate) fn normalize_data(&mut self) {
+        if self.planetoid_belts.is_none() {
+            self.generate_planetoid_belts();
+        }
+        self.resolve_trade_codes();
+    }
+
+    /** Get the "Population Modifier/Belts/Gas Giants string" */
+    pub(crate) fn pbg_str(&self) -> String {
+        format!(
+            "1{}{}",
+            self.planetoid_belts
+                .expect("World planetoid belts should not be None"),
+            self.gas_giants
+        )
+    }
+
+    fn population_modifier(&self) -> i32 {
+        let size_mod: i32 = match self.size {
+            0..=2 => -1,
+            _ => 0,
+        };
+
+        let atmo_mod: i32 = match self.atmosphere.code {
+            10..=u16::MAX => -2,
+            6 => 3,
+            5 | 8 => 1,
+            _ => 0,
+        };
+
+        let hydro_mod: i32 = if self.hydrographics.code == 0 && self.atmosphere.code < 3 {
+            -2
+        } else {
+            0
+        };
+
+        size_mod + atmo_mod + hydro_mod
     }
 
     pub(crate) fn profile_str(&self) -> String {
@@ -670,9 +691,9 @@ impl World {
         }
 
         // Garden
-        if (6..=8).contains(&self.size)
-            && [5, 6, 8].contains(&self.atmosphere.code)
-            && (5..=7).contains(&self.hydrographics.code)
+        if [5, 6, 8].contains(&self.atmosphere.code)
+            && (4..=9).contains(&self.hydrographics.code)
+            && (4..=8).contains(&self.population.code)
         {
             self.trade_codes.insert(TradeCode::Ga);
         }
@@ -718,7 +739,7 @@ impl World {
         }
 
         // Non-industrial
-        if self.population.code <= 6 {
+        if (4..=6).contains(&self.population.code) {
             self.trade_codes.insert(TradeCode::Ni);
         }
 
@@ -728,10 +749,7 @@ impl World {
         }
 
         // Rich
-        if [6, 8].contains(&self.atmosphere.code)
-            && (6..=8).contains(&self.population.code)
-            && (4..=9).contains(&self.government.code)
-        {
+        if [6, 8].contains(&self.atmosphere.code) && (6..=8).contains(&self.population.code) {
             self.trade_codes.insert(TradeCode::Ri);
         }
 
@@ -749,9 +767,8 @@ impl World {
     pub(crate) fn resolve_travel_code(&mut self) {
         self.travel_code = TravelCode::Safe;
 
-        match self.atmosphere.code {
-            x if x >= 10 => self.travel_code = TravelCode::Amber,
-            _ => (),
+        if self.atmosphere.code >= 10 {
+            self.travel_code = TravelCode::Amber
         }
 
         match self.government.code {
@@ -761,7 +778,7 @@ impl World {
 
         match self.law_level.code {
             0 => self.travel_code = TravelCode::Amber,
-            x if x >= 9 => self.travel_code = TravelCode::Amber,
+            9.. => self.travel_code = TravelCode::Amber,
             _ => (),
         }
     }
@@ -795,6 +812,10 @@ impl World {
     pub(crate) fn travel_code_str(&self) -> String {
         format!("{:?}", self.travel_code)
     }
+
+    fn unmodified_population(&self) -> i32 {
+        self.population.code as i32 - self.population_modifier()
+    }
 }
 
 impl Default for World {
@@ -806,7 +827,7 @@ impl Default for World {
 impl PartialEq for World {
     fn eq(&self, other: &Self) -> bool {
         self.name == other.name
-            && self.has_gas_giant == other.has_gas_giant
+            && self.gas_giants == other.gas_giants
             && self.size == other.size
             && self.diameter == other.diameter
             && self.atmosphere == other.atmosphere
@@ -827,12 +848,13 @@ impl PartialEq for World {
             && self.travel_code == other.travel_code
             && self.trade_codes == other.trade_codes
             && self.notes == other.notes
+            && self.planetoid_belts == other.planetoid_belts
     }
 }
 
 #[allow(dead_code)]
 pub(crate) fn histograms(n: usize) {
-    let mut gas_giant_hist = Histogram::with_domain("Gas Giant", [false, true]);
+    let mut gas_giant_hist = Histogram::with_domain("Gas Giant", 0..=4);
     let mut size_hist = Histogram::with_domain("Size", 0..=10);
     let mut atmo_hist =
         Histogram::with_domain("Atmosphere", 0..=(TABLES.atmo_table.len() as u16 - 1));
@@ -847,7 +869,7 @@ pub(crate) fn histograms(n: usize) {
     let mut law_hist = Histogram::with_domain("Law Level", 0..=(TABLES.law_table.len() as u16 - 1));
     let mut fac_strength_hist = Histogram::with_domain(
         "Faction Strength",
-        0..=(TABLES.faction_table.len() as u16 - 1),
+        2..=(TABLES.faction_table.len() as u16 - 1),
     );
     let mut fac_count_hist = Histogram::new("Faction Count");
     let mut starport_hist = Histogram::new("Starport");
@@ -858,7 +880,7 @@ pub(crate) fn histograms(n: usize) {
     for _ in 0..n {
         let world = World::new(String::from("0101"));
 
-        gas_giant_hist.inc(world.has_gas_giant);
+        gas_giant_hist.inc(world.gas_giants);
         size_hist.inc(world.size);
         atmo_hist.inc(world.atmosphere.code);
         temp_hist.inc(world.temperature.code);

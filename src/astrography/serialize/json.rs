@@ -42,8 +42,9 @@ impl TryFrom<JsonableSubsector> for Subsector {
     fn try_from(jsonable: JsonableSubsector) -> Result<Self, Self::Error> {
         let JsonableSubsector { name, map } = jsonable;
         let mut point_map: BTreeMap<Point, World> = BTreeMap::new();
-        for (point_str, world) in map {
+        for (point_str, mut world) in map {
             let point = Point::try_from(&point_str[..])?;
+            world.normalize_data();
             point_map.insert(point, world);
         }
 

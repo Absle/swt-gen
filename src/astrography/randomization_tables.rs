@@ -282,32 +282,42 @@ impl Record for TechLevelRecord {
 type TechLevelTable = Vec<TechLevelRecord>;
 
 pub(crate) trait Table<T> {
+    /** Get a reference to an item within the `Table` using a straight "1d6" roll. */
+    fn roll_1d6(&self, modifier: i32) -> &T;
+
+    /** Get a reference to an item within the `Table` using a "2d6" normal distribution. */
+    fn roll_normal_2d6(&self, modifier: i32) -> &T;
+
     /** Get a reference to an item within the `Table` using a uniform distribution. */
     fn roll_uniform(&self) -> &T;
-
-    /** Get a reference to an item with the `Table` using a "2d6" normal distribution. */
-    fn roll_normal_2d6(&self, modifier: i32) -> &T;
 }
 
 impl<T, U> Table<T> for U
 where
     U: Deref<Target = [T]>,
 {
-    /** Get a reference to an item within the `Table` using a uniform distribution.
+    /** Get a reference to an item within the `Table` using a straight "1d6" roll.
+
+    The value of `modifier` is added to the result of the 1d6 roll, however all rolls are
+    clamped to be in-bounds for the `Table`.
 
     # Panics
     Panics if the `Table` is empty.
     */
-    fn roll_uniform(&self) -> &T {
+    fn roll_1d6(&self, modifier: i32) -> &T {
         assert!(!self.is_empty(), "Cannot roll on an empty table");
-        let range = 0..self.len();
-        let index = dice::roll_range(range);
+        let roll = dice::roll_1d(6);
+        let modified_roll = roll + modifier;
+
+        let low = 0;
+        let high = (self.len() - 1) as i32;
+        let index = (modified_roll).clamp(low, high) as usize;
         &self[index]
     }
 
-    /** Get a reference to an item with the `Table` using a "2d6" normal distribution.
+    /** Get a reference to an item within the `Table` using a "2d6" normal distribution.
 
-    The value of `modifier` is added to the result of the 2d6 roll; however any modified rolls are
+    The value of `modifier` is added to the result of the 2d6 roll, however all rolls are
     clamped to be in-bounds for the `Table`.
     Because of this, double-peaks in the outcome of these rolls will tend to appear at the top or
     bottom of the table's domain when `modifier` is significantly greater than or less than zero,
@@ -326,13 +336,27 @@ where
         let index = (modified_roll).clamp(low, high) as usize;
         &self[index]
     }
+
+    /** Get a reference to an item within the `Table` using a uniform distribution.
+
+    # Panics
+    Panics if the `Table` is empty.
+    */
+    fn roll_uniform(&self) -> &T {
+        assert!(!self.is_empty(), "Cannot roll on an empty table");
+        let range = 0..self.len();
+        let index = dice::roll_range(range);
+        &self[index]
+    }
 }
 
 fn load_table<T: for<'de> Deserialize<'de> + Record>(table_csv: &str) -> Vec<T> {
     let mut table = Vec::new();
-    let mut reader = csv::Reader::from_reader(table_csv.as_bytes());
+    let mut reader = csv::ReaderBuilder::new()
+        .comment(Some(b'#'))
+        .from_reader(table_csv.as_bytes());
     for (index, result) in reader.deserialize().enumerate() {
-        let record: T = result.unwrap();
+        let record: T = result.expect("Randomization csv's should always be valid");
         assert_eq!(
             record.code(),
             index as u16,

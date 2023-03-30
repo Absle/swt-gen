@@ -84,11 +84,15 @@ pub(crate) enum Message {
     SaveExit,
     WorldBerthingCostsUpdated,
     WorldDiameterUpdated,
+    WorldGasGiantsUpdated,
     WorldLocUpdated,
     WorldModelUpdated,
+    WorldPlanetoidBeltsUpdated,
 }
 
 pub struct GeneratorApp {
+    /// Buffor for `String` representation of the selected world's planetoid belt count
+    belt_str: String,
     /// Buffer for `String` representation of the selected world's starport berthing cost
     berthing_cost_str: String,
     /// Flag used to ensure the program is not closed without a save prompt
@@ -97,6 +101,8 @@ pub struct GeneratorApp {
     diameter_str: String,
     /// Index of selected [`Faction`]
     faction_idx: usize,
+    /// Buffer for `String` representation of the selected world's gas giant count
+    gas_giant_str: String,
     /// Receive internal and external messages
     message_rx: pipe::Receiver<Message>,
     /// Send internal and external messages; cloned by external GUI structs (e.g. [`Popups`]s)
@@ -198,12 +204,8 @@ impl GeneratorApp {
         self.point = new_point;
         self.faction_idx = 0;
 
-        if let Some(world) = self.subsector.get_world(&self.point) {
-            self.world_selected = true;
-            self.world = world.clone();
-            self.point_str = self.point.to_string();
-            self.diameter_str = self.world.diameter.to_string();
-            self.berthing_cost_str = self.world.starport.berthing_cost.to_string();
+        if self.subsector.get_world(&self.point).is_some() {
+            self.load_world(&new_point)?;
         } else {
             self.world_selected = false;
         }
@@ -327,10 +329,12 @@ impl GeneratorApp {
         });
 
         Self {
+            belt_str: String::new(),
             berthing_cost_str: String::new(),
             can_exit: false,
             diameter_str: String::new(),
             faction_idx: 0,
+            gas_giant_str: String::new(),
             message_rx,
             message_tx,
             point: Point::default(),
@@ -440,6 +444,25 @@ impl GeneratorApp {
         }
     }
 
+    fn load_world(&mut self, new_world_loc: &Point) -> MessageResult {
+        if let Some(world) = self.subsector.get_world(new_world_loc) {
+            self.world_selected = true;
+            self.world = world.clone();
+            self.berthing_cost_str = self.world.starport.berthing_cost.to_string();
+            self.diameter_str = self.world.diameter.to_string();
+            self.point_str = self.point.to_string();
+            self.gas_giant_str = self.world.gas_giants.to_string();
+            self.belt_str = self
+                .world
+                .planetoid_belts
+                .expect("World planetoid belts should not be None")
+                .to_string();
+            Ok(Some(()))
+        } else {
+            Err(format!("Could not load world from point {}", new_world_loc))
+        }
+    }
+
     /** Queue a message to be handled at the beginning of the next frame. */
     fn message(&self, message: Message) {
         self.message_tx.send(message);
@@ -516,8 +539,10 @@ impl GeneratorApp {
             SaveExit => self.save_exit(),
             WorldBerthingCostsUpdated => self.world_berthing_costs_updated(),
             WorldDiameterUpdated => self.world_diameter_updated(),
+            WorldGasGiantsUpdated => self.world_gas_giants_updated(),
             WorldLocUpdated => self.world_loc_updated(),
             WorldModelUpdated => self.world_model_updated(),
+            WorldPlanetoidBeltsUpdated => self.world_planetoid_belts_updated(),
         }
     }
 
@@ -757,15 +782,9 @@ impl GeneratorApp {
 
     fn revert_world_changes(&mut self) -> MessageResult {
         if self.world_selected {
-            if let Some(world) = self.subsector.get_world(&self.point) {
-                self.world = world.clone();
-                self.berthing_cost_str = self.world.starport.berthing_cost.to_string();
-                self.diameter_str = self.world.diameter.to_string();
-                self.point_str = self.point.to_string();
-                Ok(Some(()))
-            } else {
-                Err("Could not find world reversion data".to_string())
-            }
+            let point = self.point;
+            self.load_world(&point)?;
+            Ok(Some(()))
         } else {
             unreachable!("Reverting a world without one selected should be impossible");
         }
@@ -922,6 +941,22 @@ impl GeneratorApp {
         }
     }
 
+    fn world_gas_giants_updated(&mut self) -> MessageResult {
+        let result = self.gas_giant_str.parse();
+        match result {
+            Ok(gas_giants) => {
+                self.world.gas_giants = gas_giants;
+                self.gas_giant_str = self.world.gas_giants.to_string();
+                self.world_model_updated()?;
+                Ok(Some(()))
+            }
+            Err(_) => {
+                self.gas_giant_str = self.world.gas_giants.to_string();
+                Ok(None)
+            }
+        }
+    }
+
     fn world_loc_updated(&mut self) -> MessageResult {
         match Point::try_from(&self.point_str[..]) {
             Ok(location) => {
@@ -949,8 +984,32 @@ impl GeneratorApp {
     }
 
     fn world_model_updated(&mut self) -> MessageResult {
-        self.world.resolve_trade_codes();
+        self.world.normalize_data();
         Ok(Some(()))
+    }
+
+    fn world_planetoid_belts_updated(&mut self) -> MessageResult {
+        let result = self.belt_str.parse();
+        match result {
+            Ok(belts) => {
+                self.world.planetoid_belts = Some(belts);
+                self.belt_str = self
+                    .world
+                    .planetoid_belts
+                    .expect("World planetoid belts should not be None")
+                    .to_string();
+                self.world_model_updated()?;
+                Ok(Some(()))
+            }
+            Err(_) => {
+                self.belt_str = self
+                    .world
+                    .planetoid_belts
+                    .expect("World planetoid belts should not be None")
+                    .to_string();
+                Ok(None)
+            }
+        }
     }
 }
 

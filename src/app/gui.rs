@@ -29,6 +29,7 @@ pub(crate) const SHORT_SELECTION_WIDTH: f32 = 50.0;
 pub(crate) const DICE_ICON: &str = "🎲";
 pub(crate) const X_ICON: &str = "❌";
 pub(crate) const SAVE_ICON: &str = "💾";
+pub(crate) const CLIPBOARD_ICON: &str = "📋";
 
 impl GeneratorApp {
     /** Handles displaying the overall central panel of the app.

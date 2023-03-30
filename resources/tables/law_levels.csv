@@ -1,8 +1,8 @@
 code,banned_weapons,banned_armor
 0,None,None
 1,"Poison gas, explosives, undetectable weapons, WMD's","Battle dress"
-2,"Portable energy and laser weapons","Combat armor"
-3,"Military weapons","Flak"
+2,"Portable energy weapons","Combat armor"
+3,"Heavy weapons","Flak"
 4,"Light assault weapons and submachine guns","Cloth"
 5,"Personal concealable weapons","Mesh"
 6,"All firearms except shotguns & stunners; carry weapons discouraged",""

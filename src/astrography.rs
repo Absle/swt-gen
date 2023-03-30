@@ -297,7 +297,7 @@ impl Subsector {
                 };
 
                 if let Some(world) = &self.map.get(&point) {
-                    if world.has_gas_giant {
+                    if world.has_gas_giant() {
                         hex_grid = hex_grid.replace(&marker, "G   ")
                     } else {
                         hex_grid = hex_grid.replace(&marker, "*   ");
@@ -779,7 +779,7 @@ fn process_world_to_svg_elements<W: std::io::Write>(
         .expect("Found a point with no center marker");
 
     // Place gas giant symbol
-    if world.has_gas_giant {
+    if world.has_gas_giant() {
         let offset = Translation { x: 0.0, y: -6.0 };
         let trans = *marker_translation - *GAS_GIANT_TRANS + offset;
 

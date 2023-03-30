@@ -243,7 +243,7 @@ fn draw_world(ctx: &Context, point: &Point, world: &World, rect: &Rect) -> Vec<S
     let pixels_per_unit = rect.width() / SVG_VIEW_BOX_WIDTH as f32;
 
     // Draw world gas giant indicator
-    if world.has_gas_giant {
+    if world.has_gas_giant() {
         shapes.append(&mut draw_world_gas_giant(&center, pixels_per_unit));
     }
 

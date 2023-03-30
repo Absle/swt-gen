@@ -96,10 +96,7 @@ impl From<(&World, &Point)> for T5Record {
                 Header::EconomicExtension => columns.insert(header, "-".to_string()),
                 Header::CulturalExtension => columns.insert(header, "-".to_string()),
                 Header::Nobility => columns.insert(header, "-".to_string()),
-                Header::PopModBeltsGasGiants => columns.insert(
-                    header,
-                    if world.has_gas_giant { "101" } else { "100" }.to_string(),
-                ),
+                Header::PopModBeltsGasGiants => columns.insert(header, world.pbg_str()),
                 Header::Worlds => columns.insert(header, "1".to_string()),
                 Header::Stellar => columns.insert(header, "-".to_string()),
             };
