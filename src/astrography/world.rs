@@ -876,6 +876,10 @@ pub(crate) fn histograms(n: usize) {
     let mut tech_hist =
         Histogram::with_domain("Tech Level", 0..=(TABLES.tech_level_table.len() as u16 - 1));
     let mut trade_code_hist = Histogram::new("Trade Codes");
+    let mut culture_hist =
+        Histogram::with_domain("Cultures", 0..=(TABLES.culture_table.len() as u16 - 1));
+    let mut world_tag_hist =
+        Histogram::with_domain("World Tags", 0..=(TABLES.world_tag_table.len() as u16 - 1));
 
     for _ in 0..n {
         let world = World::new(String::from("0101"));
@@ -900,6 +904,12 @@ pub(crate) fn histograms(n: usize) {
         for trade_code in world.trade_codes {
             trade_code_hist.inc(trade_code);
         }
+
+        culture_hist.inc(world.culture.code);
+
+        for world_tag in world.world_tags {
+            world_tag_hist.inc(world_tag.code);
+        }
     }
 
     gas_giant_hist.show_percent(n / 50);
@@ -914,7 +924,11 @@ pub(crate) fn histograms(n: usize) {
     fac_count_hist.show_percent(n / 200);
     starport_hist.show_percent(n / 200);
     tech_hist.show_percent(n / 200);
-    trade_code_hist.show(n / 100); // Percent doesn't work well for this one
+
+    // Percent doesn't work well for these
+    trade_code_hist.show(n / 100);
+    culture_hist.show(n / 500);
+    world_tag_hist.show(n / 1000);
 }
 
 #[cfg(test)]
